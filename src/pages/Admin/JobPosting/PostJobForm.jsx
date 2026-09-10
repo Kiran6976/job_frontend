@@ -285,6 +285,7 @@ const PostJobForm = ({
         vacancyTableType: editingJob.vacancyTableType || (editingJob.rrbVacancies?.length > 0 ? "rrb" : "standard"),
         rrbVacancies: editingJob.rrbVacancies || [],
         examPattern: editingJob.examPattern || prev.examPattern,
+        applicationFee: editingJob.applicationFee || null,
         description: editingJob.description || "",
       }));
 

@@ -258,7 +258,7 @@ const Section3Eligibility = ({ job }) => {
           </div>
 
           {/* Card 7: Application Fee (conditional) */}
-          {job.applicationFee && (job.applicationFee.general || job.applicationFee.sc_st_pwd_female_exsm) && (
+          {job.applicationFee && (job.applicationFee.general || job.applicationFee.sc_st_pwd_female_exsm || job.applicationFee.note) && (
             <div className="jd-el-card jd-el-card--fee">
               <div className="jd-el-card__icon-box jd-el-card__icon-box--emerald">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -269,27 +269,27 @@ const Section3Eligibility = ({ job }) => {
               <div className="jd-el-card__body">
                 <h3 className="jd-el-card__title">Application Fee</h3>
                 <div className="jd-fee-table">
-                  {job.applicationFee.general && (
+                  {job.applicationFee.general != null && String(job.applicationFee.general).trim() !== "" && (
                     <div className="jd-fee-table__row">
-                      <span className="jd-fee-table__cat">General / UR</span>
+                      <span className="jd-fee-table__cat">General / UR / OBC</span>
                       <strong className="jd-fee-table__val jd-fee-table__val--general">
-                        ₹{job.applicationFee.general}
+                        {String(job.applicationFee.general).startsWith("₹") ? job.applicationFee.general : `₹${job.applicationFee.general}`}
                       </strong>
                     </div>
                   )}
-                  {job.applicationFee.sc_st_pwd_female_exsm && (
+                  {job.applicationFee.sc_st_pwd_female_exsm != null && String(job.applicationFee.sc_st_pwd_female_exsm).trim() !== "" && (
                     <div className="jd-fee-table__row">
                       <span className="jd-fee-table__cat">SC / ST / PwBD / Female / Ex-SM</span>
                       <strong className="jd-fee-table__val jd-fee-table__val--reserved">
-                        ₹{job.applicationFee.sc_st_pwd_female_exsm}
+                        {String(job.applicationFee.sc_st_pwd_female_exsm).trim() === "0" ? "Nil (₹0)" : (String(job.applicationFee.sc_st_pwd_female_exsm).startsWith("₹") ? job.applicationFee.sc_st_pwd_female_exsm : `₹${job.applicationFee.sc_st_pwd_female_exsm}`)}
                       </strong>
                     </div>
                   )}
-                  {job.applicationFee.exempted && job.applicationFee.exempted !== "0" && (
+                  {job.applicationFee.exempted != null && String(job.applicationFee.exempted).trim() !== "" && (
                     <div className="jd-fee-table__row">
                       <span className="jd-fee-table__cat">Exempted Categories</span>
                       <strong className="jd-fee-table__val jd-fee-table__val--exempt">
-                        ₹{job.applicationFee.exempted}
+                        {String(job.applicationFee.exempted).trim() === "0" ? "Nil (₹0)" : (String(job.applicationFee.exempted).startsWith("₹") ? job.applicationFee.exempted : `₹${job.applicationFee.exempted}`)}
                       </strong>
                     </div>
                   )}

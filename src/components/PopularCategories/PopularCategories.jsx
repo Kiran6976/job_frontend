@@ -290,7 +290,13 @@ const PopularCategories = () => {
                 key={cat.id}
                 to={cat.linkUrl || `/jobs?category=${encodeURIComponent(cat.title)}`}
                 className={`pc__card ${cat.highlight ? "pc__card--highlight" : ""}`}
-                style={{ textDecoration: "none", color: "inherit" }}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  "--card-accent": cat.iconColor,
+                  "--card-tint": `${cat.iconColor}12`,
+                  "--card-border": `${cat.iconColor}40`,
+                }}
               >
                 {/* Sparkle doodle for highlighted card */}
                 {cat.highlight && (
