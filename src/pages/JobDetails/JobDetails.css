@@ -1,0 +1,114 @@
+/* =========================================================
+   JOB DETAILS PAGE BASE STYLES & LAYOUT
+   ========================================================= */
+
+.jd {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+.jd__container {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ────────── Breadcrumbs ────────── */
+.jd__breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+  padding: 18px 0;
+}
+
+.jd__bc-link {
+  color: #64748b;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s;
+}
+
+.jd__bc-link:hover {
+  color: #2563eb;
+}
+
+.jd__bc-sep {
+  color: #cbd5e1;
+}
+
+.jd__bc-curr {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* ────────── Shared Modal Primitive Fallbacks ────────── */
+.jd-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.jd-modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  animation: jdModalPop 0.2s ease-out;
+}
+
+@keyframes jdModalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.jd-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.jd-modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.jd-modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.jd-modal-body {
+  padding: 24px;
+}

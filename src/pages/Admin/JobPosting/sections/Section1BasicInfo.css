@@ -1,0 +1,103 @@
+/* Section1BasicInfo.css */
+.ajp__section-container {
+  margin-bottom: 1.5rem;
+}
+
+.ajp__section-header {
+  margin-bottom: 1.25rem;
+}
+
+.ajp__section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #93c5fd;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ajp__section-subtitle {
+  font-size: 0.775rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* ── Application Fee Sub-Section ── */
+.ajp__fee-subsection {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.25rem 1rem;
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  position: relative;
+}
+
+.ajp__fee-subsection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #10b981, #059669);
+  border-radius: 12px 12px 0 0;
+}
+
+.ajp__fee-subsection__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.ajp__fee-subsection__icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.ajp__fee-subsection__title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin: 0 0 2px;
+}
+
+.ajp__fee-subsection__hint {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Fee ₹ badge on label */
+.ajp__fee-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.ajp__fee-badge--general {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.ajp__fee-badge--reserved {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Full-width field inside a form-row */
+.ajp__field--full {
+  flex: 1 1 100%;
+  width: 100%;
+}
+

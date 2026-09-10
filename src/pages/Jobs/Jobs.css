@@ -1,0 +1,539 @@
+/* =============================================
+   JOBS PAGE HERO SECTION
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
+
+.job-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  font-family: var(--font-sans);
+}
+
+/* ────────── Top Navbar ────────── */
+.job-page__navbar {
+  height: 68px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #eef2f7;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.job-page__logo img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+.job-page__nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.job-page__nav-link {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.job-page__nav-link:hover {
+  color: #2563eb;
+}
+
+.job-page__nav-link--active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.job-page__nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.job-page__login-btn {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  text-decoration: none;
+  padding: 8px 16px;
+  transition: color 0.18s ease;
+}
+
+.job-page__login-btn:hover {
+  color: #2563eb;
+}
+
+.job-page__signup-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #6366f1 50%, #7c3aed 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.job-page__signup-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+/* ────────── Main Job Hero Section ────────── */
+.jh {
+  position: relative;
+  min-height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 40px 0;
+}
+
+/* Background Image Wrap */
+.jh__bg-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.jh__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+
+/* Translucent gradient overlay on the left */
+.jh__bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.88) 35%,
+    rgba(255, 255, 255, 0.45) 58%,
+    rgba(255, 255, 255, 0.1) 75%,
+    transparent 100%
+  );
+}
+
+/* Main Container */
+.jh__container {
+  max-width: 1360px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  gap: 40px;
+}
+
+/* Left Content */
+.jh__content {
+  flex: 1.25;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Badge */
+.jh__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f3ff;
+  border: 1px solid #e0e7ff;
+  color: #6366f1;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 999px;
+  width: fit-content;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.08);
+}
+
+.jh__badge-icon {
+  font-size: 14px;
+}
+
+/* Heading */
+.jh__heading {
+  font-size: clamp(38px, 4.4vw, 58px);
+  font-weight: 800;
+  color: #0b132b;
+  line-height: 1.12;
+  margin: 0;
+  letter-spacing: -1.2px;
+}
+
+.jh__heading--blue {
+  color: #2563eb;
+}
+
+.jh__heading--purple {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtext */
+.jh__subtext {
+  font-size: 15.5px;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Big Search Bar */
+.jh__search-bar {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  padding: 6px 8px;
+  gap: 6px;
+  margin-top: 6px;
+  max-width: 580px;
+}
+
+.jh__search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+}
+
+.jh__search-field--query {
+  flex: 1.3;
+}
+
+.jh__search-field--location {
+  flex: 1;
+}
+
+.jh__search-icon {
+  width: 18px;
+  height: 18px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.jh__chevron-icon {
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.jh__input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: #1e293b;
+  width: 100%;
+}
+
+.jh__input::placeholder {
+  color: #94a3b8;
+}
+
+.jh__search-divider {
+  width: 1px;
+  height: 28px;
+  background: #e2e8f0;
+}
+
+.jh__search-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #6366f1 50%, #7c3aed 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.jh__search-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+/* Stats Row */
+.jh__stats {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.jh__stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.jh__stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jh__stat-icon--blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.jh__stat-icon--purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.jh__stat-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.jh__stat-value {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  display: block;
+  line-height: 1.1;
+}
+
+.jh__stat-label {
+  font-size: 11.5px;
+  color: #64748b;
+  display: block;
+}
+
+/* Handwritten Left Doodle */
+.jh__doodle-left {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.jh__doodle-text {
+  font-family: 'Caveat', cursive;
+  font-size: 19px;
+  color: #4f46e5;
+  line-height: 1.15;
+  transform: rotate(-5deg);
+  font-weight: 700;
+}
+
+.jh__doodle-underline {
+  width: 85px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+/* ────────── Right Floating Cards Overlay ────────── */
+.jh__floating-wrap {
+  flex: 1.1;
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Float Card Common */
+.jh__float-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.jh__float-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px rgba(37, 99, 235, 0.15);
+}
+
+.jh__float-icon {
+  width: 36px;
+  height: 36px;
+  background: #eff6ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jh__float-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.jh__float-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.jh__float-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.jh__float-sub {
+  font-size: 11.5px;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+.jh__float-arrow {
+  font-size: 15px;
+  color: #64748b;
+  margin-left: 6px;
+  transition: transform 0.18s ease;
+}
+
+.jh__float-card:hover .jh__float-arrow {
+  transform: translateX(3px);
+  color: #2563eb;
+}
+
+/* Positioning of the 3 cards matching the reference image */
+.jh__float-card--1 {
+  top: 40px;
+  left: 20px;
+}
+
+.jh__float-card--2 {
+  top: 170px;
+  left: -80px;
+}
+
+.jh__float-card--3 {
+  bottom: 80px;
+  right: 0px;
+}
+
+/* Mountain Handwritten Doodle */
+.jh__mountain-doodle {
+  position: absolute;
+  top: 130px;
+  right: 30px;
+  pointer-events: none;
+}
+
+.jh__mountain-text {
+  font-family: 'Caveat', cursive;
+  font-size: 17px;
+  color: #334155;
+  line-height: 1.2;
+  text-align: right;
+  transform: rotate(-6deg);
+  display: block;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* ────────── Responsive ────────── */
+@media (max-width: 1200px) {
+  .jh__container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .jh__floating-wrap {
+    width: 100%;
+    min-height: 280px;
+    margin-top: 20px;
+  }
+
+  .jh__float-card--2 {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-page__navbar {
+    padding: 0 20px;
+  }
+
+  .job-page__nav-links {
+    display: none;
+  }
+
+  .jh__container {
+    padding: 0 20px;
+  }
+
+  .jh__search-bar {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .jh__search-field {
+    width: 100%;
+    padding: 8px 4px;
+  }
+
+  .jh__search-divider {
+    display: none;
+  }
+
+  .jh__search-btn {
+    width: 100%;
+  }
+
+  .jh__stats {
+    gap: 16px;
+  }
+
+  .jh__floating-wrap {
+    display: none;
+  }
+}

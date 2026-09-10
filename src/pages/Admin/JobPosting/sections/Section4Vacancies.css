@@ -1,0 +1,279 @@
+/* Section4Vacancies.css */
+
+/* Vacancy Mode Toggle */
+.ajp__vacancy-mode-toggle {
+  display: flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.ajp__vmode-btn {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ajp__vmode-btn.is-active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
+}
+
+/* RRB Grand Summary Banner */
+.ajp__rrb-grand-summary {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.ajp__rrb-grand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.ajp__rrb-grand-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.ajp__rrb-grand-stats {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.ajp__rrb-highlight-total {
+  font-weight: 800;
+  color: #38bdf8;
+  margin-left: 6px;
+  font-size: 0.9rem;
+}
+
+.ajp__rrb-grand-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ajp__rrb-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.ajp__rrb-badge--ur { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+.ajp__rrb-badge--sc { background: rgba(252, 211, 77, 0.15); color: #fcd34d; border: 1px solid rgba(252, 211, 77, 0.3); }
+.ajp__rrb-badge--st { background: rgba(192, 132, 252, 0.15); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+.ajp__rrb-badge--obc { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+.ajp__rrb-badge--ews { background: rgba(251, 146, 60, 0.15); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.3); }
+.ajp__rrb-badge--exsm { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); }
+
+/* RRB Board Tabs & Selector */
+.ajp__rrb-board-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.ajp__rrb-tabs-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.ajp__rrb-tab-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.ajp__rrb-tab-pill:hover {
+  background: rgba(51, 65, 85, 0.8);
+  color: #e2e8f0;
+}
+
+.ajp__rrb-tab-pill.is-active {
+  background: rgba(37, 99, 235, 0.25);
+  border-color: #3b82f6;
+  color: #60a5fa;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.ajp__rrb-tab-count {
+  font-size: 0.68rem;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #38bdf8;
+}
+
+.ajp__rrb-tab-remove {
+  background: transparent;
+  border: none;
+  color: #f87171;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+.ajp__rrb-tab-remove:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.ajp__rrb-add-board-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ajp__rrb-select {
+  max-width: 280px;
+  background: #0f172a;
+}
+
+/* Active RRB Board Card */
+.ajp__rrb-active-board-card {
+  background: #0f172a;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.ajp__rrb-board-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* RRB Table Styling */
+.ajp__rrb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+}
+
+.ajp__rrb-table thead tr {
+  background: rgba(30, 41, 59, 0.9);
+  color: #94a3b8;
+  text-align: left;
+}
+
+.ajp__rrb-table th {
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.ajp__rrb-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.ajp__rrb-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ajp__rrb-table td {
+  padding: 8px 10px;
+}
+
+.ajp__rrb-rly-pill {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+
+.ajp__rrb-del-btn {
+  background: transparent;
+  border: none;
+  color: #f87171;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.ajp__rrb-subtotal-row {
+  background: rgba(30, 41, 59, 0.9);
+  font-weight: 700;
+  border-top: 2px solid rgba(59, 130, 246, 0.3);
+  color: #f1f5f9;
+}
+
+.ajp__rrb-subtotal-row td {
+  padding: 8px 10px;
+}
+
+/* Add Post Form Under RRB */
+.ajp__rrb-add-post-box {
+  margin-top: 0.85rem;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 8px;
+  padding: 0.85rem;
+}
+
+.ajp__rrb-add-post-grid {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.ajp__rrb-add-post-numbers-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ajp__rrb-mini-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ajp__rrb-mini-field span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.ajp__rrb-mini-field input {
+  width: 60px;
+  text-align: center;
+}

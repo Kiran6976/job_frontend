@@ -1,0 +1,721 @@
+/* ─────────────────────────────────────────────────────────
+   SECTION 3: ELIGIBILITY CRITERIA & REQUIREMENTS STYLES
+   (EXACT MATCH FOR media_1789010549419.jpg)
+   ───────────────────────────────────────────────────────── */
+.jd-el-section {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 36px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  margin-top: 32px;
+  overflow: hidden;
+}
+
+/* Header with Slogans & Landmark Backdrop Artwork */
+.jd-el__header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.jd-el__header-left {
+  max-width: 620px;
+  z-index: 2;
+}
+
+.jd-el__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 9999px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.jd-el__title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+
+.jd-el__title span {
+  color: #6366f1;
+}
+
+.jd-el__sub {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Artwork Header Cluster */
+.jd-el__header-artwork {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 120px;
+  z-index: 1;
+}
+
+.jd-el__monument-img {
+  width: 150px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 16px;
+  opacity: 0.85;
+  mask-image: radial-gradient(circle at center, black 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 50%, transparent 100%);
+}
+
+.jd-el__slogan-callout {
+  font-size: 13px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.jd-el__slogan-callout--left {
+  color: #2563eb;
+  transform: rotate(-6deg);
+}
+
+.jd-el__slogan-callout--right {
+  color: #475569;
+  transform: rotate(5deg);
+}
+
+/* 2-Column Main Grid (Cards Left + Checklist Right) */
+.jd-el__grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+.jd-el__cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Individual Criteria Card */
+.jd-el-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #f8fafc;
+  border: 1px solid #edf2f7;
+  border-radius: 18px;
+  padding: 22px 20px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.jd-el-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.jd-el-card__icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-el-card__icon-box svg {
+  width: 22px;
+  height: 22px;
+}
+
+.jd-el-card__icon-box--blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.jd-el-card__icon-box--green {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.jd-el-card__icon-box--purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.jd-el-card__icon-box--teal {
+  background: #f0fdfa;
+  color: #0d9488;
+}
+
+.jd-el-card__icon-box--flag {
+  background: #fffbeb;
+  font-size: 24px;
+}
+
+.jd-el-card__flag-icon {
+  line-height: 1;
+}
+
+.jd-el-card__body {
+  flex: 1;
+}
+
+.jd-el-card__title {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.jd-el-card__desc {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.55;
+  margin: 0 0 8px;
+}
+
+.jd-el-card__link {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.jd-el-card__link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+.jd-el-card__meta-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.jd-el-card__meta-lines strong {
+  color: #0f172a;
+}
+
+/* Mini Age Relaxation Table */
+.jd-el-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 6px;
+}
+
+.jd-el-table__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+}
+
+.jd-el-table__cat {
+  color: #64748b;
+}
+
+.jd-el-table__val {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.jd-el-card__list-simple {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+  color: #475569;
+}
+
+.jd-el-card__checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.jd-el-card__checklist li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.jd-el-check {
+  color: #059669;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+/* Emerald icon box variant for Fee card */
+.jd-el-card__icon-box--emerald {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+/* ── Application Fee Card ── */
+.jd-el-card--fee {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.jd-fee-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.jd-fee-table__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.jd-fee-table__cat {
+  color: #475569;
+}
+
+.jd-fee-table__val {
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.jd-fee-table__val--general {
+  color: #1d4ed8;
+}
+
+.jd-fee-table__val--reserved {
+  color: #b45309;
+}
+
+.jd-fee-table__val--exempt {
+  color: #059669;
+}
+
+.jd-fee-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.jd-fee-meta__label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.jd-fee-meta__val {
+  color: #64748b;
+}
+
+.jd-fee-refund {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: #059669;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 7px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+}
+
+.jd-fee-refund__icon {
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.jd-fee-note {
+  font-size: 10.5px;
+  color: #94a3b8;
+  margin: 0;
+  font-style: italic;
+}
+
+.jd-el__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.jd-el-checker-card {
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+}
+
+.jd-el-checker__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.jd-el-checker__target-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-el-checker__target-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.jd-el-checker__title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.jd-el-checker__desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.jd-el-checker__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.jd-el-checker__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.jd-el-checker__item input[type="checkbox"] {
+  display: none;
+}
+
+.jd-el-checker__custom-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: #059669;
+  color: #ffffff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.jd-el-checker__item input[type="checkbox"]:not(:checked) + .jd-el-checker__custom-box {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: transparent;
+}
+
+.jd-el-checker__text {
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.jd-el-checker__btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: #2563eb;
+  border: none;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.jd-el-checker__btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Quote & Books Artwork Card */
+.jd-el-quote-card {
+  position: relative;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 20px 22px;
+  overflow: hidden;
+}
+
+.jd-el-quote__bubble {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.jd-el-quote__symbol {
+  font-size: 24px;
+  color: #3b82f6;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.jd-el-quote__text {
+  font-size: 12px;
+  font-style: italic;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Stacking Books Illustration */
+.jd-el-books-art {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-right: 12px;
+  gap: 4px;
+}
+
+.jd-el-book {
+  position: relative;
+  width: 120px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.jd-el-book--top {
+  background: #60a5fa;
+  width: 100px;
+}
+
+.jd-el-book--mid {
+  background: #3b82f6;
+  width: 110px;
+}
+
+.jd-el-book--bot {
+  background: #1d4ed8;
+  width: 120px;
+}
+
+.jd-el-book__grad-cap {
+  position: absolute;
+  top: -18px;
+  right: 28px;
+  font-size: 18px;
+}
+
+/* ────────── Bottom Important Note Banner ────────── */
+.jd-el-bottom-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: #ffffff;
+  border: 1px solid #fee2e2;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-top: 24px;
+}
+
+.jd-el-bottom-note__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.jd-el-bottom-note__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #dc2626;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-el-bottom-note__left strong {
+  display: block;
+  font-size: 13.5px;
+  color: #b91c1c;
+  margin-bottom: 2px;
+}
+
+.jd-el-bottom-note__left p {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.jd-el-bottom-note__pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.jd-el-bottom-note__pdf-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #2563eb;
+}
+
+/* ────────── Eligibility Modal ────────── */
+.jd-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.jd-modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  animation: jdModalPop 0.2s ease-out;
+}
+
+@keyframes jdModalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.jd-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.jd-modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.jd-modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.jd-modal-body {
+  padding: 24px;
+}
+
+/* Responsive Rules for Eligibility Section */
+@media (max-width: 1200px) {
+  .jd-el__grid {
+    grid-template-columns: 1fr;
+  }
+  .jd-el__header {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 900px) {
+  .jd-el__cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .jd-el-bottom-note {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

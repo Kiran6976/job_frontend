@@ -1,0 +1,63 @@
+/* =============================================
+   GLOBAL RESET & BASE STYLES
+   ============================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --font-sans: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+  --color-primary: #2563eb;
+  --color-text: #374151;
+  --color-heading: #0f172a;
+  --color-muted: #6b7280;
+  --color-bg: #f0f4ff;
+  --color-white: #ffffff;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-sans);
+}
+
+img {
+  max-width: 100%;
+}

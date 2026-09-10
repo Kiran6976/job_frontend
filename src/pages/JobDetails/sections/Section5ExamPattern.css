@@ -1,0 +1,684 @@
+/* ════════════════════════════════════════════════════════════════
+   SECTION 5: EXAM PATTERN & STRUCTURE STYLES
+════════════════════════════════════════════════════════════════ */
+.jd-pattern-section {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  padding: 36px 32px;
+  margin-top: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.jd-pattern__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 24px;
+}
+
+.jd-pattern__header-text {
+  max-width: 650px;
+}
+
+.jd-pattern__title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 10px 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.jd-pattern__title-accent {
+  color: #2563eb;
+}
+
+.jd-pattern__subtitle {
+  font-size: 0.92rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Right Header Artwork */
+.jd-pattern__header-art {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.jd-pattern__quote-callout {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #1e3a8a;
+  text-align: right;
+}
+
+.jd-pattern__quote-highlight {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.jd-pattern__slogan-sub {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-style: normal;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-top: 5px;
+}
+
+.jd-pattern__monument-wrap {
+  position: relative;
+  width: 140px;
+  height: 90px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.jd-pattern__monument-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jd-pattern__corner-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 7.5px;
+  line-height: 1.15;
+  text-transform: uppercase;
+  color: #1e40af;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 3px 5px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  text-align: right;
+  font-weight: 600;
+}
+
+/* Stage Navigation Tabs */
+.jd-pattern__stage-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.jd-pattern__stage-tab {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.jd-pattern__stage-tab:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.jd-pattern__stage-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.35);
+}
+
+.jd-pattern__stage-tab-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.jd-pattern__stage-tab.active .jd-pattern__stage-tab-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.jd-pattern__stage-tab-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.jd-pattern__stage-tab-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.jd-pattern__stage-tab-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.jd-pattern__stage-tab.active .jd-pattern__stage-tab-name {
+  color: #ffffff;
+}
+
+.jd-pattern__stage-tab-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.jd-pattern__stage-tab.active .jd-pattern__stage-tab-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 2-Column Grid: Left Main + Right Sidebar */
+.jd-pattern__grid {
+  display: grid;
+  grid-template-columns: 2.1fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.jd-pattern__card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  height: 100%;
+}
+
+.jd-pattern__stage-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 22px;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.jd-pattern__stage-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-pattern__stage-icon-wrap svg {
+  width: 16px;
+  height: 16px;
+}
+
+.jd-pattern__stage-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.jd-pattern__stage-badge {
+  background: #e0e7ff;
+  color: #4338ca;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.jd-pattern__stage-desc {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+/* Table Wrap */
+.jd-pattern__table-wrap {
+  overflow-x: auto;
+}
+
+.jd-pattern__data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.825rem;
+  text-align: left;
+}
+
+.jd-pattern__data-table th {
+  background: #f8fafc;
+  padding: 11px 16px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.jd-pattern__data-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.jd-pattern__paper-badge {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.jd-pattern__subject-name {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.jd-pattern__nature-pill {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Sidebar Key Points */
+.jd-pattern__sidebar-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.jd-pattern__sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.jd-pattern__sidebar-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #fef3c7;
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.jd-pattern__sidebar-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.jd-pattern__keypoints-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jd-pattern__keypoint-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.jd-pattern__keypoint-check {
+  color: #2563eb;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.jd-pattern__quote-box {
+  background: #eff6ff;
+  border-left: 3px solid #2563eb;
+  padding: 12px 14px;
+  border-radius: 0 10px 10px 0;
+  position: relative;
+}
+
+.jd-pattern__quote-icon {
+  font-size: 24px;
+  line-height: 1;
+  color: #93c5fd;
+  font-family: Georgia, serif;
+  position: absolute;
+  top: 6px;
+  left: 8px;
+}
+
+.jd-pattern__quote-text {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.76rem;
+  font-style: italic;
+  color: #1e40af;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+/* Bottom 4-Card Grid */
+.jd-pattern__bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.jd-pattern__subcard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.jd-pattern__subcard--warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.jd-pattern__subcard-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.jd-pattern__subcard-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-pattern__subcard-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.jd-pattern__subcard-icon--green {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.jd-pattern__subcard-icon--purple {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.jd-pattern__subcard-icon--amber {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.jd-pattern__subcard-icon--blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.jd-pattern__subcard-title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.jd-pattern__subjects-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jd-pattern__subjects-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.74rem;
+  color: #334155;
+  line-height: 1.35;
+}
+
+.jd-pattern__subject-check {
+  color: #059669;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.jd-pattern__marking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jd-pattern__marking-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #334155;
+}
+
+.jd-pattern__marking-check {
+  color: #9333ea;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.jd-pattern__marking-label {
+  flex: 1;
+}
+
+.jd-pattern__marking-pill {
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.jd-pattern__marking-pill--pos {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.jd-pattern__marking-pill--neg {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.jd-pattern__marking-val {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* Negative Marking Card */
+.jd-pattern__neg-desc {
+  font-size: 0.76rem;
+  color: #78350f;
+  margin: 0 0 12px;
+  line-height: 1.4;
+}
+
+.jd-pattern__neg-callout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.jd-pattern__neg-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f59e0b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.jd-pattern__neg-val {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #b45309;
+}
+
+.jd-pattern__neg-val-sub {
+  font-size: 0.68rem;
+  color: #92400e;
+}
+
+.jd-pattern__neg-advice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #92400e;
+  line-height: 1.35;
+}
+
+.jd-pattern__neg-advice-icon {
+  color: #d97706;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Syllabus Card */
+.jd-pattern__syllabus-sub {
+  margin: 2px 0 0;
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.jd-pattern__syllabus-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.jd-pattern__download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1.5px solid #2563eb;
+  border-radius: 10px;
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.jd-pattern__download-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* Footer Note */
+.jd-pattern__footer-note {
+  margin-top: 20px;
+  padding: 10px 16px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: #0369a1;
+}
+
+.jd-pattern__footer-icon {
+  font-size: 1rem;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+/* Responsive Rules for Exam Pattern Section */
+@media (max-width: 1100px) {
+  .jd-pattern__grid {
+    grid-template-columns: 1fr;
+  }
+  .jd-pattern__bottom-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .jd-pattern__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .jd-pattern-section {
+    padding: 20px 16px;
+  }
+  .jd-pattern__stage-tabs {
+    grid-template-columns: 1fr;
+  }
+  .jd-pattern__bottom-grid {
+    grid-template-columns: 1fr;
+  }
+  .jd-pattern__header-art {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

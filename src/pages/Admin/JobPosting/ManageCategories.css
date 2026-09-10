@@ -1,0 +1,393 @@
+/* =========================================================
+   TAB 2: MANAGE CATEGORIES & ORGANIZATIONS STYLES
+   ========================================================= */
+
+.ajp__categories-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ajp__cat-form-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.ajp__cat-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  background: #2563eb;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.ajp__cat-add-btn:hover {
+  background: #1d4ed8;
+}
+
+.ajp__refresh-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+
+.ajp__refresh-btn:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.ajp__cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.ajp__cat-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.ajp__cat-card-icon {
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ajp__cat-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ajp__cat-card-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.ajp__cat-card-count {
+  font-size: 0.725rem;
+  color: #94a3b8;
+}
+
+.ajp__cat-card-del {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  line-height: 1;
+}
+
+.ajp__cat-card-del:hover {
+  color: #f87171;
+}
+
+/* Modal Box for Organization Provider */
+.ajp__org-modal-box {
+  background: #0f172a;
+  border: 1px solid #3b82f6;
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 1rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Banner Uploader & Fixed Dimension Frame */
+.ajp__logo-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.ajp__logo-spec-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.ajp__banner-uploader-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.ajp__banner-preview-frame {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #020617;
+}
+
+.ajp__banner-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+}
+
+.ajp__banner-preview-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ajp__banner-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ajp__preset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ajp__preset-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.ajp__preset-btn--active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+/* Emblem / Logo Uploader Styles */
+.ajp__logo-uploader {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: #0b1120;
+  border: 1.5px dashed rgba(59, 130, 246, 0.4);
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.ajp__logo-uploader:hover {
+  border-color: #3b82f6;
+}
+
+.ajp__logo-thumb-box {
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  border-radius: 12px;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.ajp__logo-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  display: block;
+}
+
+.ajp__logo-thumb-ph {
+  font-size: 2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ajp__logo-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ajp__logo-remove-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ajp__logo-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ffffff;
+}
+
+.ajp__logo-presets {
+  margin-top: 0.65rem;
+}
+
+.ajp__logo-presets-label {
+  display: block;
+  font-size: 0.725rem;
+  color: #94a3b8;
+  margin-bottom: 0.4rem;
+}
+
+.ajp__preset-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ajp__preset-btn img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  border-radius: 3px;
+}
+
+
+/* Organization Cards with Banner and Actions */
+.ajp__org-card {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ajp__org-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+.ajp__org-card-banner {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  background: #0b1120;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ajp__org-card-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+.ajp__org-banner-tag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 0.65rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: #38bdf8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.ajp__org-card-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 12px 14px;
+}
+
+.ajp__org-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ajp__org-edit-btn {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ajp__org-edit-btn:hover {
+  background: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
+}
+
+@media (max-width: 1024px) {
+  .ajp__cat-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ajp__cat-form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ajp__cat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -1,0 +1,430 @@
+/* ─────────────────────────────────────────────────────────
+   IMPORTANT DATES & APPLICATION TIMELINE SECTION
+   ───────────────────────────────────────────────────────── */
+.jd-timeline-section {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 36px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  margin-bottom: 40px;
+}
+
+.jd-timeline__header {
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.jd-timeline__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+  border: 1px solid #dbeafe;
+}
+
+.jd-timeline__title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.jd-timeline__title span {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.jd-timeline__sub {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.jd-timeline__callout-top {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #2563eb;
+  font-style: italic;
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* 2-Column Section Body: Timeline Stream on Left, Deadline Card on Right */
+.jd-timeline__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+/* 5-Step Process Flow */
+.jd-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Progress Connection Bar */
+.jd-flow__track {
+  display: grid;
+  grid-template-columns: repeat(var(--track-cols, 5), 1fr);
+  position: relative;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.jd-flow__track::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: var(--track-inset, 10%);
+  right: var(--track-inset, 10%);
+  height: 2px;
+  background: var(--track-bg, linear-gradient(90deg, #3b82f6 0%, #10b981 25%, #f59e0b 50%, #ef4444 75%, #8b5cf6 100%));
+  z-index: 1;
+}
+
+.jd-flow__step-node {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.jd-flow__node-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  margin-bottom: 8px;
+}
+
+.jd-flow__node-circle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.jd-flow__node-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+/* Timeline Cards Row */
+.jd-flow__cards-row {
+  display: grid;
+  grid-template-columns: repeat(var(--track-cols, 5), 1fr);
+  gap: 12px;
+}
+
+.jd-t-card {
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  border: 1px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.jd-t-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.jd-t-card--1 {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+.jd-t-card--2 {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.jd-t-card--3 {
+  background: #fffbeb;
+  border-color: #fef08a;
+}
+.jd-t-card--4 {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+.jd-t-card--5 {
+  background: #faf5ff;
+  border-color: #e9d5ff;
+}
+
+.jd-t-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.jd-t-card__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.jd-t-card__tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.jd-t-card__date {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.jd-t-card__day {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+.jd-t-card__desc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+  margin-top: auto;
+}
+
+/* Right Deadline Countdown Card */
+.jd-deadline-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.jd-deadline-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.jd-deadline-card__bell {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-deadline-card__bell--expired {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.jd-deadline-card__title-box h4 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.jd-deadline-card__title-box span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* 4 Countdown Boxes (Days : Hours : Minutes : Seconds) */
+.jd-timer-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.jd-timer-box {
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.jd-timer-box__num {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+  display: block;
+  line-height: 1.1;
+}
+
+.jd-timer-box__label {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.jd-deadline-card__apply-btn {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  height: 44px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.jd-deadline-card__apply-btn:hover {
+  filter: brightness(1.08);
+}
+
+.jd-deadline-card__actions-row {
+  display: flex;
+  gap: 8px;
+}
+
+.jd-deadline-card__btn-sub {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  height: 36px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.jd-deadline-card__btn-sub:hover {
+  background: #f8fafc;
+}
+
+.jd-deadline-card__quote {
+  font-size: 11.5px;
+  font-style: italic;
+  color: #64748b;
+  text-align: center;
+  margin: 0;
+}
+
+/* Quick Metadata Row */
+.jd-meta-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.jd-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jd-meta-icon {
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-meta-text strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.jd-meta-text span {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Green Disclaimer Banner */
+.jd-disclaimer-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Responsive Rules for Timeline */
+@media (max-width: 1200px) {
+  .jd-timeline__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .jd-flow__track {
+    display: none;
+  }
+  .jd-flow__cards-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .jd-meta-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .jd-flow__cards-row {
+    grid-template-columns: 1fr !important;
+  }
+  .jd-meta-strip {
+    grid-template-columns: 1fr;
+  }
+}

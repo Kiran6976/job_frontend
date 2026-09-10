@@ -1,0 +1,1278 @@
+/* =========================================================
+   4. VACANCY DETAILS SECTION STYLES (media_1789011441970.jpg)
+   ========================================================= */
+
+.jd-vac-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-top: 36px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Header Area */
+.jd-vac__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.jd-vac__header-left {
+  max-width: 640px;
+}
+
+.jd-vac__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 12px;
+}
+
+.jd-vac__title {
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+
+.jd-vac__title-accent {
+  color: #2563eb;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.jd-vac__subtitle {
+  font-size: 13.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.jd-vac__subtitle strong {
+  color: #0f172a;
+}
+
+/* Header Artwork with Hand-drawn Slogans */
+.jd-vac__header-art {
+  position: relative;
+  width: 360px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-vac__monument-img {
+  width: 210px;
+  height: 130px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.08));
+}
+
+.jd-vac__slogan-callout {
+  position: absolute;
+  font-family: "Caveat", "Dancing Script", "Segoe Script", cursive, sans-serif;
+  color: #4338ca;
+  line-height: 1.15;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.jd-vac__slogan-callout--left {
+  left: 0;
+  top: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
+  transform: rotate(-5deg);
+}
+
+.jd-vac__slogan-callout--right {
+  right: 4px;
+  top: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+  transform: rotate(4deg);
+}
+
+.jd-vac__slogan-highlight {
+  text-decoration: underline;
+  text-decoration-color: #818cf8;
+  text-decoration-thickness: 2.5px;
+}
+
+/* 4 Summary Stats Metric Cards - Modern Elevated Layout */
+.jd-vac__metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.jd-vac-metric-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.jd-vac-metric-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.jd-vac-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.jd-vac-metric-card:hover::before {
+  opacity: 1;
+}
+
+.jd-vac-metric__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.jd-vac-metric-card:hover .jd-vac-metric__icon {
+  transform: scale(1.05);
+}
+
+.jd-vac-metric__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.jd-vac-metric__icon--teal {
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+  color: #0891b2;
+}
+
+.jd-vac-metric__icon--emerald {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #059669;
+}
+
+.jd-vac-metric__icon--blue {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
+}
+
+.jd-vac-metric__icon--green {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  color: #9333ea;
+}
+
+.jd-vac-metric__content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.jd-vac-metric__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jd-vac-metric__val {
+  font-size: 20px;
+  font-weight: 900;
+  color: #0f172a;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.02em;
+}
+
+.jd-vac-metric__val--text {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.25;
+}
+
+.jd-vac-metric__sub {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-top: 6px;
+  width: fit-content;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jd-vac-metric__sub--teal {
+  background: #ecfeff;
+  color: #0e7490;
+  border: 1px solid #cffafe;
+}
+
+.jd-vac-metric__sub--emerald {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #d1fae5;
+}
+
+.jd-vac-metric__sub--blue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #dbeafe;
+}
+
+.jd-vac-metric__sub--purple {
+  background: #faf5ff;
+  color: #7e22ce;
+  border: 1px solid #f3e8ff;
+}
+
+@media (max-width: 1024px) {
+  .jd-vac__metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .jd-vac__metrics-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Main Grid Layout */
+.jd-vac__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(320px, 1fr);
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* Cards on Left Column */
+.jd-vac-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.jd-vac-card:last-child {
+  margin-bottom: 0;
+}
+
+.jd-vac-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 12px;
+}
+
+.jd-vac-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.jd-vac-card__icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-vac-card__icon-box svg {
+  width: 18px;
+  height: 18px;
+}
+
+.jd-vac-card__icon-box--blue {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.jd-vac-card__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.jd-vac-card__desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+/* View Toggle Button Group */
+.jd-vac-toggle-group {
+  display: inline-flex;
+  padding: 3px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  gap: 2px;
+}
+
+.jd-vac-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.jd-vac-toggle-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.jd-vac-view-all-link {
+  background: transparent;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #2563eb;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.jd-vac-view-all-link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+.jd-vac-card__body {
+  padding: 22px;
+}
+
+.jd-vac-card__body--no-pad {
+  padding: 0;
+}
+
+/* Distribution Visual (Bar Chart + Donut Chart) */
+.jd-vac-distribution-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+
+/* Bar Chart */
+.jd-vac-bars-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.jd-vac-bars-track {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  height: 200px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 2px;
+  width: 100%;
+  max-width: 320px;
+  justify-content: space-around;
+}
+
+.jd-vac-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.jd-vac-bar-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.jd-vac-bar {
+  width: 42px;
+  border-radius: 8px 8px 0 0;
+  transition: height 0.3s ease;
+}
+
+.jd-vac-bar--ur {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+}
+
+.jd-vac-bar--obc {
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+}
+
+.jd-vac-bar--sc {
+  background: linear-gradient(180deg, #fcd34d 0%, #d97706 100%);
+}
+
+.jd-vac-bar--st {
+  background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+}
+
+.jd-vac-bar-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 6px;
+}
+
+.jd-vac-bar-label strong {
+  font-size: 12px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.jd-vac-bar-label small {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Donut Chart & Legend */
+.jd-vac-donut-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.jd-vac-donut-svg-box {
+  width: 155px;
+  height: 155px;
+  flex-shrink: 0;
+}
+
+.jd-vac-donut-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.jd-vac-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.jd-vac-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.jd-vac-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.jd-vac-legend-cat {
+  font-weight: 700;
+  color: #475569;
+  width: 36px;
+}
+
+.jd-vac-legend-val {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Tables */
+.jd-vac-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.jd-vac-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.jd-vac-data-table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.jd-vac-data-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.jd-vac-data-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.jd-vac-total-row {
+  background: #f8fafc;
+  font-weight: 800;
+  border-top: 2px solid #e2e8f0;
+}
+
+.jd-vac-total-row td {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.jd-vac-cat-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 11.5px;
+}
+
+.jd-vac-status-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #f1f5f9;
+  border-radius: 9999px;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────────────────────
+   RRB Vacancy Table Modern Redesign
+   ───────────────────────────────────────────────────────── */
+.jd-rrb-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.jd-rrb-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jd-rrb-filter-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.jd-rrb-board-filter-select {
+  appearance: none;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  color: #1e293b;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 34px 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+}
+
+.jd-rrb-board-filter-select:hover {
+  border-color: #3b82f6;
+}
+
+.jd-rrb-board-filter-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.jd-rrb-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.jd-rrb-search-icon {
+  position: absolute;
+  left: 12px;
+  width: 15px;
+  height: 15px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.jd-rrb-search-input {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 8px 30px 8px 34px;
+  font-size: 13px;
+  width: 220px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+}
+
+.jd-rrb-search-input:hover {
+  border-color: #94a3b8;
+}
+
+.jd-rrb-search-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  width: 250px;
+}
+
+.jd-rrb-search-clear {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.jd-rrb-search-clear:hover {
+  color: #0f172a;
+}
+
+/* Dedicated Full View Button */
+.jd-rrb-fullview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.jd-rrb-fullview-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.jd-rrb-fullview-btn:active {
+  transform: translateY(0);
+}
+
+/* Dedicated Full View Modal Styles */
+.jd-rrb-modal-backdrop {
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  padding: 24px;
+}
+
+.jd-rrb-modal-box {
+  max-width: 95vw !important;
+  width: 1440px !important;
+  max-height: 92vh !important;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px !important;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
+  background: #ffffff;
+}
+
+.jd-rrb-modal-header {
+  padding: 18px 24px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.jd-rrb-modal-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.jd-rrb-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 0 !important;
+  background: #ffffff;
+}
+
+/* Modern RRB Data Table */
+.jd-rrb-table-wrap {
+  border-top: 1px solid #e2e8f0;
+}
+
+.jd-rrb-table {
+  font-size: 12.5px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.jd-rrb-table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 12px 14px;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.jd-rrb-table thead th.jd-col-ur { color: #0284c7; }
+.jd-rrb-table thead th.jd-col-sc { color: #d97706; }
+.jd-rrb-table thead th.jd-col-st { color: #9333ea; }
+.jd-rrb-table thead th.jd-col-obc { color: #059669; }
+.jd-rrb-table thead th.jd-col-ews { color: #dc2626; }
+.jd-rrb-table thead th.jd-col-total { color: #1d4ed8; background: #eff6ff; }
+.jd-rrb-table thead th.jd-col-exsm { color: #64748b; }
+.jd-rrb-table thead th.jd-col-pwbd { color: #64748b; }
+
+/* Board Header Separator Banner */
+.jd-rrb-board-header-row td {
+  background: #f1f5f9 !important;
+  padding: 10px 16px !important;
+  border-top: 2px solid #cbd5e1;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.jd-rrb-board-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jd-rrb-board-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jd-rrb-board-icon {
+  font-size: 16px;
+}
+
+.jd-rrb-board-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.jd-rrb-board-count-badge {
+  font-size: 11px;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.jd-rrb-board-stat-badge {
+  font-size: 12px;
+  color: #475569;
+  background: #ffffff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.jd-rrb-board-stat-badge strong {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+/* Post Row Details */
+.jd-rrb-post-row td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
+
+.jd-rrb-post-row:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+.jd-rrb-post-row:hover {
+  background-color: #f0f7ff !important;
+}
+
+.jd-rrb-cat-num {
+  display: inline-block;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.jd-rrb-post-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.jd-rrb-dept-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.jd-rrb-subdept-text {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.jd-rrb-zone-badge {
+  display: inline-block;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #dbeafe;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+/* Numeric Table Cells */
+.jd-num-cell {
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.jd-num-cell--total {
+  background: #f8faff;
+  color: #1d4ed8;
+  font-weight: 800 !important;
+  font-size: 13px;
+}
+
+.jd-num-cell--sub {
+  color: #64748b;
+  font-size: 11.5px;
+}
+
+/* Subtotal Row */
+.jd-rrb-subtotal-row {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.jd-rrb-subtotal-row td {
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.jd-rrb-subtotal-label {
+  text-align: right;
+  color: #475569;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Grand Total Row */
+.jd-rrb-grandtotal-row {
+  background: #eff6ff !important;
+  border-top: 2.5px solid #3b82f6;
+  border-bottom: 2.5px solid #3b82f6;
+  position: sticky;
+  bottom: 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.jd-rrb-grandtotal-row td {
+  padding: 13px 14px;
+  font-weight: 800;
+}
+
+.jd-rrb-grandtotal-label {
+  text-align: right;
+  color: #1e3a8a;
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.jd-num-cell--grand {
+  color: #1d4ed8;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+.jd-rrb-empty-row td {
+  text-align: center;
+  padding: 24px;
+  font-style: italic;
+  color: #94a3b8;
+  background: #fafbfc;
+}
+
+/* Right Sidebar Cards */
+.jd-vac__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.jd-vac-sidebar-card {
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* 1. Highlights Card */
+.jd-vac-highlights-card {
+  position: relative;
+  background: linear-gradient(180deg, #f8faff 0%, #f1f5f9 100%);
+  border: 1px solid #e0e7ff;
+  overflow: hidden;
+}
+
+.jd-vac-highlights__bg-watermark {
+  position: absolute;
+  right: -15px;
+  bottom: -15px;
+  width: 140px;
+  height: 140px;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.jd-vac-highlights__bg-watermark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.jd-vac-highlights__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.jd-vac-highlights__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jd-vac-highlights__icon {
+  font-size: 18px;
+}
+
+.jd-vac-highlights__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.jd-vac-highlights__handwritten {
+  font-family: "Caveat", "Dancing Script", "Segoe Script", cursive, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4338ca;
+  text-align: right;
+  line-height: 1.15;
+  transform: rotate(4deg);
+}
+
+.jd-vac-highlights__handwritten span {
+  text-decoration: underline;
+  text-decoration-color: #818cf8;
+  text-decoration-thickness: 2px;
+}
+
+.jd-vac-highlights__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.jd-vac-highlights__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.jd-vac-check-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #eff6ff;
+  border: 1.5px solid #3b82f6;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* 2. Download Vacancy PDF Card */
+.jd-vac-pdf-card {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+  border: 1px solid #ddd6fe;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jd-vac-pdf-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #8b5cf6;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.jd-vac-pdf-card__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0;
+}
+
+.jd-vac-pdf-card__desc {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 8px;
+  line-height: 1.45;
+}
+
+.jd-vac-pdf-card__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  color: #3730a3;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.1);
+}
+
+.jd-vac-pdf-card__btn:hover {
+  background: #4f46e5;
+  color: #ffffff;
+  border-color: #4f46e5;
+  transform: translateY(-1px);
+}
+
+/* 3. Please Note Card */
+.jd-vac-note-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.jd-vac-note-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.jd-vac-note-card__icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.jd-vac-note-card h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #15803d;
+  margin: 0;
+}
+
+.jd-vac-note-card__bullets {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jd-vac-note-card__bullets li {
+  font-size: 11.5px;
+  color: #166534;
+  line-height: 1.5;
+}
+
+/* Responsive Rules for Vacancy Section */
+@media (max-width: 1100px) {
+  .jd-vac__grid {
+    grid-template-columns: 1fr;
+  }
+  .jd-vac__metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .jd-vac__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .jd-vac-section {
+    padding: 20px 16px;
+  }
+  .jd-vac__metrics-row {
+    grid-template-columns: 1fr;
+  }
+  .jd-vac-distribution-visual {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .jd-vac-donut-wrap {
+    flex-direction: column;
+  }
+  .jd-vac__header-art {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

@@ -1,0 +1,105 @@
+export const FILTER_TABS = [
+  { id: "all", label: "All Jobs", icon: "grid" },
+  { id: "remote", label: "Remote", icon: "home" },
+  { id: "fulltime", label: "Full-time", icon: "briefcase" },
+  { id: "parttime", label: "Part-time", icon: "clock" },
+  { id: "internship", label: "Internship", icon: "academic" },
+];
+
+export const FEATURED_JOBS = [
+  {
+    id: 1,
+    company: "Google",
+    logo: "https://www.svgrepo.com/show/303108/google-icon-logo.svg",
+    verified: true,
+    industry: "Technology",
+    title: "Senior Frontend Developer",
+    description: "Build incredible user experiences for millions of users worldwide.",
+    location: "Bangalore, India",
+    type: "Full-time",
+    typeVariant: "green", // green badge
+    salary: "₹12L – ₹20L / year",
+    skills: ["React", "TypeScript", "Next.js"],
+    extraSkillsCount: 2,
+    postedTime: "Posted 2 days ago",
+  },
+  {
+    id: 2,
+    company: "Microsoft",
+    logo: "https://www.svgrepo.com/show/303266/microsoft-logo.svg",
+    verified: true,
+    industry: "Technology",
+    title: "Full Stack Developer",
+    description: "Work on next-gen cloud products that empower millions.",
+    location: "Hyderabad, India",
+    type: "Remote",
+    typeVariant: "blue", // blue badge
+    salary: "₹15L – ₹28L / year",
+    skills: ["Node.js", "React", "MongoDB"],
+    extraSkillsCount: 3,
+    postedTime: "Posted 1 day ago",
+  },
+  {
+    id: 3,
+    company: "Amazon",
+    logo: "https://www.svgrepo.com/show/303153/amazon-2-logo.svg",
+    verified: true,
+    industry: "E-commerce",
+    title: "Software Development Engineer",
+    description: "Help us build the most customer-centric company on earth.",
+    location: "Bangalore, India",
+    type: "Full-time",
+    typeVariant: "green",
+    salary: "₹18L – ₹32L / year",
+    skills: ["Java", "Spring Boot", "AWS"],
+    extraSkillsCount: 2,
+    postedTime: "Posted 3 days ago",
+  },
+  {
+    id: 4,
+    company: "Spotify",
+    logo: "https://www.svgrepo.com/show/303263/spotify-icon-logo.svg",
+    verified: true,
+    industry: "Music & Audio",
+    title: "Product Designer",
+    description: "Design meaningful experiences for a more open audio world.",
+    location: "Remote",
+    type: "Part-time",
+    typeVariant: "purple", // purple badge
+    salary: "₹8L – ₹14L / year",
+    skills: ["Figma", "UI/UX", "Prototyping"],
+    extraSkillsCount: 2,
+    postedTime: "Posted 5 days ago",
+  },
+];
+
+export const TRUST_FEATURES = [
+  {
+    type: "avatars",
+    title: "50,000+",
+    subtitle: "professionals have already found their dream jobs.",
+    avatars: [
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=80",
+    ],
+  },
+  {
+    type: "feature",
+    icon: "shield",
+    title: "Verified Companies",
+    subtitle: "Only genuine job postings",
+  },
+  {
+    type: "feature",
+    icon: "document",
+    title: "Easy Application",
+    subtitle: "Apply in just a few clicks",
+  },
+  {
+    type: "feature",
+    icon: "chart",
+    title: "Better Opportunities",
+    subtitle: "Grow your career faster",
+  },
+];
