@@ -16,6 +16,10 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,

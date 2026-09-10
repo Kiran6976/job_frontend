@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Jobs.css";
+import Navbar from "../../components/Navbar/Navbar";
 import TopOpportunities from "../../components/TopOpportunities/TopOpportunities";
 import Footer from "../../components/Footer/Footer";
 
@@ -15,29 +16,7 @@ const Jobs = () => {
   return (
     <div className="job-page">
       {/* ────────── Top Navbar ────────── */}
-      <header className="job-page__navbar">
-        <a href="/" className="job-page__logo">
-          <img src="/Logo.png" alt="JobPortal Logo" />
-        </a>
-
-        <nav className="job-page__nav-links">
-          <a href="/jobs" className="job-page__nav-link job-page__nav-link--active">
-            Find Jobs
-          </a>
-          <a href="#" className="job-page__nav-link">Companies</a>
-          <a href="#" className="job-page__nav-link">Resources</a>
-          <a href="#" className="job-page__nav-link">About</a>
-        </nav>
-
-        <div className="job-page__nav-auth">
-          <a href="/login" className="job-page__login-btn">
-            Login
-          </a>
-          <a href="/signup" className="job-page__signup-btn">
-            Sign Up
-          </a>
-        </div>
-      </header>
+      <Navbar />
 
       {/* ────────── Job Hero Section ────────── */}
       <section className="jh">

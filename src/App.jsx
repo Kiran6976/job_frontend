@@ -10,6 +10,7 @@ import Jobs from "./pages/Jobs/Jobs";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import JobDetails from "./pages/JobDetails/JobDetails";
+import ScrollToTop from "./components/ScrollToTop";
 
 function HomePage() {
   return (
@@ -28,6 +29,7 @@ function HomePage() {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/jobs" element={<Jobs />} />

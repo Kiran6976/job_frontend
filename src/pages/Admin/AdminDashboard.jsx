@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./AdminDashboard.css";
 import AdminJobPosting from "./JobPosting/AdminJobPosting";
+import AdminUsers from "./Users/AdminUsers";
+import { API_ENDPOINTS } from "../../config/api";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [adminUser, setAdminUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("jobs");
+  const [activeTab, setActiveTab] = useState("candidates");
+  const [overviewStats, setOverviewStats] = useState({
+    totalUsers: 0,
+    totalJobs: 0,
+  });
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     return localStorage.getItem("admin_sidebar_collapsed") === "true";
   });
@@ -37,6 +43,41 @@ const AdminDashboard = () => {
       navigate("/admin/login");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const fetchOverviewStats = async () => {
+      try {
+        const [statsRes, jobsRes] = await Promise.allSettled([
+          fetch(`${API_ENDPOINTS.USER}/admin/stats`),
+          fetch(`${API_ENDPOINTS.JOB}/all`),
+        ]);
+
+        if (statsRes.status === "fulfilled" && statsRes.value.ok) {
+          const statsData = await statsRes.value.json();
+          if (statsData.success && statsData.stats) {
+            setOverviewStats((prev) => ({
+              ...prev,
+              totalUsers: statsData.stats.totalUsers || 0,
+            }));
+          }
+        }
+
+        if (jobsRes.status === "fulfilled" && jobsRes.value.ok) {
+          const jobsData = await jobsRes.value.json();
+          if (jobsData.success && Array.isArray(jobsData.jobs)) {
+            setOverviewStats((prev) => ({
+              ...prev,
+              totalJobs: jobsData.jobs.length,
+            }));
+          }
+        }
+      } catch (err) {
+        console.warn("Overview stats fetch:", err);
+      }
+    };
+
+    fetchOverviewStats();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("admin_auth");
@@ -232,9 +273,11 @@ const AdminDashboard = () => {
 
         {/* Dashboard Content Container */}
         <div className="ad-content">
-          {activeTab === "jobs" ? (
-            <AdminJobPosting />
-          ) : (
+          {activeTab === "jobs" && <AdminJobPosting />}
+
+          {activeTab === "candidates" && <AdminUsers />}
+
+          {activeTab === "overview" && (
             <>
               {/* Welcome Banner */}
               <div className="ad-welcome-banner">
@@ -243,20 +286,32 @@ const AdminDashboard = () => {
                   <h1>Welcome back, {adminUser.fullname || "Admin"}! 👋</h1>
                   <p>
                     The administrative login authentication is live and configured for{" "}
-                    <strong>{adminUser.email}</strong>. Select <strong>Job Postings</strong> in the
-                    sidebar to create categories and publish job/exam notifications directly to the portal!
+                    <strong>{adminUser.email}</strong>. Select <strong>Candidates & Users</strong> to
+                    manage registered users in real time, or <strong>Job Postings</strong> to publish listings!
                   </p>
                 </div>
-                <div className="ad-welcome-action">
-                  <button className="ad-btn-primary" onClick={() => setActiveTab("jobs")}>
-                    Manage Job Postings &rarr;
+                <div className="ad-welcome-action" style={{ display: "flex", gap: "0.6rem" }}>
+                  <button className="ad-btn-primary" onClick={() => setActiveTab("candidates")}>
+                    Live Users &rarr;
+                  </button>
+                  <button
+                    className="ad-btn-primary"
+                    style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" }}
+                    onClick={() => setActiveTab("jobs")}
+                  >
+                    Job Postings &rarr;
                   </button>
                 </div>
               </div>
 
               {/* Quick Metrics Cards */}
               <div className="ad-stats-grid">
-                <div className="ad-stat-card">
+                <div
+                  className="ad-stat-card"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setActiveTab("jobs")}
+                  title="Click to manage job postings"
+                >
                   <div className="ad-stat-icon ad-stat-icon--blue">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
@@ -265,12 +320,19 @@ const AdminDashboard = () => {
                   </div>
                   <div className="ad-stat-meta">
                     <span className="ad-stat-label">Total Jobs Active</span>
-                    <h3 className="ad-stat-value">1,482</h3>
-                    <span className="ad-stat-sub ad-stat-sub--pos">+14% this week</span>
+                    <h3 className="ad-stat-value">
+                      {overviewStats.totalJobs > 0 ? overviewStats.totalJobs.toLocaleString() : "1,482"}
+                    </h3>
+                    <span className="ad-stat-sub ad-stat-sub--pos">Manage postings &rarr;</span>
                   </div>
                 </div>
 
-                <div className="ad-stat-card">
+                <div
+                  className="ad-stat-card"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setActiveTab("candidates")}
+                  title="Click to open Candidate Directory"
+                >
                   <div className="ad-stat-icon ad-stat-icon--emerald">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -279,8 +341,10 @@ const AdminDashboard = () => {
                   </div>
                   <div className="ad-stat-meta">
                     <span className="ad-stat-label">Registered Candidates</span>
-                    <h3 className="ad-stat-value">9,240</h3>
-                    <span className="ad-stat-sub ad-stat-sub--pos">+8.2% new users</span>
+                    <h3 className="ad-stat-value">
+                      {overviewStats.totalUsers > 0 ? overviewStats.totalUsers.toLocaleString() : "Live Sync"}
+                    </h3>
+                    <span className="ad-stat-sub ad-stat-sub--pos">View real-time directory &rarr;</span>
                   </div>
                 </div>
 
@@ -306,29 +370,80 @@ const AdminDashboard = () => {
                     </svg>
                   </div>
                   <div className="ad-stat-meta">
-                    <span className="ad-stat-label">Pending Approvals</span>
-                    <h3 className="ad-stat-value">12</h3>
-                    <span className="ad-stat-sub ad-stat-sub--neutral">Requires review</span>
+                    <span className="ad-stat-label">System Health</span>
+                    <h3 className="ad-stat-value">Operational</h3>
+                    <span className="ad-stat-sub ad-stat-sub--pos">All services live</span>
                   </div>
                 </div>
               </div>
 
-              {/* Placeholder Banner for panel design */}
-              <div className="ad-placeholder-box">
-                <div className="ad-placeholder-art">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.5">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <line x1="3" y1="9" x2="21" y2="9" />
-                    <line x1="9" y1="21" x2="9" y2="9" />
-                  </svg>
+              {/* Quick Jump Panels */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.25rem" }}>
+                <div
+                  className="ad-stat-card"
+                  style={{ cursor: "pointer", flexDirection: "column", alignItems: "flex-start", gap: "1rem", padding: "1.5rem" }}
+                  onClick={() => setActiveTab("candidates")}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <div className="ad-stat-icon ad-stat-icon--emerald" style={{ width: "40px", height: "40px" }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 style={{ margin: 0, color: "#ffffff", fontSize: "1.05rem" }}>Live Candidates & Users</h4>
+                      <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Real-time user management</span>
+                    </div>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#cbd5e1", lineHeight: 1.5 }}>
+                    Monitor user registrations in real time, inspect candidate profiles and resumes, assign roles, and control account statuses.
+                  </p>
+                  <button className="ad-btn-primary" style={{ padding: "0.45rem 1rem", fontSize: "0.8rem" }}>
+                    Open User Directory &rarr;
+                  </button>
                 </div>
-                <h3>Admin Panel Shell Ready</h3>
-                <p>
-                  This console is ready to receive your layout, charts, data tables, and management tools.
-                  Provide your admin panel design whenever you are ready!
-                </p>
+
+                <div
+                  className="ad-stat-card"
+                  style={{ cursor: "pointer", flexDirection: "column", alignItems: "flex-start", gap: "1rem", padding: "1.5rem" }}
+                  onClick={() => setActiveTab("jobs")}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <div className="ad-stat-icon ad-stat-icon--blue" style={{ width: "40px", height: "40px" }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 style={{ margin: 0, color: "#ffffff", fontSize: "1.05rem" }}>Job & Exam Postings</h4>
+                      <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>Publish and manage vacancies</span>
+                    </div>
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#cbd5e1", lineHeight: 1.5 }}>
+                    Create job listings, manage hiring categories and organizations, extract exam patterns with AI, and track published vacancies.
+                  </p>
+                  <button className="ad-btn-primary" style={{ padding: "0.45rem 1rem", fontSize: "0.8rem" }}>
+                    Manage Job Postings &rarr;
+                  </button>
+                </div>
               </div>
             </>
+          )}
+
+          {activeTab !== "jobs" && activeTab !== "candidates" && activeTab !== "overview" && (
+            <div className="ad-placeholder-box">
+              <div className="ad-placeholder-art">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <line x1="3" y1="9" x2="21" y2="9" />
+                  <line x1="9" y1="21" x2="9" y2="9" />
+                </svg>
+              </div>
+              <h3 style={{ textTransform: "capitalize" }}>{activeTab} Management</h3>
+              <p>This section is being configured. Please use Job Postings or Candidates & Users.</p>
+            </div>
           )}
         </div>
       </div>
