@@ -142,6 +142,7 @@
 
 .login-page__heading--purple {
   background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -268,6 +269,7 @@
 
 .login-page__card-title--gradient {
   background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
