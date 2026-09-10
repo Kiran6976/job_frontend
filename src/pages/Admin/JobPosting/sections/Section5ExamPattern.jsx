@@ -1,4 +1,17 @@
 import React, { useState } from "react";
+import {
+  ClipboardList,
+  Zap,
+  CheckSquare,
+  FileText,
+  PenTool,
+  Mic,
+  Lightbulb,
+  BookOpen,
+  Check,
+  BarChart2,
+  AlertTriangle,
+} from "lucide-react";
 import "./Section5ExamPattern.css";
 
 const DEFAULT_UPSC_EXAM_PATTERN = {
@@ -415,7 +428,7 @@ const Section5ExamPattern = ({
               gap: "6px",
             }}
           >
-            📋 Section 5: Exam Pattern &amp; Multi-Stage Structure
+            <ClipboardList size={18} color="#93c5fd" /> Section 5: Exam Pattern &amp; Multi-Stage Structure
           </h3>
           <p style={{ fontSize: "0.775rem", color: "#94a3b8", margin: 0 }}>
             Configure examination stages, papers, questions, marks, duration, syllabus topics, and negative marking rules.
@@ -427,6 +440,7 @@ const Section5ExamPattern = ({
           <button
             type="button"
             className="ajp__attempts-preset-btn"
+            style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
             onClick={() => {
               setFormData((prev) => ({
                 ...prev,
@@ -437,12 +451,12 @@ const Section5ExamPattern = ({
               }
             }}
           >
-            ⚡ UPSC 3-Stage Preset
+            <Zap size={12} /> UPSC 3-Stage Preset
           </button>
           <button
             type="button"
             className="ajp__attempts-preset-btn"
-            style={{ background: "rgba(59, 130, 246, 0.25)", color: "#93c5fd", borderColor: "#3b82f6" }}
+            style={{ background: "rgba(59, 130, 246, 0.25)", color: "#93c5fd", borderColor: "#3b82f6", display: "inline-flex", alignItems: "center", gap: "4px" }}
             onClick={() => {
               setFormData((prev) => ({
                 ...prev,
@@ -453,7 +467,7 @@ const Section5ExamPattern = ({
               }
             }}
           >
-            ⚡ RRB CBT 1 &amp; 2 Preset
+            <Zap size={12} /> RRB CBT 1 &amp; 2 Preset
           </button>
         </div>
       </div>
@@ -489,7 +503,9 @@ const Section5ExamPattern = ({
               gap: "6px",
             }}
           >
-            <span>🎯 Select Stage to Edit:</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+              <CheckSquare size={14} color="#60a5fa" /> Select Stage to Edit:
+            </span>
             <span style={{ color: "#38bdf8", textTransform: "uppercase" }}>[{adminSelectedStage}]</span>
           </span>
           <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
@@ -499,9 +515,9 @@ const Section5ExamPattern = ({
 
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           {[
-            { id: "prelims", name: "Prelims / CBT 1", subtext: "Stage 1", icon: "📄" },
-            { id: "mains", name: "Mains / CBT 2", subtext: "Stage 2", icon: "✍️" },
-            { id: "interview", name: "Interview / DV", subtext: "Final Stage", icon: "🎙️" },
+            { id: "prelims", name: "Prelims / CBT 1", subtext: "Stage 1", icon: <FileText size={16} /> },
+            { id: "mains", name: "Mains / CBT 2", subtext: "Stage 2", icon: <PenTool size={16} /> },
+            { id: "interview", name: "Interview / DV", subtext: "Final Stage", icon: <Mic size={16} /> },
           ].map((stg) => {
             const isSelected = adminSelectedStage === stg.id;
             return (
@@ -732,8 +748,8 @@ const Section5ExamPattern = ({
             border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
-          <label className="ajp__label" style={{ color: "#38bdf8", marginBottom: "0.5rem", display: "block" }}>
-            💡 Key Points for {adminSelectedStage.toUpperCase()} ({(activeData.keyPoints || []).length})
+          <label className="ajp__label" style={{ color: "#38bdf8", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "6px" }}>
+            <Lightbulb size={15} /> Key Points for {adminSelectedStage.toUpperCase()} ({(activeData.keyPoints || []).length})
           </label>
           <div
             style={{
@@ -759,7 +775,9 @@ const Section5ExamPattern = ({
                   color: "#e2e8f0",
                 }}
               >
-                <span>☑ {kp}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <CheckSquare size={13} color="#38bdf8" /> {kp}
+                </span>
                 <button
                   type="button"
                   onClick={() => handleRemoveKeyPoint(idx)}
@@ -810,8 +828,8 @@ const Section5ExamPattern = ({
             border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
-          <label className="ajp__label" style={{ color: "#34d399", marginBottom: "0.5rem", display: "block" }}>
-            📖 Subjects Covered ({(activeData.subjectsCovered || []).length})
+          <label className="ajp__label" style={{ color: "#34d399", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "6px" }}>
+            <BookOpen size={15} /> Subjects Covered ({(activeData.subjectsCovered || []).length})
           </label>
           <div
             style={{
@@ -837,7 +855,9 @@ const Section5ExamPattern = ({
                   color: "#e2e8f0",
                 }}
               >
-                <span>✔ {sub}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <Check size={13} color="#34d399" /> {sub}
+                </span>
                 <button
                   type="button"
                   onClick={() => handleRemoveSubjectCovered(idx)}
@@ -891,8 +911,8 @@ const Section5ExamPattern = ({
             border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
-          <label className="ajp__label" style={{ color: "#a78bfa", marginBottom: "0.6rem", display: "block" }}>
-            📊 Marking Scheme ({adminSelectedStage.toUpperCase()})
+          <label className="ajp__label" style={{ color: "#a78bfa", marginBottom: "0.6rem", display: "flex", alignItems: "center", gap: "6px" }}>
+            <BarChart2 size={15} /> Marking Scheme ({adminSelectedStage.toUpperCase()})
           </label>
           <div className="ajp__form-row" style={{ gap: "0.5rem" }}>
             <div className="ajp__field">
@@ -937,8 +957,8 @@ const Section5ExamPattern = ({
             border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
-          <label className="ajp__label" style={{ color: "#fcd34d", marginBottom: "0.6rem", display: "block" }}>
-            ⚠️ Negative Marking Warning ({adminSelectedStage.toUpperCase()})
+          <label className="ajp__label" style={{ color: "#fcd34d", marginBottom: "0.6rem", display: "flex", alignItems: "center", gap: "6px" }}>
+            <AlertTriangle size={15} /> Negative Marking Warning ({adminSelectedStage.toUpperCase()})
           </label>
           <div className="ajp__field">
             <label className="ajp__label" style={{ fontSize: "0.7rem" }}>Penalty Amount</label>

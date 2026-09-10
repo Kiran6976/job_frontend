@@ -283,7 +283,7 @@ const AdminDashboard = () => {
               <div className="ad-welcome-banner">
                 <div className="ad-welcome-text">
                   <span className="ad-welcome-tag">PORTAL READY</span>
-                  <h1>Welcome back, {adminUser.fullname || "Admin"}! 👋</h1>
+                  <h1>Welcome back, {adminUser.fullname || "Admin"}!</h1>
                   <p>
                     The administrative login authentication is live and configured for{" "}
                     <strong>{adminUser.email}</strong>. Select <strong>Candidates & Users</strong> to

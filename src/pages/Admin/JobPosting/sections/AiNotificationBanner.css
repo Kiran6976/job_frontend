@@ -35,6 +35,14 @@
 
 .ajp__ai-banner-icon {
   font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ajp__ai-spin-icon {
+  animation: ajpAiSpin 0.9s linear infinite;
+  color: #a855f7;
 }
 
 .ajp__ai-banner-text {

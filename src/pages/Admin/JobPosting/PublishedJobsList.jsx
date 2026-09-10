@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Megaphone, Building2, Eye, Edit2 } from "lucide-react";
 import "./PublishedJobsList.css";
 
 const formatDateDisplay = (dateStr) => {
@@ -43,7 +44,9 @@ const PublishedJobsList = ({
 
       {jobs.length === 0 ? (
         <div className="ajp__empty-box">
-          <div className="ajp__empty-icon">📢</div>
+          <div className="ajp__empty-icon">
+            <Megaphone size={36} color="#64748b" />
+          </div>
           <h3>No custom notifications published yet</h3>
           <p>Click "Post New Job / Exam" above to publish your first notification to the portal.</p>
         </div>
@@ -74,7 +77,9 @@ const PublishedJobsList = ({
                           className="ajp__table-emblem"
                         />
                       ) : (
-                        <div className="ajp__table-emblem-ph">🏛️</div>
+                        <div className="ajp__table-emblem-ph">
+                          <Building2 size={18} color="#64748b" />
+                        </div>
                       )}
                       <div>
                         <strong className="ajp__table-title">{job.title}</strong>
@@ -113,16 +118,18 @@ const PublishedJobsList = ({
                         target="_blank"
                         className="ajp__btn-preview-link"
                         title="View Detailed Public Page"
+                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                       >
-                        👁️ View
+                        <Eye size={13} /> View
                       </Link>
                       <button
                         type="button"
                         className="ajp__btn-edit-btn"
                         onClick={() => onEditJob && onEditJob(job)}
                         title="Edit all fields of this job"
+                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                       >
-                        ✏️ Edit
+                        <Edit2 size={13} /> Edit
                       </button>
                       <button
                         type="button"

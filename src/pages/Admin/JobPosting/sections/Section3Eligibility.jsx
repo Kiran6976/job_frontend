@@ -1,58 +1,131 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { GraduationCap, Zap } from "lucide-react";
 import "./Section3Eligibility.css";
 
-const Section3Eligibility = ({
-  formData,
-  setFormData,
-  handleChange,
-  attemptRules,
-  setAttemptRules,
-  additionalAttemptNote,
-  setAdditionalAttemptNote,
-  ATTEMPT_PRESETS = [],
-  QUICK_ATTEMPT_CATEGORIES = [],
-  QUICK_ATTEMPT_VALUES = [],
-}) => {
+const QUICK_ATTEMPT_CATEGORIES = [
+  "General",
+  "OBC",
+  "SC",
+  "ST",
+  "EWS",
+  "PwBD",
+  "Ex-SM",
+  "Female",
+];
+
+const QUICK_ATTEMPT_VALUES = [
+  "6 attempts",
+  "9 attempts",
+  "Unlimited",
+  "No limit",
+  "Up to Age Limit",
+  "4 attempts",
+  "7 attempts",
+  "Nil",
+];
+
+const ATTEMPT_PRESETS = [
+  {
+    name: "UPSC Standard",
+    rules: [
+      { category: "General", attempts: "6 attempts" },
+      { category: "OBC", attempts: "9 attempts" },
+      { category: "SC", attempts: "Unlimited (up to age limit)" },
+      { category: "ST", attempts: "Unlimited (up to age limit)" },
+      { category: "EWS", attempts: "6 attempts" },
+      { category: "PwBD (GL/OBC)", attempts: "9 attempts" },
+      { category: "PwBD (SC/ST)", attempts: "Unlimited" },
+    ],
+    note: "PwBD candidates get 9 attempts for GL/OBC and unlimited for SC/ST.",
+  },
+  {
+    name: "All Unlimited (RRB / SSC / Bank)",
+    rules: [
+      { category: "All Categories", attempts: "Unlimited (No restriction on number of attempts)" },
+    ],
+    note: "Candidates can apply as long as they meet the prescribed age criteria.",
+  },
+  {
+    name: "Standard 3 Tiers",
+    rules: [
+      { category: "General / EWS", attempts: "6 attempts" },
+      { category: "OBC", attempts: "9 attempts" },
+      { category: "SC / ST", attempts: "No restriction" },
+    ],
+    note: "",
+  },
+];
+
+const Section3Eligibility = ({ formData, setFormData, handleChange }) => {
+  const [attemptRules, setAttemptRules] = useState([]);
+  const [additionalAttemptNote, setAdditionalAttemptNote] = useState("");
   const [selectedCatInput, setSelectedCatInput] = useState("");
   const [selectedAttemptInput, setSelectedAttemptInput] = useState("");
 
+  useEffect(() => {
+    if (formData.numberAttempts) {
+      parseAttemptString(formData.numberAttempts);
+    }
+  }, []);
+
+  const parseAttemptString = (str) => {
+    if (!str || typeof str !== "string") return;
+    const parts = str.split("•").map((p) => p.trim()).filter(Boolean);
+    const parsed = [];
+    let extraNote = "";
+
+    parts.forEach((part) => {
+      if (part.includes(":")) {
+        const [cat, att] = part.split(":").map((s) => s.trim());
+        if (cat && att) {
+          parsed.push({ category: cat, attempts: att });
+        }
+      } else {
+        extraNote = part;
+      }
+    });
+
+    if (parsed.length > 0) {
+      setAttemptRules(parsed);
+    }
+    if (extraNote) {
+      setAdditionalAttemptNote(extraNote);
+    }
+  };
+
   const syncAttemptRules = (rules, note) => {
-    if (!rules || rules.length === 0) {
-      setFormData((prev) => ({
-        ...prev,
-        numberAttempts: note ? note.trim() : "",
-      }));
+    if (rules.length === 0 && !note) {
+      setFormData((prev) => ({ ...prev, numberAttempts: "" }));
       return;
     }
-    const formatted = rules.map((r) => `${r.category}: ${r.attempts}`).join(" • ");
-    const full = note && note.trim() ? `${formatted} • ${note.trim()}` : formatted;
-    setFormData((prev) => ({ ...prev, numberAttempts: full }));
+    const serialized = rules.map((r) => `${r.category}: ${r.attempts}`).join(" • ");
+    const finalVal = note ? (serialized ? `${serialized} • ${note}` : note) : serialized;
+    setFormData((prev) => ({ ...prev, numberAttempts: finalVal }));
   };
 
   const handleApplyPreset = (preset) => {
     setAttemptRules(preset.rules);
     setAdditionalAttemptNote(preset.note || "");
     syncAttemptRules(preset.rules, preset.note || "");
-    setSelectedCatInput("");
-    setSelectedAttemptInput("");
   };
 
   const handleClearAttemptRules = () => {
     setAttemptRules([]);
     setAdditionalAttemptNote("");
-    syncAttemptRules([], "");
     setSelectedCatInput("");
     setSelectedAttemptInput("");
+    setFormData((prev) => ({ ...prev, numberAttempts: "" }));
   };
 
   const handleAddOrUpdateAttemptRule = () => {
-    if (!selectedCatInput.trim() || !selectedAttemptInput.trim()) return;
     const cat = selectedCatInput.trim();
     const att = selectedAttemptInput.trim();
+    if (!cat || !att) return;
 
     const existingIdx = attemptRules.findIndex(
       (r) => r.category.toLowerCase() === cat.toLowerCase()
     );
+
     let updated;
     if (existingIdx >= 0) {
       updated = [...attemptRules];
@@ -60,6 +133,7 @@ const Section3Eligibility = ({
     } else {
       updated = [...attemptRules, { category: cat, attempts: att }];
     }
+
     setAttemptRules(updated);
     syncAttemptRules(updated, additionalAttemptNote);
     setSelectedCatInput("");
@@ -77,7 +151,7 @@ const Section3Eligibility = ({
   return (
     <div className="ajp__card ajp__section-eligibility" style={{ padding: "1.25rem", background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(59, 130, 246, 0.25)", marginTop: "0.5rem" }}>
       <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#93c5fd", marginBottom: "0.25rem", display: "flex", alignItems: "center", gap: "6px" }}>
-        🎓 Section 3: Eligibility Criteria &amp; Requirements
+        <GraduationCap size={18} color="#93c5fd" /> Section 3: Eligibility Criteria &amp; Requirements
       </h3>
       <p style={{ fontSize: "0.775rem", color: "#94a3b8", marginBottom: "1rem" }}>
         These parameters configure the interactive eligibility cards, age calculator widget, and qualification checklist.
@@ -168,7 +242,9 @@ const Section3Eligibility = ({
         <div className="ajp__attempts-builder">
           {/* 1. Quick Presets */}
           <div className="ajp__attempts-presets-row">
-            <span className="ajp__attempts-presets-tag">⚡ One-Click Presets:</span>
+            <span className="ajp__attempts-presets-tag" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <Zap size={12} /> One-Click Presets:
+            </span>
             <div className="ajp__attempts-presets-buttons">
               {ATTEMPT_PRESETS.map((preset) => (
                 <button

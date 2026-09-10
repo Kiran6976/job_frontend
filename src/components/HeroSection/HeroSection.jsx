@@ -1,3 +1,9 @@
+import {
+  Briefcase,
+  Building2,
+  Users,
+  Star,
+} from "lucide-react";
 import "./HeroSection.css";
 
 /* ── Static data ── */
@@ -11,16 +17,20 @@ const POPULAR_SEARCHES = [
 ];
 
 const STATS = [
-  { icon: "💼", value: "10K+", label: "Job Opportunities" },
-  { icon: "🏢", value: "1K+", label: "Trusted Companies" },
-  { icon: "👥", value: "50K+", label: "Active Job Seekers" },
-  { icon: "⭐", value: "4.8", label: "User Satisfaction" },
+  { icon: <Briefcase size={20} color="#2563eb" />, value: "10K+", label: "Job Opportunities" },
+  { icon: <Building2 size={20} color="#2563eb" />, value: "1K+", label: "Trusted Companies" },
+  { icon: <Users size={20} color="#2563eb" />, value: "50K+", label: "Active Job Seekers" },
+  { icon: <Star size={20} color="#f59e0b" fill="#f59e0b" />, value: "4.8", label: "User Satisfaction" },
 ];
 
 /* ── Component ── */
 const HeroSection = () => {
   return (
     <section className="hero">
+      {/* Soft gradient overlay for text contrast */}
+      <div className="hero__overlay" />
+      <div className="hero__bottom-fade" />
+
       {/* ────────── Main Container ────────── */}
       <div className="hero__container">
         {/* ────────── Left Column ────────── */}
@@ -31,10 +41,30 @@ const HeroSection = () => {
             Your Next Opportunity Awaits
           </span>
 
-          {/* Headline */}
+          {/* Headline with custom brush underline */}
           <h1 className="hero__heading">
             Find a Job <br />
-            <span className="hero__heading--accent">That Fits</span> <br />
+            <span className="hero__heading--accent">
+              That Fits
+              <svg
+                className="hero__brush-stroke"
+                viewBox="0 0 160 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 9C45 3.5 115 3.5 158 8C110 11.5 50 11 2 9Z"
+                  fill="url(#heroBrushGrad)"
+                />
+                <defs>
+                  <linearGradient id="heroBrushGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.85" />
+                    <stop offset="55%" stopColor="#60a5fa" stopOpacity="0.75" />
+                    <stop offset="100%" stopColor="#93c5fd" stopOpacity="0.1" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </span> <br />
             Your Future
           </h1>
 
@@ -120,34 +150,15 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* ────────── Right Column ────────── */}
+        {/* ────────── Right Column: Cursive Text in Scenic Sky ────────── */}
         <div className="hero__right">
-          <div className="hero__image-wrapper">
-            <div className="hero__blob" />
-            <img
-              src="/Hero_Image.png"
-              alt="Professional job seeker"
-              className="hero__image"
-            />
+          <div className="hero__callout">
+            <span className="hero__callout-line hero__callout-line--1">Better</span>
+            <span className="hero__callout-line hero__callout-line--2">Careers</span>
+            <span className="hero__callout-line hero__callout-line--3">Brighter</span>
+            <span className="hero__callout-line hero__callout-line--4">Tomorrows</span>
           </div>
         </div>
-      </div>
-
-      {/* ────────── Bottom Scroll Cue ────────── */}
-      <div className="hero__scroll-cue">
-        <div className="hero__scroll-circle">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            width="18"
-            height="18"
-          >
-            <path d="m12 5 0 14M5 13l7 7 7-7" />
-          </svg>
-        </div>
-        <span>Scroll to explore</span>
       </div>
     </section>
   );

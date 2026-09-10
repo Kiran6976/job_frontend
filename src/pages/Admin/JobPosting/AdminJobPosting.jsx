@@ -1,23 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
+import {
+  Building2,
+  Briefcase,
+  GraduationCap,
+  Laptop,
+  BookOpen,
+  Shield,
+  Globe,
+  Folder,
+  Edit3,
+  Plus,
+} from "lucide-react";
 import "./AdminJobPosting.css";
 import PostJobForm from "./PostJobForm";
 import ManageCategories from "./ManageCategories";
 import PublishedJobsList from "./PublishedJobsList";
 import { API_ENDPOINTS } from "../../../config/api";
 
-
 // Helper for category icons
 const getCategoryIcon = (name) => {
   const lower = (name || "").toLowerCase();
-  if (lower.includes("all")) return "🌐";
-  if (lower.includes("govt") || lower.includes("exam") || lower.includes("upsc") || lower.includes("ssc")) return "🏛️";
-  if (lower.includes("private") || lower.includes("it") || lower.includes("software") || lower.includes("tech")) return "💼";
-  if (lower.includes("intern")) return "🎓";
-  if (lower.includes("wfh") || lower.includes("remote") || lower.includes("home")) return "🏠";
-  if (lower.includes("state")) return "🏛️";
-  if (lower.includes("teach") || lower.includes("school") || lower.includes("edu")) return "📚";
-  if (lower.includes("defense") || lower.includes("police") || lower.includes("navy") || lower.includes("army") || lower.includes("security")) return "🛡️";
-  return "📁";
+  if (lower.includes("all")) return <Globe size={15} />;
+  if (lower.includes("govt") || lower.includes("exam") || lower.includes("upsc") || lower.includes("ssc")) return <Building2 size={15} />;
+  if (lower.includes("private") || lower.includes("it") || lower.includes("software") || lower.includes("tech")) return <Briefcase size={15} />;
+  if (lower.includes("intern")) return <GraduationCap size={15} />;
+  if (lower.includes("wfh") || lower.includes("remote") || lower.includes("home")) return <Laptop size={15} />;
+  if (lower.includes("state")) return <Building2 size={15} />;
+  if (lower.includes("teach") || lower.includes("school") || lower.includes("edu")) return <BookOpen size={15} />;
+  if (lower.includes("defense") || lower.includes("police") || lower.includes("navy") || lower.includes("army") || lower.includes("security")) return <Shield size={15} />;
+  return <Folder size={15} />;
 };
 
 // ────────── Custom High-End Dropdown ──────────
@@ -274,15 +285,15 @@ const AdminJobPosting = () => {
           badge: c.count ? `${c.count.toLocaleString()} jobs` : "0 jobs",
         }))
       : [
-          { value: "Government Exams", label: "Government Exams", icon: "🏛️", badge: "8,340 jobs" },
-          { value: "Private Jobs", label: "Private Jobs", icon: "💼", badge: "3,920 jobs" },
+          { value: "Government Exams", label: "Government Exams", icon: <Building2 size={15} />, badge: "8,340 jobs" },
+          { value: "Private Jobs", label: "Private Jobs", icon: <Briefcase size={15} />, badge: "3,920 jobs" },
         ];
 
   const scopeOptions = [
-    { value: "National", label: "National Level", icon: "🏛️" },
-    { value: "State", label: "State Government", icon: "🏛️" },
-    { value: "Global", label: "Global / MNC", icon: "🌐" },
-    { value: "Remote", label: "Remote / Work From Home", icon: "💻" },
+    { value: "National", label: "National Level", icon: <Building2 size={15} /> },
+    { value: "State", label: "State Government", icon: <Building2 size={15} /> },
+    { value: "Global", label: "Global / MNC", icon: <Globe size={15} /> },
+    { value: "Remote", label: "Remote / Work From Home", icon: <Laptop size={15} /> },
   ];
 
   const statusOptions = [
@@ -344,11 +355,8 @@ const AdminJobPosting = () => {
             setActiveTab("post-job");
           }}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          <span>{editingJob ? "✏️ Edit Opportunity" : "Post New Job / Exam"}</span>
+          {editingJob ? <Edit3 size={16} /> : <Plus size={16} />}
+          <span>{editingJob ? "Edit Opportunity" : "Post New Job / Exam"}</span>
         </button>
 
         <button

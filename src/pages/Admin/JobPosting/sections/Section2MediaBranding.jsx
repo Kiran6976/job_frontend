@@ -1,4 +1,5 @@
 import React from "react";
+import { Palette, Zap, Building2, FileText } from "lucide-react";
 import "./Section2MediaBranding.css";
 
 const Section2MediaBranding = ({
@@ -24,7 +25,7 @@ const Section2MediaBranding = ({
     <div className="ajp__section-container ajp__section-media-branding">
       <div className="ajp__section-header">
         <h3 className="ajp__section-title">
-          <span>🎨</span> Section 2: Branding, Media &amp; Official Links
+          <Palette size={18} color="#c084fc" /> Section 2: Branding, Media &amp; Official Links
         </h3>
         <p className="ajp__section-subtitle">
           Organization logos, panoramic hero banner, notification PDF document, and application link.
@@ -37,8 +38,8 @@ const Section2MediaBranding = ({
           <label className="ajp__label">
             Organization Emblem / Logo <span className="ajp__req">*</span>
           </label>
-          <span className="ajp__logo-spec-badge">
-            ⚡ Cloudinary Auto-Fixed 400×400px (1:1 Square)
+          <span className="ajp__logo-spec-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            <Zap size={11} /> Cloudinary Auto-Fixed 400×400px (1:1 Square)
           </span>
         </div>
 
@@ -68,7 +69,7 @@ const Section2MediaBranding = ({
               className="ajp__logo-thumb-ph"
               style={{ display: formData.logoUrl ? "none" : "flex" }}
             >
-              🏛️
+              <Building2 size={24} color="#64748b" />
             </div>
           </div>
 
@@ -94,8 +95,8 @@ const Section2MediaBranding = ({
       <div className="ajp__field">
         <div className="ajp__logo-header-row">
           <label className="ajp__label">Hero Section Background Banner Graphic</label>
-          <span className="ajp__logo-spec-badge">
-            ⚡ Auto-Fit Cloudinary (1600×600px 16:6 Panoramic)
+          <span className="ajp__logo-spec-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            <Zap size={11} /> Auto-Fit Cloudinary (1600×600px 16:6 Panoramic)
           </span>
         </div>
 
@@ -191,9 +192,12 @@ const Section2MediaBranding = ({
                 color: "#a855f7",
                 background: "rgba(168, 85, 247, 0.12)",
                 borderColor: "rgba(168, 85, 247, 0.3)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
               }}
             >
-              📄 PDF Max 10MB
+              <FileText size={11} /> PDF Max 10MB
             </span>
           </div>
 
@@ -224,7 +228,9 @@ const Section2MediaBranding = ({
 
               {formData.notificationPdfUrl && (
                 <div className="ajp__pdf-attached-badge">
-                  <span className="ajp__pdf-attached-icon">📄</span>
+                  <span className="ajp__pdf-attached-icon">
+                    <FileText size={15} />
+                  </span>
                   <span className="ajp__pdf-attached-name">
                     {pdfFileName || "Notification.pdf"}
                   </span>

@@ -93,9 +93,6 @@ const Footer = () => {
             <a href="#" className="footer__btn footer__btn--primary">
               Find a Job &rarr;
             </a>
-            <a href="#" className="footer__btn footer__btn--outline">
-              Post a Job &rarr;
-            </a>
           </div>
 
           {/* Paper Airplane Doodle & Text on Right */}

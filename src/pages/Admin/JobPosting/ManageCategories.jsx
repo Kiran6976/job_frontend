@@ -1,16 +1,28 @@
 import React, { useState, useRef } from "react";
+import {
+  Building2,
+  Briefcase,
+  GraduationCap,
+  Laptop,
+  Shield,
+  BookOpen,
+  Globe,
+  Zap,
+  Folder,
+  Edit2,
+  RefreshCw,
+} from "lucide-react";
 import "./ManageCategories.css";
 import { API_ENDPOINTS } from "../../../config/api";
 
-
 const PRESET_ICONS = [
-  { value: "building", label: "Government / Commission", icon: "🏛️" },
-  { value: "briefcase", label: "Private / Corporate", icon: "💼" },
-  { value: "graduation-cap", label: "Education / Internship", icon: "🎓" },
-  { value: "laptop", label: "Remote / Work From Home", icon: "💻" },
-  { value: "shield", label: "Defense & Police", icon: "🛡️" },
-  { value: "book", label: "Teaching & Faculty", icon: "📚" },
-  { value: "grid", label: "All Opportunities", icon: "🌐" },
+  { value: "building", label: "Government / Commission", icon: <Building2 size={15} /> },
+  { value: "briefcase", label: "Private / Corporate", icon: <Briefcase size={15} /> },
+  { value: "graduation-cap", label: "Education / Internship", icon: <GraduationCap size={15} /> },
+  { value: "laptop", label: "Remote / Work From Home", icon: <Laptop size={15} /> },
+  { value: "shield", label: "Defense & Police", icon: <Shield size={15} /> },
+  { value: "book", label: "Teaching & Faculty", icon: <BookOpen size={15} /> },
+  { value: "grid", label: "All Opportunities", icon: <Globe size={15} /> },
 ];
 
 const PRESET_BANNERS = [
@@ -429,8 +441,8 @@ const ManageCategories = ({
               <div className="ajp__field">
                 <div className="ajp__logo-header-row">
                   <label className="ajp__label">Hero Section Background Banner Image</label>
-                  <span className="ajp__logo-spec-badge">
-                    ⚡ Auto-Fit Cloudinary (1600×600px 16:6 Panoramic)
+                  <span className="ajp__logo-spec-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Zap size={11} /> Auto-Fit Cloudinary (1600×600px 16:6 Panoramic)
                   </span>
                 </div>
 
@@ -494,8 +506,8 @@ const ManageCategories = ({
               <div className="ajp__field">
                 <div className="ajp__logo-header-row">
                   <label className="ajp__label">Official Emblem / Logo</label>
-                  <span className="ajp__logo-spec-badge">
-                    ⚡ Auto-Fit Cloudinary (400×400px 1:1)
+                  <span className="ajp__logo-spec-badge" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Zap size={11} /> Auto-Fit Cloudinary (400×400px 1:1)
                   </span>
                 </div>
 
@@ -525,7 +537,7 @@ const ManageCategories = ({
                       className="ajp__logo-thumb-ph"
                       style={{ display: orgForm.logoUrl ? "none" : "flex" }}
                     >
-                      🏛️
+                      <Building2 size={24} color="#64748b" />
                     </div>
                   </div>
 
@@ -650,14 +662,14 @@ const ManageCategories = ({
                       onError={(e) => (e.target.style.display = "none")}
                     />
                   ) : (
-                    "🏛️"
+                    <Building2 size={18} color="#64748b" />
                   )}
                 </div>
 
                 <div className="ajp__cat-card-info">
                   <span className="ajp__cat-card-name">{org.name}</span>
-                  <span className="ajp__cat-card-count" style={{ color: "#60a5fa" }}>
-                    📁 {org.category} {org.code ? `• ${org.code}` : ""}
+                  <span className="ajp__cat-card-count" style={{ color: "#60a5fa", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <Folder size={12} /> {org.category} {org.code ? `• ${org.code}` : ""}
                   </span>
                   {org.slogan && (
                     <span style={{ fontSize: "11px", color: "#94a3b8", fontStyle: "italic" }}>
@@ -672,8 +684,9 @@ const ManageCategories = ({
                     className="ajp__org-edit-btn"
                     onClick={() => handleOpenEditModal(org)}
                     title="Edit Organization Banner & Info"
+                    style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                   >
-                    ✏️ Edit
+                    <Edit2 size={13} /> Edit
                   </button>
                   <button
                     type="button"
@@ -699,8 +712,9 @@ const ManageCategories = ({
             className="ajp__refresh-btn"
             onClick={handleRefresh}
             title="Refresh from server"
+            style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}
           >
-            🔄 Refresh
+            <RefreshCw size={13} /> Refresh
           </button>
         </div>
 
@@ -709,7 +723,9 @@ const ManageCategories = ({
             const count = getCategoryCount(cat);
             return (
               <div key={cat._id || cat.slug} className="ajp__cat-card">
-                <div className="ajp__cat-card-icon">📁</div>
+                <div className="ajp__cat-card-icon">
+                  <Folder size={18} color="#60a5fa" />
+                </div>
                 <div className="ajp__cat-card-info">
                   <span className="ajp__cat-card-name">{cat.name}</span>
                   <span className="ajp__cat-card-count">

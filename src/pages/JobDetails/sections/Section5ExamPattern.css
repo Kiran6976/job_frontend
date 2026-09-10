@@ -681,4 +681,41 @@
     width: 100%;
     justify-content: space-between;
   }
+  /* Collapse main grid to single column */
+  .jd-pattern__grid {
+    grid-template-columns: 1fr;
+  }
+  /* Ensure table wrapper is scrollable and table has a min-width */
+  .jd-pattern__table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  .jd-pattern__data-table {
+    min-width: 520px;
+  }
+  /* Reduce table cell padding */
+  .jd-pattern__data-table th,
+  .jd-pattern__data-table td {
+    padding: 8px 10px;
+    font-size: 0.75rem;
+  }
+  .jd-pattern__stage-banner {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .jd-pattern__data-table {
+    min-width: 440px;
+  }
+  .jd-pattern__data-table th,
+  .jd-pattern__data-table td {
+    padding: 6px 8px;
+    font-size: 0.7rem;
+  }
+  /* Hide decorative header art on very small screens */
+  .jd-pattern__header-art {
+    display: none;
+  }
 }

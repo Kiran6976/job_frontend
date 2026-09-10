@@ -1,4 +1,5 @@
 import React from "react";
+import { Bot, Sparkles, Loader2, FileUp, CheckCircle2, ExternalLink } from "lucide-react";
 import "./AiNotificationBanner.css";
 
 const AiNotificationBanner = ({
@@ -13,21 +14,31 @@ const AiNotificationBanner = ({
       <div className="ajp__ai-banner-content">
         <div className="ajp__ai-banner-icon-wrap">
           <span className="ajp__ai-banner-icon">
-            {isParsing ? "⚙️" : parseStep === "done" ? "✨" : "🤖"}
+            {isParsing ? (
+              <Loader2 size={24} className="ajp__ai-spin-icon" />
+            ) : parseStep === "done" ? (
+              <Sparkles size={24} color="#34d399" />
+            ) : (
+              <Bot size={24} color="#c084fc" />
+            )}
           </span>
         </div>
         <div className="ajp__ai-banner-text">
           <div className="ajp__ai-banner-title">
             <span className="ajp__ai-badge">AI Auto-Fill</span>
-            {parseStep === "done"
-              ? `✅ Form auto-filled! ${autoFillResult?.fieldsCount || ""} fields extracted`
-              : isParsing
-              ? parseStep === "uploading"
+            {parseStep === "done" ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#34d399" }}>
+                <CheckCircle2 size={16} /> Form auto-filled! {autoFillResult?.fieldsCount || ""} fields extracted
+              </span>
+            ) : isParsing ? (
+              parseStep === "uploading"
                 ? "Uploading notification PDF to Cloudinary…"
                 : parseStep === "extracting"
                 ? "Reading PDF text…"
                 : "PDF is stored on Cloudinary · AI is extracting vacancies, dates, exam pattern & eligibility…"
-              : "Auto-Fill Form from Official Notification PDF"}
+            ) : (
+              "Auto-Fill Form from Official Notification PDF"
+            )}
           </div>
           <p className="ajp__ai-banner-desc">
             {parseStep === "done"
@@ -70,7 +81,8 @@ const AiNotificationBanner = ({
             }}
             onClick={() => autoFillInputRef.current?.click()}
           >
-            📄 {parseStep === "done" ? "Re-upload PDF" : "Upload Notification PDF"}
+            <FileUp size={16} />
+            <span>{parseStep === "done" ? "Re-upload PDF" : "Upload Notification PDF"}</span>
           </button>
           {parseStep === "done" && autoFillResult?.pdfUrl && (
             <a
@@ -79,7 +91,8 @@ const AiNotificationBanner = ({
               rel="noopener noreferrer"
               className="ajp__ai-view-link"
             >
-              🔗 View PDF
+              <ExternalLink size={14} style={{ marginRight: 6 }} />
+              View PDF
             </a>
           )}
         </div>

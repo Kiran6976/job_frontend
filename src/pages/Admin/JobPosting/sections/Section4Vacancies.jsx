@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { BarChart2, Train, Zap, RefreshCw, MapPin, Tag } from "lucide-react";
 import "./Section4Vacancies.css";
 
 // 21 Official Railway Recruitment Boards
@@ -319,7 +320,7 @@ const Section4Vacancies = ({
               gap: "6px",
             }}
           >
-            📊 Section 4: Vacancy Details &amp; Distribution
+            <BarChart2 size={18} color="#93c5fd" /> Section 4: Vacancy Details &amp; Distribution
           </h3>
           <p style={{ fontSize: "0.775rem", color: "#94a3b8", margin: 0 }}>
             Configure total vacancies, category quotas, and the post distribution table.
@@ -340,8 +341,9 @@ const Section4Vacancies = ({
               type="button"
               className={`ajp__vmode-btn ${tableMode === "rrb" ? "is-active" : ""}`}
               onClick={() => setTableMode("rrb")}
+              style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}
             >
-              🚆 RRB Regional Table
+              <Train size={13} /> RRB Regional Table
             </button>
           </div>
 
@@ -350,17 +352,18 @@ const Section4Vacancies = ({
               <button
                 type="button"
                 className="ajp__attempts-preset-btn"
-                style={{ background: "rgba(16, 185, 129, 0.2)", color: "#34d399", borderColor: "#10b981" }}
+                style={{ background: "rgba(16, 185, 129, 0.2)", color: "#34d399", borderColor: "#10b981", display: "inline-flex", alignItems: "center", gap: "4px" }}
                 onClick={() => handleApplyVacancyPreset("ssc_je")}
               >
-                ⚡ SSC JE Standard (16 Services)
+                <Zap size={12} /> SSC JE Standard (16 Services)
               </button>
               <button
                 type="button"
                 className="ajp__attempts-preset-btn"
+                style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                 onClick={() => handleApplyVacancyPreset("upsc")}
               >
-                ⚡ UPSC Standard (24 Services)
+                <Zap size={12} /> UPSC Standard (24 Services)
               </button>
               <button
                 type="button"
@@ -375,10 +378,10 @@ const Section4Vacancies = ({
               <button
                 type="button"
                 className="ajp__attempts-preset-btn"
-                style={{ background: "rgba(59, 130, 246, 0.25)", color: "#93c5fd", borderColor: "#3b82f6" }}
+                style={{ background: "rgba(59, 130, 246, 0.25)", color: "#93c5fd", borderColor: "#3b82f6", display: "inline-flex", alignItems: "center", gap: "4px" }}
                 onClick={handleApplySampleRrb}
               >
-                ⚡ RRB JE Sample (Ahmedabad &amp; Ajmer)
+                <Zap size={12} /> RRB JE Sample (Ahmedabad &amp; Ajmer)
               </button>
               <button
                 type="button"
@@ -466,11 +469,11 @@ const Section4Vacancies = ({
               <button
                 type="button"
                 className="ajp__attempts-preset-btn"
-                style={{ fontSize: "0.72rem", padding: "0.3rem 0.75rem", color: "#38bdf8", borderColor: "#0284c7" }}
+                style={{ fontSize: "0.72rem", padding: "0.3rem 0.75rem", color: "#38bdf8", borderColor: "#0284c7", display: "inline-flex", alignItems: "center", gap: "5px" }}
                 onClick={handleSyncRrbTotalsToForm}
                 title="Calculate and sync totals from all RRB post rows"
               >
-                🔄 Auto-Calculate From RRBs
+                <RefreshCw size={12} /> Auto-Calculate From RRBs
               </button>
             )}
             <button
@@ -679,7 +682,7 @@ const Section4Vacancies = ({
                     {services.length === 0 && (
                       <tr>
                         <td colSpan={hasQual ? 5 : 8} style={{ padding: "16px", textAlign: "center", color: "#64748b", fontStyle: "italic" }}>
-                          No individual services added. Click "⚡ SSC JE Standard" or "⚡ UPSC Standard" above or add a new service below.
+                          No individual services added. Click "SSC JE Standard" or "UPSC Standard" above or add a new service below.
                         </td>
                       </tr>
                     )}
@@ -757,7 +760,9 @@ const Section4Vacancies = ({
           {/* Header & Grand Total Banner */}
           <div className="ajp__rrb-grand-summary">
             <div className="ajp__rrb-grand-header">
-              <span className="ajp__rrb-grand-title">🚆 RRB Vacancies Summary:</span>
+              <span className="ajp__rrb-grand-title" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <Train size={16} /> RRB Vacancies Summary:
+              </span>
               <span className="ajp__rrb-grand-stats">
                 <strong>{rrbGrandTotals.boardsCount}</strong> RRB Boards ·{" "}
                 <strong>{rrbGrandTotals.postsCount}</strong> Post Listings ·{" "}
@@ -842,7 +847,7 @@ const Section4Vacancies = ({
             <div className="ajp__rrb-active-board-card">
               <div className="ajp__rrb-board-title-row">
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{ fontSize: "1.1rem" }}>📍</span>
+                  <MapPin size={16} color="#38bdf8" />
                   <h4 style={{ margin: 0, fontSize: "0.92rem", color: "#67e8f9", fontWeight: 700 }}>
                     {activeBoardTab}
                   </h4>
@@ -1091,7 +1096,7 @@ const Section4Vacancies = ({
           <div className="ajp-cat-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="ajp-cat-modal-header">
               <h4 className="ajp-cat-modal-title">
-                <span>🏷️</span>
+                <Tag size={16} color="#93c5fd" />
                 <span>Manage Vacancy Categories</span>
               </h4>
               <button

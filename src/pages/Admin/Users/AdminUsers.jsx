@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { X, Phone, Mail } from "lucide-react";
 import "./AdminUsers.css";
 import UserDetailsModal from "./UserDetailsModal";
 import { API_ENDPOINTS } from "../../../config/api";
@@ -392,8 +393,9 @@ const AdminUsers = () => {
                 className="au-search-clear"
                 onClick={() => setSearch("")}
                 title="Clear search"
+                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center" }}
               >
-                ✕
+                <X size={12} />
               </button>
             )}
           </div>
@@ -572,8 +574,8 @@ const AdminUsers = () => {
                               {user.email}
                             </span>
                             {user.phoneNumber && (
-                              <span className="au-contact-phone">
-                                📞 {user.phoneNumber}
+                              <span className="au-contact-phone" style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                                <Phone size={11} /> {user.phoneNumber}
                               </span>
                             )}
                             <div className="au-provider-badge">
@@ -593,7 +595,9 @@ const AdminUsers = () => {
                                   Google OAuth
                                 </>
                               ) : (
-                                <>✉ Password</>
+                                <span style={{ display: "inline-flex", alignItems: "center", gap: "3px" }}>
+                                  <Mail size={10} /> Password
+                                </span>
                               )}
                             </div>
                           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Edit3, X } from "lucide-react";
 import "./PostJobForm.css";
 
 // Modular Section Components
@@ -605,7 +606,7 @@ const PostJobForm = ({
       const filledCount = Object.keys(updates).length;
       setAutoFillResult({ pdfUrl, fieldsCount: filledCount });
       setParseStep("done");
-      showNotification(`✅ AI extracted ${filledCount} fields from notification PDF!`, "success");
+      showNotification(`AI extracted ${filledCount} fields from notification PDF!`, "success");
     } catch (err) {
       console.error("Auto-fill error:", err);
       showNotification("Network error during AI parsing.", "error");
@@ -946,7 +947,14 @@ const PostJobForm = ({
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "1rem" }}>
           <div>
             <h2 className="ajp__card-title">
-              {editingJob ? `✏️ Edit: ${editingJob.title || "Job Notification"}` : "Notification & Detailed Listing"}
+              {editingJob ? (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                  <Edit3 size={20} color="#60a5fa" />
+                  <span>Edit: {editingJob.title || "Job Notification"}</span>
+                </span>
+              ) : (
+                "Notification & Detailed Listing"
+              )}
             </h2>
             <p className="ajp__card-desc">
               {editingJob
@@ -973,7 +981,7 @@ const PostJobForm = ({
                 gap: "5px",
               }}
             >
-              ✕ Cancel Editing
+              <X size={14} /> Cancel Editing
             </button>
           )}
         </div>

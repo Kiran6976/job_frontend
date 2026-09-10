@@ -1,4 +1,5 @@
 import React from "react";
+import { Pin, CreditCard } from "lucide-react";
 import "./Section1BasicInfo.css";
 
 const Section1BasicInfo = ({
@@ -18,7 +19,7 @@ const Section1BasicInfo = ({
     <div className="ajp__section-container ajp__section-basic-info">
       <div className="ajp__section-header">
         <h3 className="ajp__section-title">
-          <span>📌</span> Section 1: Basic Information &amp; Timelines
+          <Pin size={18} color="#60a5fa" /> Section 1: Basic Information &amp; Timelines
         </h3>
         <p className="ajp__section-subtitle">
           Primary exam details, dates, organization, and summary figures.
@@ -260,7 +261,9 @@ const Section1BasicInfo = ({
       {/* ── Application Fee Sub-Section ── */}
       <div className="ajp__fee-subsection">
         <div className="ajp__fee-subsection__header">
-          <span className="ajp__fee-subsection__icon">💰</span>
+          <span className="ajp__fee-subsection__icon">
+            <CreditCard size={20} color="#10b981" />
+          </span>
           <div>
             <h4 className="ajp__fee-subsection__title">Application Fee</h4>
             <p className="ajp__fee-subsection__hint">AI auto-fills from PDF. Edit if needed.</p>

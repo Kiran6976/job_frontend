@@ -112,3 +112,9 @@
 .jd-modal-body {
   padding: 24px;
 }
+
+@media (max-width: 640px) {
+  .jd__container {
+    padding: 0 12px 60px;
+  }
+}

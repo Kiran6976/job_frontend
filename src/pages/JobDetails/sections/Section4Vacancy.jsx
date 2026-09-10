@@ -709,7 +709,7 @@ const Section4Vacancy = ({ job }) => {
 
                     <div className="jd-vac-card__body jd-vac-card__body--no-pad">
                       <div className="jd-vac-table-container">
-                        <table className="jd-vac-data-table">
+                        <table className="jd-vac-data-table jd-vac-data-table--org">
                           <thead>
                             <tr>
                               <th style={{ width: "50px" }}>S. No.</th>
