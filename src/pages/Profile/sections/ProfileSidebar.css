@@ -1,0 +1,129 @@
+/* ────────── Profile Sidebar ────────── */
+.ps-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03);
+  min-height: 520px;
+}
+
+.ps-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ps-sidebar__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: left;
+  position: relative;
+}
+
+.ps-sidebar__item:hover {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.ps-sidebar__item--active {
+  background: #eef6ff !important;
+  color: #2563eb !important;
+  font-weight: 600;
+}
+
+.ps-sidebar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14px;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+.ps-sidebar__item--active .ps-sidebar__icon {
+  color: #2563eb;
+}
+
+.ps-sidebar__label {
+  flex: 1;
+}
+
+.ps-sidebar__badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 50px;
+  background: #f1f5f9;
+  color: #475569;
+  min-width: 22px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.ps-sidebar__badge--active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.ps-sidebar__footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.ps-sidebar__logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ps-sidebar__logout-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+@media (max-width: 1024px) {
+  .ps-sidebar {
+    width: 220px;
+  }
+}
+
+@media (max-width: 840px) {
+  .ps-sidebar {
+    width: 100%;
+    min-height: auto;
+    padding: 12px;
+  }
+
+  .ps-sidebar__nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 6px;
+  }
+}

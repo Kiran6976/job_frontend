@@ -350,6 +350,14 @@ const Section4Vacancies = ({
               <button
                 type="button"
                 className="ajp__attempts-preset-btn"
+                style={{ background: "rgba(16, 185, 129, 0.2)", color: "#34d399", borderColor: "#10b981" }}
+                onClick={() => handleApplyVacancyPreset("ssc_je")}
+              >
+                ⚡ SSC JE Standard (16 Services)
+              </button>
+              <button
+                type="button"
+                className="ajp__attempts-preset-btn"
                 onClick={() => handleApplyVacancyPreset("upsc")}
               >
                 ⚡ UPSC Standard (24 Services)
@@ -576,69 +584,110 @@ const Section4Vacancies = ({
             </span>
           </div>
 
-          <div
-            style={{
-              overflowX: "auto",
-              background: "#0f172a",
-              borderRadius: "10px",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              marginBottom: "0.85rem",
-            }}
-          >
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.78rem" }}>
-              <thead>
-                <tr style={{ background: "rgba(30, 41, 59, 0.8)", color: "#94a3b8", textAlign: "left" }}>
-                  <th style={{ padding: "8px 12px", width: "40px" }}>#</th>
-                  <th style={{ padding: "8px 12px" }}>Service / Post Name</th>
-                  <th style={{ padding: "8px 12px", textAlign: "center" }}>UR</th>
-                  <th style={{ padding: "8px 12px", textAlign: "center" }}>OBC</th>
-                  <th style={{ padding: "8px 12px", textAlign: "center" }}>SC</th>
-                  <th style={{ padding: "8px 12px", textAlign: "center" }}>ST</th>
-                  <th style={{ padding: "8px 12px", textAlign: "center" }}>Total</th>
-                  <th style={{ padding: "8px 12px", textAlign: "center", width: "50px" }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(formData.serviceVacancies || []).map((row, idx) => (
-                  <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                    <td style={{ padding: "8px 12px", color: "#64748b" }}>{idx + 1}</td>
-                    <td style={{ padding: "8px 12px", color: "#f1f5f9", fontWeight: 600 }}>{row.service}</td>
-                    <td style={{ padding: "8px 12px", textAlign: "center", color: "#38bdf8" }}>{row.ur}</td>
-                    <td style={{ padding: "8px 12px", textAlign: "center", color: "#34d399" }}>{row.obc}</td>
-                    <td style={{ padding: "8px 12px", textAlign: "center", color: "#fcd34d" }}>{row.sc}</td>
-                    <td style={{ padding: "8px 12px", textAlign: "center", color: "#c084fc" }}>{row.st}</td>
-                    <td style={{ padding: "8px 12px", textAlign: "center", color: "#ffffff", fontWeight: 700 }}>
-                      {row.total || (Number(row.ur) || 0) + (Number(row.obc) || 0) + (Number(row.sc) || 0) + (Number(row.st) || 0)}
-                    </td>
-                    <td style={{ padding: "8px 12px", textAlign: "center" }}>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveServiceRow(idx)}
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          color: "#f87171",
-                          cursor: "pointer",
-                          fontSize: "1rem",
-                          lineHeight: 1,
-                        }}
-                        title="Remove service row"
-                      >
-                        &times;
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {(formData.serviceVacancies || []).length === 0 && (
-                  <tr>
-                    <td colSpan={8} style={{ padding: "16px", textAlign: "center", color: "#64748b", fontStyle: "italic" }}>
-                      No individual services added. Click "⚡ UPSC Standard" above or add a new service below.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          {(() => {
+            const services = formData.serviceVacancies || [];
+            const hasQual = services.some((s) => s.qualification || s.ageLimit);
+            const hasNonZeroVacancies = services.some(
+              (s) => Number(s.ur) > 0 || Number(s.obc) > 0 || Number(s.sc) > 0 || Number(s.st) > 0 || Number(s.total) > 0
+            );
+
+            return (
+              <div
+                style={{
+                  overflowX: "auto",
+                  background: "#0f172a",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  marginBottom: "0.85rem",
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.78rem" }}>
+                  <thead>
+                    <tr style={{ background: "rgba(30, 41, 59, 0.8)", color: "#94a3b8", textAlign: "left" }}>
+                      <th style={{ padding: "8px 12px", width: "40px" }}>#</th>
+                      <th style={{ padding: "8px 12px", minWidth: "220px" }}>Organization &amp; Post</th>
+                      {hasQual ? (
+                        <>
+                          <th style={{ padding: "8px 12px", minWidth: "320px" }}>Essential Educational Qualifications</th>
+                          <th style={{ padding: "8px 12px", minWidth: "110px", textAlign: "center" }}>Age Limit</th>
+                        </>
+                      ) : (
+                        <>
+                          <th style={{ padding: "8px 12px", textAlign: "center" }}>UR</th>
+                          <th style={{ padding: "8px 12px", textAlign: "center" }}>OBC</th>
+                          <th style={{ padding: "8px 12px", textAlign: "center" }}>SC</th>
+                          <th style={{ padding: "8px 12px", textAlign: "center" }}>ST</th>
+                        </>
+                      )}
+                      {hasNonZeroVacancies && (
+                        <th style={{ padding: "8px 12px", textAlign: "center" }}>Total Vacancies</th>
+                      )}
+                      <th style={{ padding: "8px 12px", textAlign: "center", width: "50px" }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {services.map((row, idx) => (
+                      <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                        <td style={{ padding: "8px 12px", color: "#64748b" }}>{idx + 1}</td>
+                        <td style={{ padding: "8px 12px", color: "#f1f5f9", fontWeight: 600 }}>
+                          <div>{row.service}</div>
+                          {row.post && row.organization && row.service !== `${row.organization} - ${row.post}` && (
+                            <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>{row.post}</span>
+                          )}
+                        </td>
+                        {hasQual ? (
+                          <>
+                            <td style={{ padding: "8px 12px", color: "#cbd5e1", lineHeight: 1.45, fontSize: "0.75rem" }}>
+                              {row.qualification || <span style={{ color: "#64748b", fontStyle: "italic" }}>As per official notification</span>}
+                            </td>
+                            <td style={{ padding: "8px 12px", textAlign: "center", color: "#fcd34d", fontWeight: 600 }}>
+                              {row.ageLimit || "—"}
+                            </td>
+                          </>
+                        ) : (
+                          <>
+                            <td style={{ padding: "8px 12px", textAlign: "center", color: "#38bdf8" }}>{row.ur}</td>
+                            <td style={{ padding: "8px 12px", textAlign: "center", color: "#34d399" }}>{row.obc}</td>
+                            <td style={{ padding: "8px 12px", textAlign: "center", color: "#fcd34d" }}>{row.sc}</td>
+                            <td style={{ padding: "8px 12px", textAlign: "center", color: "#c084fc" }}>{row.st}</td>
+                          </>
+                        )}
+                        {hasNonZeroVacancies && (
+                          <td style={{ padding: "8px 12px", textAlign: "center", color: "#ffffff", fontWeight: 700 }}>
+                            {row.total || (Number(row.ur) || 0) + (Number(row.obc) || 0) + (Number(row.sc) || 0) + (Number(row.st) || 0)}
+                          </td>
+                        )}
+                        <td style={{ padding: "8px 12px", textAlign: "center" }}>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveServiceRow(idx)}
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              color: "#f87171",
+                              cursor: "pointer",
+                              fontSize: "1rem",
+                              lineHeight: 1,
+                            }}
+                            title="Remove service row"
+                          >
+                            &times;
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {services.length === 0 && (
+                      <tr>
+                        <td colSpan={hasQual ? 5 : 8} style={{ padding: "16px", textAlign: "center", color: "#64748b", fontStyle: "italic" }}>
+                          No individual services added. Click "⚡ SSC JE Standard" or "⚡ UPSC Standard" above or add a new service below.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })()}
 
           {/* Add New Service Row */}
           <div

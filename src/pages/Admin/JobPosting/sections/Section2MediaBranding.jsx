@@ -88,27 +88,6 @@ const Section2MediaBranding = ({
             </button>
           </div>
         </div>
-
-        {/* Quick Presets for Logos */}
-        <div className="ajp__logo-presets">
-          <span className="ajp__logo-presets-label">Or choose preset:</span>
-          <div className="ajp__preset-row">
-            {PRESET_LOGOS.map((preset) => (
-              <button
-                key={preset.name}
-                type="button"
-                className={`ajp__preset-btn ${formData.logoUrl === preset.url ? "ajp__preset-btn--active" : ""}`}
-                onClick={() => {
-                  setFormData((prev) => ({ ...prev, logoUrl: preset.url }));
-                  if (setLogoUploadSuccess) setLogoUploadSuccess(false);
-                }}
-              >
-                <img src={preset.url} alt={preset.name} />
-                <span>{preset.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Row 9: Hero Banner Selection & Uploader (1600x600 Fixed Fit) */}

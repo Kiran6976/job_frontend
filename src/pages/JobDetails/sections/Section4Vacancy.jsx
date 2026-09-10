@@ -651,121 +651,164 @@ const Section4Vacancy = ({ job }) => {
             </div>
           )}
 
-          {/* Card 2B: Standard Service-wise Vacancy Details */}
+          {/* Card 2B: Standard Service-wise / Post-wise Vacancy & Eligibility Details */}
           {job.vacancyTableType !== "rrb" && (!job.rrbVacancies || job.rrbVacancies.length === 0) && Array.isArray(job.serviceVacancies) && job.serviceVacancies.length > 0 && (
             <div className="jd-vac-card">
-              <div className="jd-vac-card__header">
-                <div className="jd-vac-card__header-left">
-                  <div className="jd-vac-card__icon-box jd-vac-card__icon-box--blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="jd-vac-card__title">Service-wise Vacancy Details</h3>
-                    <p className="jd-vac-card__desc">
-                      Check the number of vacancies available in each service under {job.title || "this recruitment"}.
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  className="jd-vac-view-all-link"
-                  onClick={() => setServiceModalOpen(true)}
-                >
-                  <span>View Detailed Service List</span>
-                  <span>&rarr;</span>
-                </button>
-              </div>
-
-              <div className="jd-vac-card__body jd-vac-card__body--no-pad">
-                {(() => {
-                  const rawServices = job.serviceVacancies;
-                  const totalUr = rawServices.reduce((acc, s) => acc + (Number(s.ur) || 0), 0);
-                  const totalObc = rawServices.reduce((acc, s) => acc + (Number(s.obc) || 0), 0);
-                  const totalSc = rawServices.reduce((acc, s) => acc + (Number(s.sc) || 0), 0);
-                  const totalSt = rawServices.reduce((acc, s) => acc + (Number(s.st) || 0), 0);
-                  const totalSum = rawServices.reduce(
-                    (acc, s) =>
-                      acc +
-                      (Number(s.total) ||
-                        (Number(s.ur) || 0) +
-                          (Number(s.obc) || 0) +
+              {(() => {
+                const rawServices = job.serviceVacancies;
+                const hasQual = rawServices.some((s) => s.qualification || s.ageLimit);
+                const hasNonZeroVacancies = rawServices.some(
+                  (s) => Number(s.ur) > 0 || Number(s.obc) > 0 || Number(s.sc) > 0 || Number(s.st) > 0 || Number(s.total) > 0
+                );
+                const totalUr = rawServices.reduce((acc, s) => acc + (Number(s.ur) || 0), 0);
+                const totalObc = rawServices.reduce((acc, s) => acc + (Number(s.obc) || 0), 0);
+                const totalSc = rawServices.reduce((acc, s) => acc + (Number(s.sc) || 0), 0);
+                const totalSt = rawServices.reduce((acc, s) => acc + (Number(s.st) || 0), 0);
+                const totalSum = rawServices.reduce(
+                  (acc, s) =>
+                    acc +
+                    (Number(s.total) ||
+                      (Number(s.ur) || 0) +
+                        (Number(s.obc) || 0) +
                           (Number(s.sc) || 0) +
-                          (Number(s.st) || 0)),
-                    0
-                  );
+                            (Number(s.st) || 0)),
+                  0
+                );
 
-                  return (
-                    <div className="jd-vac-table-container">
-                      <table className="jd-vac-data-table">
-                        <thead>
-                          <tr>
-                            <th style={{ width: "60px" }}>S. No.</th>
-                            <th>Service</th>
-                            <th style={{ textAlign: "center" }}>UR</th>
-                            <th style={{ textAlign: "center" }}>OBC</th>
-                            <th style={{ textAlign: "center" }}>SC</th>
-                            <th style={{ textAlign: "center" }}>ST</th>
-                            <th style={{ textAlign: "center" }}>Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {rawServices.map((svc, idx) => {
-                            const sTotal =
-                              Number(svc.total) ||
-                              (Number(svc.ur) || 0) +
-                                (Number(svc.obc) || 0) +
-                                (Number(svc.sc) || 0) +
-                                (Number(svc.st) || 0);
-                            return (
-                              <tr key={idx}>
-                                <td>{idx + 1}</td>
-                                <td>
-                                  <strong>{svc.name || svc.service}</strong>
-                                </td>
-                                <td style={{ textAlign: "center" }}>{svc.ur ?? 0}</td>
-                                <td style={{ textAlign: "center" }}>{svc.obc ?? 0}</td>
-                                <td style={{ textAlign: "center" }}>{svc.sc ?? 0}</td>
-                                <td style={{ textAlign: "center" }}>{svc.st ?? 0}</td>
-                                <td style={{ textAlign: "center" }}>
-                                  <strong>{sTotal}</strong>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                          <tr className="jd-vac-total-row">
-                            <td colSpan={2}>
-                              <strong>Total ({rawServices.length} Services)</strong>
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              <strong>{totalUr}</strong>
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              <strong>{totalObc}</strong>
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              <strong>{totalSc}</strong>
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              <strong>{totalSt}</strong>
-                            </td>
-                            <td style={{ textAlign: "center" }}>
-                              <strong>
-                                {job.vacancies
-                                  ? Number(job.vacancies).toLocaleString("en-IN")
-                                  : totalSum.toLocaleString("en-IN")}
-                              </strong>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                return (
+                  <>
+                    <div className="jd-vac-card__header">
+                      <div className="jd-vac-card__header-left">
+                        <div className="jd-vac-card__icon-box jd-vac-card__icon-box--blue">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="jd-vac-card__title">
+                            {hasQual ? "Participating Organizations, Posts & Educational Qualifications" : "Service-wise Vacancy Details"}
+                          </h3>
+                          <p className="jd-vac-card__desc">
+                            {hasQual
+                              ? `Official department-wise post distribution, qualifications and age limits under ${job.title || "this recruitment"}.`
+                              : `Check the number of vacancies available in each service under ${job.title || "this recruitment"}.`}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="jd-vac-view-all-link"
+                        onClick={() => setServiceModalOpen(true)}
+                      >
+                        <span>View Detailed Service List</span>
+                        <span>&rarr;</span>
+                      </button>
                     </div>
-                  );
-                })()}
-              </div>
+
+                    <div className="jd-vac-card__body jd-vac-card__body--no-pad">
+                      <div className="jd-vac-table-container">
+                        <table className="jd-vac-data-table">
+                          <thead>
+                            <tr>
+                              <th style={{ width: "50px" }}>S. No.</th>
+                              <th style={{ minWidth: "220px" }}>Organization &amp; Post</th>
+                              {hasQual ? (
+                                <>
+                                  <th style={{ minWidth: "320px" }}>Essential Educational Qualifications</th>
+                                  <th style={{ minWidth: "120px", textAlign: "center" }}>Age Limit</th>
+                                </>
+                              ) : (
+                                <>
+                                  <th style={{ textAlign: "center" }}>UR</th>
+                                  <th style={{ textAlign: "center" }}>OBC</th>
+                                  <th style={{ textAlign: "center" }}>SC</th>
+                                  <th style={{ textAlign: "center" }}>ST</th>
+                                </>
+                              )}
+                              {hasNonZeroVacancies && (
+                                <th style={{ textAlign: "center" }}>Total Vacancies</th>
+                              )}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rawServices.map((svc, idx) => {
+                              const sTotal =
+                                Number(svc.total) ||
+                                (Number(svc.ur) || 0) +
+                                  (Number(svc.obc) || 0) +
+                                  (Number(svc.sc) || 0) +
+                                  (Number(svc.st) || 0);
+                              return (
+                                <tr key={idx}>
+                                  <td>{svc.sNo || idx + 1}</td>
+                                  <td>
+                                    <strong>{svc.name || svc.service}</strong>
+                                    {svc.post && svc.organization && svc.service !== `${svc.organization} - ${svc.post}` && (
+                                      <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>{svc.post}</div>
+                                    )}
+                                  </td>
+                                  {hasQual ? (
+                                    <>
+                                      <td style={{ color: "#334155", lineHeight: 1.5, fontSize: "0.82rem" }}>
+                                        {svc.qualification || <span style={{ color: "#94a3b8", fontStyle: "italic" }}>As per official notification</span>}
+                                      </td>
+                                      <td style={{ textAlign: "center", fontWeight: 600, color: "#1e293b" }}>
+                                        {svc.ageLimit || "—"}
+                                      </td>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <td style={{ textAlign: "center" }}>{svc.ur ?? 0}</td>
+                                      <td style={{ textAlign: "center" }}>{svc.obc ?? 0}</td>
+                                      <td style={{ textAlign: "center" }}>{svc.sc ?? 0}</td>
+                                      <td style={{ textAlign: "center" }}>{svc.st ?? 0}</td>
+                                    </>
+                                  )}
+                                  {hasNonZeroVacancies && (
+                                    <td style={{ textAlign: "center" }}>
+                                      <strong>{sTotal}</strong>
+                                    </td>
+                                  )}
+                                </tr>
+                              );
+                            })}
+                            {!hasQual && (
+                              <tr className="jd-vac-total-row">
+                                <td colSpan={2}>
+                                  <strong>Total ({rawServices.length} Services)</strong>
+                                </td>
+                                <td style={{ textAlign: "center" }}>
+                                  <strong>{totalUr}</strong>
+                                </td>
+                                <td style={{ textAlign: "center" }}>
+                                  <strong>{totalObc}</strong>
+                                </td>
+                                <td style={{ textAlign: "center" }}>
+                                  <strong>{totalSc}</strong>
+                                </td>
+                                <td style={{ textAlign: "center" }}>
+                                  <strong>{totalSt}</strong>
+                                </td>
+                                {hasNonZeroVacancies && (
+                                  <td style={{ textAlign: "center" }}>
+                                    <strong>
+                                      {job.vacancies
+                                        ? Number(job.vacancies).toLocaleString("en-IN")
+                                        : totalSum.toLocaleString("en-IN")}
+                                    </strong>
+                                  </td>
+                                )}
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           )}
         </div>
@@ -901,89 +944,126 @@ const Section4Vacancy = ({ job }) => {
             </div>
 
             <div className="jd-modal-body" style={{ maxHeight: "70vh", overflowY: "auto", padding: "16px" }}>
-              <table className="jd-vac-data-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: "40px" }}>#</th>
-                    <th>Service Name</th>
-                    <th>Cadre / Group</th>
-                    <th style={{ textAlign: "center" }}>UR</th>
-                    <th style={{ textAlign: "center" }}>OBC</th>
-                    <th style={{ textAlign: "center" }}>SC</th>
-                    <th style={{ textAlign: "center" }}>ST</th>
-                    <th style={{ textAlign: "center" }}>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {job.serviceVacancies.map((svc, idx) => {
-                    const sTotal =
-                      Number(svc.total) ||
-                      (Number(svc.ur) || 0) +
-                        (Number(svc.obc) || 0) +
-                        (Number(svc.sc) || 0) +
-                        (Number(svc.st) || 0);
-                    return (
-                      <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>
-                          <strong>{svc.name || svc.service}</strong>
-                        </td>
-                        <td>{svc.cadre || svc.group || "Central / State Cadre"}</td>
-                        <td style={{ textAlign: "center" }}>{svc.ur ?? 0}</td>
-                        <td style={{ textAlign: "center" }}>{svc.obc ?? 0}</td>
-                        <td style={{ textAlign: "center" }}>{svc.sc ?? 0}</td>
-                        <td style={{ textAlign: "center" }}>{svc.st ?? 0}</td>
-                        <td style={{ textAlign: "center" }}>
-                          <strong>{sTotal}</strong>
-                        </td>
+              {(() => {
+                const svcs = job.serviceVacancies || [];
+                const hasQual = svcs.some((s) => s.qualification || s.ageLimit);
+                const hasNonZero = svcs.some((s) => Number(s.total) > 0 || Number(s.ur) > 0);
+
+                return (
+                  <table className="jd-vac-data-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: "50px" }}>#</th>
+                        <th style={{ minWidth: "220px" }}>Organization &amp; Post</th>
+                        {hasQual ? (
+                          <>
+                            <th style={{ minWidth: "340px" }}>Essential Educational Qualifications</th>
+                            <th style={{ minWidth: "110px", textAlign: "center" }}>Age Limit</th>
+                          </>
+                        ) : (
+                          <>
+                            <th>Cadre / Group</th>
+                            <th style={{ textAlign: "center" }}>UR</th>
+                            <th style={{ textAlign: "center" }}>OBC</th>
+                            <th style={{ textAlign: "center" }}>SC</th>
+                            <th style={{ textAlign: "center" }}>ST</th>
+                          </>
+                        )}
+                        {hasNonZero && <th style={{ textAlign: "center" }}>Total</th>}
                       </tr>
-                    );
-                  })}
-                  <tr className="jd-vac-total-row">
-                    <td colSpan={3}>
-                      <strong>Total ({job.serviceVacancies.length} Services)</strong>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <strong>
-                        {job.serviceVacancies.reduce((acc, s) => acc + (Number(s.ur) || 0), 0)}
-                      </strong>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <strong>
-                        {job.serviceVacancies.reduce((acc, s) => acc + (Number(s.obc) || 0), 0)}
-                      </strong>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <strong>
-                        {job.serviceVacancies.reduce((acc, s) => acc + (Number(s.sc) || 0), 0)}
-                      </strong>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <strong>
-                        {job.serviceVacancies.reduce((acc, s) => acc + (Number(s.st) || 0), 0)}
-                      </strong>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <strong>
-                        {job.vacancies
-                          ? Number(job.vacancies).toLocaleString("en-IN")
-                          : job.serviceVacancies
-                              .reduce(
-                                (acc, s) =>
-                                  acc +
-                                  (Number(s.total) ||
-                                    (Number(s.ur) || 0) +
-                                      (Number(s.obc) || 0) +
-                                      (Number(s.sc) || 0) +
-                                      (Number(s.st) || 0)),
-                                0
-                              )
-                              .toLocaleString("en-IN")}
-                      </strong>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {svcs.map((svc, idx) => {
+                        const sTotal =
+                          Number(svc.total) ||
+                          (Number(svc.ur) || 0) +
+                            (Number(svc.obc) || 0) +
+                            (Number(svc.sc) || 0) +
+                            (Number(svc.st) || 0);
+                        return (
+                          <tr key={idx}>
+                            <td>{svc.sNo || idx + 1}</td>
+                            <td>
+                              <strong>{svc.name || svc.service}</strong>
+                              {svc.post && svc.organization && svc.service !== `${svc.organization} - ${svc.post}` && (
+                                <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>{svc.post}</div>
+                              )}
+                            </td>
+                            {hasQual ? (
+                              <>
+                                <td style={{ color: "#334155", lineHeight: 1.5, fontSize: "0.82rem" }}>
+                                  {svc.qualification || <span style={{ color: "#94a3b8", fontStyle: "italic" }}>As per official notification</span>}
+                                </td>
+                                <td style={{ textAlign: "center", fontWeight: 600, color: "#1e293b" }}>
+                                  {svc.ageLimit || "—"}
+                                </td>
+                              </>
+                            ) : (
+                              <>
+                                <td>{svc.cadre || svc.group || "Central / State Cadre"}</td>
+                                <td style={{ textAlign: "center" }}>{svc.ur ?? 0}</td>
+                                <td style={{ textAlign: "center" }}>{svc.obc ?? 0}</td>
+                                <td style={{ textAlign: "center" }}>{svc.sc ?? 0}</td>
+                                <td style={{ textAlign: "center" }}>{svc.st ?? 0}</td>
+                              </>
+                            )}
+                            {hasNonZero && (
+                              <td style={{ textAlign: "center" }}>
+                                <strong>{sTotal}</strong>
+                              </td>
+                            )}
+                          </tr>
+                        );
+                      })}
+                      {!hasQual && (
+                        <tr className="jd-vac-total-row">
+                          <td colSpan={3}>
+                            <strong>Total ({svcs.length} Services)</strong>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            <strong>
+                              {svcs.reduce((acc, s) => acc + (Number(s.ur) || 0), 0)}
+                            </strong>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            <strong>
+                              {svcs.reduce((acc, s) => acc + (Number(s.obc) || 0), 0)}
+                            </strong>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            <strong>
+                              {svcs.reduce((acc, s) => acc + (Number(s.sc) || 0), 0)}
+                            </strong>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            <strong>
+                              {svcs.reduce((acc, s) => acc + (Number(s.st) || 0), 0)}
+                            </strong>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            <strong>
+                              {job.vacancies
+                                ? Number(job.vacancies).toLocaleString("en-IN")
+                                : svcs
+                                    .reduce(
+                                      (acc, s) =>
+                                        acc +
+                                        (Number(s.total) ||
+                                          (Number(s.ur) || 0) +
+                                            (Number(s.obc) || 0) +
+                                            (Number(s.sc) || 0) +
+                                            (Number(s.st) || 0)),
+                                      0
+                                    )
+                                    .toLocaleString("en-IN")}
+                            </strong>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                );
+              })()}
             </div>
           </div>
         </div>

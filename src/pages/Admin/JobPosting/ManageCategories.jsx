@@ -14,6 +14,7 @@ const PRESET_ICONS = [
 ];
 
 const PRESET_BANNERS = [
+  { name: "SSC Opportunities Banner", url: "/SSC.png" },
   { name: "UPSC Parliament Backdrop", url: "/UPSC.png" },
   { name: "Indian Railways", url: "/Job_Hero.png" },
   { name: "Banking & Financial", url: "/Job_Second.png" },
@@ -24,6 +25,10 @@ const PRESET_EMBLEMS = [
   {
     name: "Emblem of India",
     url: "/emblem_india.png",
+  },
+  {
+    name: "Staff Selection Commission (SSC)",
+    url: "/Staff_Selection_Commission_Logo.jpg",
   },
   {
     name: "Indian Railways (RRB)",

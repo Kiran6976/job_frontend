@@ -18,6 +18,10 @@ export const PRESET_LOGOS = [
     url: "/emblem_india.png",
   },
   {
+    name: "Staff Selection Commission (SSC)",
+    url: "/Staff_Selection_Commission_Logo.jpg",
+  },
+  {
     name: "Indian Railways (RRB)",
     url: "https://upload.wikimedia.org/wikipedia/en/thumb/4/45/Indian_Railways_logo.svg/300px-Indian_Railways_logo.svg.png",
   },
@@ -36,6 +40,7 @@ export const PRESET_LOGOS = [
 ];
 
 export const PRESET_BANNERS = [
+  { name: "SSC Opportunities Banner", url: "/SSC.png" },
   { name: "UPSC Rashtrapati Bhavan", url: "/UPSC.png" },
   { name: "Government Hero", url: "/Job_Hero.png" },
   { name: "Opportunity Banner 2", url: "/Job_Second.png" },
@@ -309,21 +314,36 @@ const PostJobForm = ({
 
   // Organization Auto-suggest
   const handleOrgChange = (orgName) => {
-    setFormData((prev) => ({ ...prev, organization: orgName }));
-    const match = organizations.find((o) => o.name.toLowerCase() === orgName.toLowerCase());
-    if (match) {
-      setFormData((prev) => ({
-        ...prev,
-        category: match.category || prev.category,
-        logoUrl: match.logoUrl || prev.logoUrl,
-        bannerUrl: match.bannerUrl || prev.bannerUrl,
-        slogan: match.slogan || prev.slogan,
-        subSlogan: match.subSlogan || prev.subSlogan,
-        selectionStages: match.selectionStages || prev.selectionStages,
-        aboutOrg: match.about || prev.aboutOrg,
-        applyUrl: match.officialWebsite || prev.applyUrl,
-      }));
-    }
+    setFormData((prev) => {
+      const next = { ...prev, organization: orgName };
+      const lower = orgName.toLowerCase().trim();
+      const isSSC = lower.includes("staff selection commission") || lower === "ssc";
+
+      if (isSSC) {
+        next.bannerUrl = "/SSC.png";
+        next.logoUrl = "/Staff_Selection_Commission_Logo.jpg";
+        if (!prev.slogan || prev.slogan === "Serve Lead Bring Change") {
+          next.slogan = "Opportunities for a Brighter Tomorrow";
+        }
+        if (!prev.subSlogan || prev.subSlogan === "A Stronger India Needs You") {
+          next.subSlogan = "Same Preparation, Bigger Opportunities";
+        }
+      }
+
+      const match = organizations.find((o) => o.name.toLowerCase() === lower);
+      if (match) {
+        next.category = match.category || next.category;
+        next.logoUrl = match.logoUrl || next.logoUrl;
+        next.bannerUrl = match.bannerUrl || next.bannerUrl;
+        next.slogan = match.slogan || next.slogan;
+        next.subSlogan = match.subSlogan || next.subSlogan;
+        next.selectionStages = match.selectionStages || next.selectionStages;
+        next.aboutOrg = match.about || next.aboutOrg;
+        next.applyUrl = match.officialWebsite || next.applyUrl;
+      }
+
+      return next;
+    });
   };
 
   // Application Fee Field Change
@@ -479,7 +499,16 @@ const PostJobForm = ({
 
       const updates = {};
       if (p.title) updates.title = p.title;
-      if (p.organization) updates.organization = p.organization;
+      if (p.organization) {
+        updates.organization = p.organization;
+        const orgLower = p.organization.toLowerCase().trim();
+        if (orgLower.includes("staff selection commission") || orgLower === "ssc") {
+          updates.bannerUrl = "/SSC.png";
+          updates.logoUrl = "/Staff_Selection_Commission_Logo.jpg";
+          if (!p.slogan) updates.slogan = "Opportunities for a Brighter Tomorrow";
+          if (!p.subSlogan) updates.subSlogan = "Same Preparation, Bigger Opportunities";
+        }
+      }
       if (p.category) updates.category = p.category;
       if (p.level) updates.level = p.level;
       if (p.vacancies) updates.vacancies = String(p.vacancies);
@@ -536,6 +565,14 @@ const PostJobForm = ({
           }
           return prev;
         });
+      }
+
+      // Service Vacancies (SSC / UPSC)
+      if (Array.isArray(p.serviceVacancies) && p.serviceVacancies.length > 0) {
+        updates.serviceVacancies = p.serviceVacancies;
+        if (!updates.participatingServices) {
+          updates.participatingServices = String(p.serviceVacancies.length);
+        }
       }
 
       // Exam pattern
@@ -620,17 +657,169 @@ const PostJobForm = ({
   };
 
   const handleApplyVacancyPreset = (type) => {
-    if (type === "upsc") {
+    if (type === "ssc_je") {
+      setFormData((prev) => ({
+        ...prev,
+        participatingServices: "16",
+        postsDescription: "Junior Engineers across Central Ministries & Departments",
+        serviceVacancies: [
+          {
+            sNo: 1,
+            organization: "Border Roads Organization",
+            post: "JE(C)",
+            service: "Border Roads Organization - JE(C)",
+            qualification: "Degree in Civil Engineering from a recognized University/Institute; Or (a) Three-Year Diploma in Civil Engineering from a recognized University/ Institute/ Board; and (b) Two years of working experience in Planning/ Execution/ Maintenance of Civil Engineering works",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 2,
+            organization: "Border Roads Organization",
+            post: "JE (E & M)",
+            service: "Border Roads Organization - JE (E & M)",
+            qualification: "Degree in Electrical or Mechanical Engineering from a recognized University/Institute; Or (a) Three-year Diploma in Electrical/ Automobile/ Mechanical Engineering from a recognized University/ Institute/ Board; and (b) Two-Year experience in Planning/ Execution/ Maintenance of Electrical or Mechanical Engineering works",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 3,
+            organization: "Brahmaputra Board, Ministry of Jal Shakti",
+            post: "JE (C)",
+            service: "Brahmaputra Board, Ministry of Jal Shakti - JE (C)",
+            qualification: "Three-Year Diploma in Civil Engineering from a recognized University or Institution.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 4,
+            organization: "Central Water Commission",
+            post: "JE (M)",
+            service: "Central Water Commission - JE (M)",
+            qualification: "Bachelor's Degree or Diploma in Mechanical Engineering from a recognized University or Institution.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 5,
+            organization: "Central Water Commission",
+            post: "JE (C)",
+            service: "Central Water Commission - JE (C)",
+            qualification: "Bachelor's Degree or Diploma in Civil Engineering from a recognized University or Institution.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 6,
+            organization: "Central Public Works Department (CPWD)",
+            post: "JE (Civil)",
+            service: "Central Public Works Department (CPWD) - JE (Civil)",
+            qualification: "Diploma in Civil Engineering from a recognized University or Institute.",
+            ageLimit: "Up to 32 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 7,
+            organization: "Central Public Works Department (CPWD)",
+            post: "JE (Electrical)",
+            service: "Central Public Works Department (CPWD) - JE (Electrical)",
+            qualification: "Diploma in Electrical or Mechanical Engineering from a recognized University or Institute.",
+            ageLimit: "Up to 32 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 8,
+            organization: "Central Water and Power Research Station",
+            post: "JE (Civil)",
+            service: "Central Water and Power Research Station - JE (Civil)",
+            qualification: "Diploma in Civil Engineering from a recognized University or Institute.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 9,
+            organization: "Central Water and Power Research Station",
+            post: "JE (Electrical)",
+            service: "Central Water and Power Research Station - JE (Electrical)",
+            qualification: "Diploma in Electrical Engineering from a recognized University or Institute.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 10,
+            organization: "DGQA-NAVAL, Ministry of Defence",
+            post: "JE (Mechanical)",
+            service: "DGQA-NAVAL, Ministry of Defence - JE (Mechanical)",
+            qualification: "Degree in Mechanical Engineering; or Three-year Diploma in Mechanical Engineering with two years practical experience.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 11,
+            organization: "DGQA-NAVAL, Ministry of Defence",
+            post: "JE (Electrical)",
+            service: "DGQA-NAVAL, Ministry of Defence - JE (Electrical)",
+            qualification: "Degree in Electrical Engineering; or Three-year Diploma in Electrical Engineering with two years practical experience.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 12,
+            organization: "Farakka Barrage Project, Ministry of Jal Shakti",
+            post: "JE (Electrical)",
+            service: "Farakka Barrage Project, Ministry of Jal Shakti - JE (Electrical)",
+            qualification: "Diploma in Electrical Engineering from a recognized University, Institute, or Board.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 13,
+            organization: "Farakka Barrage Project, Ministry of Jal Shakti",
+            post: "JE (Civil)",
+            service: "Farakka Barrage Project, Ministry of Jal Shakti - JE (Civil)",
+            qualification: "Diploma in Civil Engineering from a recognized University, Institute, or Board.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 14,
+            organization: "Military Engineer Services (MES)",
+            post: "JE (Civil)",
+            service: "Military Engineer Services (MES) - JE (Civil)",
+            qualification: "Degree in Civil Engineering from a recognized University; Or (a) Three-year Diploma in Civil Engineering from a recognized Institute, University, or Board; and (b) Two years' experience in Planning, Execution and Maintenance of Civil Engineering works.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 15,
+            organization: "Military Engineer Services (MES)",
+            post: "JE (Electrical & Mechanical)",
+            service: "Military Engineer Services (MES) - JE (Electrical & Mechanical)",
+            qualification: "Degree in Electrical or Mechanical Engineering from a recognized University; Or (a) Three-Year diploma in Electrical or Mechanical Engineering from a recognized Institute or University or Board; and (b) Two-Year experience in Planning, Execution and Maintenance of Electrical or Mechanical Engineering Works.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+          {
+            sNo: 16,
+            organization: "National Technical Research Organization (NTRO)",
+            post: "JE (Civil)",
+            service: "National Technical Research Organization (NTRO) - JE (Civil)",
+            qualification: "Diploma in Civil Engineering from a recognized University/Institution.",
+            ageLimit: "Up to 30 years",
+            ur: 0, obc: 0, sc: 0, st: 0, ews: 0, total: 0,
+          },
+        ],
+      }));
+    } else if (type === "upsc") {
       setFormData((prev) => ({
         ...prev,
         participatingServices: "24",
         postsDescription: "Group A & B Central Civil Services",
         serviceVacancies: [
-          { sNo: 1, service: "Indian Administrative Service (IAS)", ur: 73, obc: 42, sc: 28, st: 17, total: 160 },
-          { sNo: 2, service: "Indian Police Service (IPS)", ur: 60, obc: 38, sc: 27, st: 15, total: 140 },
-          { sNo: 3, service: "Indian Foreign Service (IFS)", ur: 34, obc: 22, sc: 16, st: 8, total: 80 },
-          { sNo: 4, service: "Indian Revenue Service (IRS - IT)", ur: 55, obc: 36, sc: 24, st: 15, total: 130 },
-          { sNo: 5, service: "Indian Audit & Accounts Service", ur: 28, obc: 18, sc: 12, st: 7, total: 65 },
+          { sNo: 1, service: "Indian Administrative Service (IAS)", ur: 73, obc: 42, sc: 28, st: 17, ews: 0, total: 160 },
+          { sNo: 2, service: "Indian Police Service (IPS)", ur: 60, obc: 38, sc: 27, st: 15, ews: 0, total: 140 },
+          { sNo: 3, service: "Indian Foreign Service (IFS)", ur: 34, obc: 22, sc: 16, st: 8, ews: 0, total: 80 },
+          { sNo: 4, service: "Indian Revenue Service (IRS - IT)", ur: 55, obc: 36, sc: 24, st: 15, ews: 0, total: 130 },
+          { sNo: 5, service: "Indian Audit & Accounts Service", ur: 28, obc: 18, sc: 12, st: 7, ews: 0, total: 65 },
         ],
       }));
     } else if (type === "clear") {

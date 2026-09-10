@@ -49,7 +49,7 @@ export const GOVT_EXAMS = [
     id: 3,
     title: "SSC CGL",
     organization: "Staff Selection Commission",
-    emblem: "https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg",
+    emblem: "/Staff_Selection_Commission_Logo.jpg",
     scope: "National",
     status: "Upcoming",
     statusType: "upcoming", // purple

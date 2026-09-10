@@ -1,0 +1,117 @@
+/* ────────── Profile Metrics 4-Card Grid ────────── */
+.pm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.pm-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #eef2f6;
+  padding: 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.pm-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+  border-color: #cbd5e1;
+}
+
+/* Icon Boxes */
+.pm-card__icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pm-card__icon-box--blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.pm-card__icon-box--purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.pm-card__icon-box--pink {
+  background: #fff1f2;
+  color: #f43f5e;
+}
+
+.pm-card__icon-box--green {
+  background: #f0fdf4;
+  color: #10b981;
+}
+
+/* Info */
+.pm-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pm-card__count {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.pm-card__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pm-card__subtitle {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right Arrow */
+.pm-card__arrow {
+  font-size: 20px;
+  color: #94a3b8;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.pm-card:hover .pm-card__arrow {
+  color: #2563eb;
+  transform: translateX(3px);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .pm-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .pm-grid {
+    grid-template-columns: 1fr;
+  }
+}

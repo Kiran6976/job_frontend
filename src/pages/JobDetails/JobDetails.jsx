@@ -17,8 +17,27 @@ const JobDetails = () => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
   }, [id]);
+
+  useEffect(() => {
+    if (!loading && job) {
+      const resetScroll = () => {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      };
+      resetScroll();
+      const raf = requestAnimationFrame(resetScroll);
+      const timer = setTimeout(resetScroll, 60);
+      return () => {
+        cancelAnimationFrame(raf);
+        clearTimeout(timer);
+      };
+    }
+  }, [loading, job]);
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,

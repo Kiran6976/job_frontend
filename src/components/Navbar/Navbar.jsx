@@ -142,10 +142,10 @@ const Navbar = () => {
         <div className="navbar__actions">
           {user ? (
             <div className="navbar__user-profile">
-              <div
+              <Link
+                to="/profile"
                 className="navbar__user-avatar-wrap"
-                onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                title={`Logged in as ${user.fullname || "User"}`}
+                title={`Logged in as ${user.fullname || "User"} - View Profile`}
               >
                 {user.profile?.profilePhoto ? (
                   <img
@@ -161,7 +161,7 @@ const Navbar = () => {
                 <span className="navbar__user-name">
                   {user.fullname ? user.fullname.split(" ")[0] : "Account"}
                 </span>
-              </div>
+              </Link>
               <button
                 type="button"
                 onClick={handleLogout}
@@ -214,7 +214,12 @@ const Navbar = () => {
         {/* User Card inside Mobile Menu if logged in */}
         {user ? (
           <div className="navbar__mobile-user-card">
-            <div className="navbar__mobile-user-info">
+            <Link
+              to="/profile"
+              className="navbar__mobile-user-info"
+              onClick={() => setIsMobileMenuOpen(false)}
+              style={{ textDecoration: "none" }}
+            >
               {user.profile?.profilePhoto ? (
                 <img
                   src={user.profile.profilePhoto}
@@ -229,10 +234,10 @@ const Navbar = () => {
               <div className="navbar__mobile-user-text">
                 <span className="navbar__mobile-user-name">{user.fullname || "User"}</span>
                 <span className="navbar__mobile-user-role">
-                  {user.role === "recruiter" ? "Employer Account" : "Job Seeker"}
+                  {user.role === "recruiter" ? "Employer Account" : "Job Seeker • View Profile &rarr;"}
                 </span>
               </div>
-            </div>
+            </Link>
             <button
               type="button"
               onClick={handleLogout}
