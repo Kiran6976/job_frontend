@@ -1,9 +1,23 @@
 import React, { useState } from "react";
-import { formatDate, isDatePresent } from "../jobDetailsHelpers";
+import { formatDate, isDatePresent, parseJobDate } from "../jobDetailsHelpers";
 import "./Section1Hero.css";
 
 const Section1Hero = ({ job, timeLeft, saved, onToggleSave, vacanciesCount }) => {
   const [notified, setNotified] = useState(false);
+
+  const resolvedStatus = (() => {
+    if (job?.applicationStartDate) {
+      const start = parseJobDate(job.applicationStartDate);
+      if (start) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (today >= start) {
+          return "Ongoing";
+        }
+      }
+    }
+    return job?.status || "Apply Soon";
+  })();
 
   return (
     <section className="jd-hero">
@@ -39,7 +53,9 @@ const Section1Hero = ({ job, timeLeft, saved, onToggleSave, vacanciesCount }) =>
           <div className="jd-hero__details">
             <div className="jd-hero__meta-top">
               <span className="jd-badge jd-badge--scope">{job.level || "National Level"}</span>
-              <span className="jd-badge jd-badge--status">{job.status || "Apply Soon"}</span>
+              <span className={`jd-badge jd-badge--status jd-badge--status-${resolvedStatus.toLowerCase().replace(/\s+/g, "-")}`}>
+                {resolvedStatus}
+              </span>
               <button
                 type="button"
                 className="jd-hero__bookmark"

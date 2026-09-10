@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 import {
-  JOB_SEEKER_LINKS,
-  EMPLOYER_LINKS,
+  EXPLORE_LINKS,
+  TOP_EXAMS_LINKS,
   QUICK_LINKS,
   CONTACT_INFO,
   LEGAL_LINKS,
@@ -55,6 +56,21 @@ const Footer = () => {
     }
   };
 
+  const renderFooterLink = (link) => {
+    if (link.href && link.href.startsWith("/")) {
+      return (
+        <Link to={link.href} className="footer__link">
+          {link.label}
+        </Link>
+      );
+    }
+    return (
+      <a href={link.href || "#"} className="footer__link">
+        {link.label}
+      </a>
+    );
+  };
+
   return (
     <footer className="footer">
       {/* ────────── Pre-Footer Floating CTA Card ────────── */}
@@ -84,15 +100,15 @@ const Footer = () => {
               <span className="footer__cta-title--gradient">Next Step?</span>
             </h2>
             <p className="footer__cta-sub">
-              Join thousands of job seekers and top companies on JobPortal today.
+              Explore thousands of verified government job recruitments, admit cards &amp; exam patterns today.
             </p>
           </div>
 
           {/* Action Buttons */}
           <div className="footer__cta-actions">
-            <a href="#" className="footer__btn footer__btn--primary">
+            <Link to="/jobs" className="footer__btn footer__btn--primary">
               Find a Job &rarr;
-            </a>
+            </Link>
           </div>
 
           {/* Paper Airplane Doodle & Text on Right */}
@@ -117,44 +133,43 @@ const Footer = () => {
         <div className="footer__container">
           {/* Column 1: Brand & Newsletter */}
           <div className="footer__col footer__col--brand">
-            <div className="footer__logo-wrap">
+            <Link to="/" className="footer__logo-wrap">
               <img
                 src="/Logo_Footer.png"
                 alt="JobPortal Logo"
                 className="footer__logo-img"
               />
-            </div>
+            </Link>
 
             <p className="footer__brand-desc">
-              Connecting talent with opportunity. We help people find better jobs
-              and companies build amazing teams.
+              Connecting aspirants with authentic recruitment notifications, official eligibility criteria, syllabus, and exam structures across India.
             </p>
 
             {/* Social Icons */}
             <div className="footer__socials">
-              <a href="#" className="footer__social-link" aria-label="LinkedIn">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="footer__social-link" aria-label="LinkedIn">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.2a1.66 1.66 0 0 0-1.66 1.66c0 .92.74 1.66 1.66 1.66 1 0 1.74-.74 1.74-1.66 0-.92-.74-1.66-1.74-1.66z" />
                 </svg>
               </a>
-              <a href="#" className="footer__social-link" aria-label="Twitter">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="footer__social-link" aria-label="Twitter / X">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </a>
-              <a href="#" className="footer__social-link" aria-label="Instagram">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="footer__social-link" aria-label="Instagram">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
                 </svg>
               </a>
-              <a href="#" className="footer__social-link" aria-label="Facebook">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="footer__social-link" aria-label="Facebook">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                 </svg>
               </a>
-              <a href="#" className="footer__social-link" aria-label="YouTube">
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="footer__social-link" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
                   <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#0b0f19" />
@@ -164,9 +179,9 @@ const Footer = () => {
 
             {/* Newsletter Subscription */}
             <div className="footer__newsletter">
-              <h4 className="footer__newsletter-title">Subscribe to our newsletter</h4>
+              <h4 className="footer__newsletter-title">Subscribe to Notification Alerts</h4>
               <p className="footer__newsletter-sub">
-                Get the latest job updates, career tips, and more delivered to your inbox.
+                Get the latest job notifications, exam dates, and admit card updates delivered to your inbox.
               </p>
               <form className="footer__newsletter-form" onSubmit={handleSubscribe}>
                 <div className="footer__input-wrap">
@@ -178,7 +193,7 @@ const Footer = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
+                    placeholder="Enter your email address"
                     className="footer__input"
                     required
                   />
@@ -190,29 +205,25 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Column 2: For Job Seekers */}
+          {/* Column 2: Explore by Category */}
           <div className="footer__col">
-            <h4 className="footer__col-title">For Job Seekers</h4>
+            <h4 className="footer__col-title">Explore Categories</h4>
             <ul className="footer__links">
-              {JOB_SEEKER_LINKS.map((link) => (
+              {EXPLORE_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="footer__link">
-                    {link.label}
-                  </a>
+                  {renderFooterLink(link)}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Column 3: For Employers */}
+          {/* Column 3: Top Exams & Recruiters */}
           <div className="footer__col">
-            <h4 className="footer__col-title">For Employers</h4>
+            <h4 className="footer__col-title">Top Recruiters</h4>
             <ul className="footer__links">
-              {EMPLOYER_LINKS.map((link) => (
+              {TOP_EXAMS_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="footer__link">
-                    {link.label}
-                  </a>
+                  {renderFooterLink(link)}
                 </li>
               ))}
             </ul>
@@ -224,17 +235,15 @@ const Footer = () => {
             <ul className="footer__links">
               {QUICK_LINKS.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} className="footer__link">
-                    {link.label}
-                  </a>
+                  {renderFooterLink(link)}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Column 5: Contact Us & Download App */}
+          {/* Column 5: Contact Us & Real-Time Alert Card */}
           <div className="footer__col footer__col--contact">
-            <h4 className="footer__col-title">Contact Us</h4>
+            <h4 className="footer__col-title">Contact &amp; Support</h4>
             <ul className="footer__contact-list">
               {CONTACT_INFO.map((item, idx) => (
                 <li key={idx} className="footer__contact-item">
@@ -246,33 +255,18 @@ const Footer = () => {
               ))}
             </ul>
 
-            {/* App Download */}
-            <div className="footer__app">
-              <h4 className="footer__app-title">Download Our App</h4>
-              <p className="footer__app-sub">Find jobs on the go.</p>
-              <div className="footer__app-badges">
-                {/* App Store Badge */}
-                <a href="#" className="footer__store-badge">
-                  <svg className="footer__store-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.57.65-1.06 1.71-.93 2.73.99.08 2.02-.48 2.64-1.23z" />
-                  </svg>
-                  <div className="footer__store-text">
-                    <span className="footer__store-small">Download on the</span>
-                    <span className="footer__store-big">App Store</span>
-                  </div>
-                </a>
-
-                {/* Google Play Badge */}
-                <a href="#" className="footer__store-badge">
-                  <svg className="footer__store-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3.609 1.814L13.793 12 3.61 22.186a1.994 1.994 0 0 1-.61-1.427V3.241c0-.555.228-1.06.61-1.427zm11.305 11.306l2.368 2.368-12.01 6.84 9.642-9.208zm0-2.24L5.272 1.672l12.01 6.84-2.368 2.368zm1.12 1.12l3.415 1.947c.808.462.808 1.218 0 1.68l-3.415 1.947-2.164-2.164 2.164-2.41z" />
-                  </svg>
-                  <div className="footer__store-text">
-                    <span className="footer__store-small">GET IT ON</span>
-                    <span className="footer__store-big">Google Play</span>
-                  </div>
-                </a>
+            {/* Real-time Alert Callout Card */}
+            <div className="footer__alert-card">
+              <div className="footer__alert-card-header">
+                <span className="footer__alert-pulse" />
+                <span className="footer__alert-title">Real-Time Exam Alerts</span>
               </div>
+              <p className="footer__alert-desc">
+                Central &amp; State government notifications, admit cards and results updated daily.
+              </p>
+              <Link to="/jobs" className="footer__alert-link">
+                View All Opportunities &rarr;
+              </Link>
             </div>
           </div>
         </div>
@@ -285,15 +279,21 @@ const Footer = () => {
             </span>
 
             <span className="footer__made-with">
-              Made with <span className="footer__heart">❤️</span> for a brighter tomorrow.
+              Made with <span className="footer__heart">❤️</span> for ambitious aspirants.
             </span>
 
             <div className="footer__legal">
               {LEGAL_LINKS.map((link, idx) => (
                 <span key={link.label} className="footer__legal-item">
-                  <a href={link.href} className="footer__legal-link">
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("/") ? (
+                    <Link to={link.href} className="footer__legal-link">
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a href={link.href} className="footer__legal-link">
+                      {link.label}
+                    </a>
+                  )}
                   {idx < LEGAL_LINKS.length - 1 && (
                     <span className="footer__legal-divider">|</span>
                   )}
@@ -308,5 +308,6 @@ const Footer = () => {
 };
 
 export default Footer;
+
 
 

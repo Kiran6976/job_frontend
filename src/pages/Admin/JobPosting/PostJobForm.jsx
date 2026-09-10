@@ -254,7 +254,13 @@ const PostJobForm = ({
         category: editingJob.category || "Government Exams",
         type: editingJob.type || "govt",
         level: editingJob.level || "National",
-        status: editingJob.status || "Apply Soon",
+        status: (() => {
+          const autoStatus = determineStatusFromStartDate(editingJob.applicationStartDate);
+          if (editingJob.status === "Apply Soon" && autoStatus === "Ongoing") {
+            return "Ongoing";
+          }
+          return editingJob.status || autoStatus || "Apply Soon";
+        })(),
         vacancies: editingJob.vacancies ? String(editingJob.vacancies) : "",
         notificationDate: editingJob.notificationDate || "",
         applicationStartDate: editingJob.applicationStartDate || "",
@@ -308,10 +314,70 @@ const PostJobForm = ({
     }
   }, [editingJob]);
 
+  // Helper to parse date string in YYYY-MM-DD or DD-MM-YYYY format
+  const parseDateToDateObj = (dateStr) => {
+    if (!dateStr || typeof dateStr !== "string") return null;
+    const trimmed = dateStr.trim();
+    if (!trimmed) return null;
+
+    // Check YYYY-MM-DD
+    const ymd = trimmed.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+    if (ymd) {
+      const d = new Date(parseInt(ymd[1], 10), parseInt(ymd[2], 10) - 1, parseInt(ymd[3], 10));
+      d.setHours(0, 0, 0, 0);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    // Check DD-MM-YYYY or DD/MM/YYYY
+    const dmy = trimmed.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+    if (dmy) {
+      const d = new Date(parseInt(dmy[3], 10), parseInt(dmy[2], 10) - 1, parseInt(dmy[1], 10));
+      d.setHours(0, 0, 0, 0);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    const fallback = new Date(trimmed);
+    if (!isNaN(fallback.getTime())) {
+      fallback.setHours(0, 0, 0, 0);
+      return fallback;
+    }
+
+    return null;
+  };
+
+  // Determine whether application start has begun
+  const determineStatusFromStartDate = (startDateStr) => {
+    if (!startDateStr) return null;
+    const start = parseDateToDateObj(startDateStr);
+    if (!start) return null;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // If application start date has arrived or is in the past, it's Ongoing
+    if (today >= start) {
+      return "Ongoing";
+    } else {
+      return "Apply Soon";
+    }
+  };
+
   // Generic Field Change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+
+      // If application start date is entered or changed, auto-select status
+      if (name === "applicationStartDate") {
+        const autoStatus = determineStatusFromStartDate(value);
+        if (autoStatus) {
+          next.status = autoStatus;
+        }
+      }
+
+      return next;
+    });
   };
 
   // Organization Auto-suggest
@@ -516,7 +582,13 @@ const PostJobForm = ({
       if (p.vacancies) updates.vacancies = String(p.vacancies);
       if (p.salary) updates.salary = p.salary;
       if (p.notificationDate) updates.notificationDate = p.notificationDate;
-      if (p.applicationStartDate) updates.applicationStartDate = p.applicationStartDate;
+      if (p.applicationStartDate) {
+        updates.applicationStartDate = p.applicationStartDate;
+        const autoStatus = determineStatusFromStartDate(p.applicationStartDate);
+        if (autoStatus) {
+          updates.status = autoStatus;
+        }
+      }
       if (p.applicationLastDate) updates.applicationLastDate = p.applicationLastDate;
       if (p.examDate) updates.examDate = p.examDate;
       if (p.educationalQualification) updates.educationalQualification = p.educationalQualification;

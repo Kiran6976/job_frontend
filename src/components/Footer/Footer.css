@@ -440,68 +440,76 @@
   height: 100%;
 }
 
-/* App Download */
-.footer__app-title {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 4px;
-}
-
-.footer__app-sub {
-  font-size: 12.5px;
-  color: #94a3b8;
-  margin: 0 0 12px;
-}
-
-.footer__app-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.footer__store-badge {
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 9px;
-  padding: 7px 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: #ffffff;
-  transition: all 0.2s ease;
-}
-
-.footer__store-badge:hover {
-  background: #1e293b;
-  border-color: #334155;
-  transform: translateY(-2px);
-}
-
-.footer__store-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.footer__store-text {
+/* ────────── Real-time Alert Callout Card ────────── */
+.footer__alert-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  margin-top: 8px;
 }
 
-.footer__store-small {
-  font-size: 9px;
-  text-transform: uppercase;
-  color: #94a3b8;
-  line-height: 1;
+.footer__alert-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.footer__store-big {
-  font-size: 13px;
+.footer__alert-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  animation: footerPulse 2s infinite;
+}
+
+@keyframes footerPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.footer__alert-title {
+  font-size: 12px;
   font-weight: 700;
-  color: #ffffff;
-  line-height: 1.2;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer__alert-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.footer__alert-link {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #60a5fa;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  transition: all 0.15s ease;
+}
+
+.footer__alert-link:hover {
+  color: #93c5fd;
+  transform: translateX(3px);
 }
 
 /* ────────── Bottom Copyright Bar ────────── */
@@ -514,6 +522,7 @@
 .footer__bottom-container {
   max-width: 1340px;
   margin: 0 auto;
+  padding: 0 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -539,6 +548,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .footer__legal-item {
@@ -561,16 +571,16 @@
   color: #334155;
 }
 
-/* ────────── Responsive ────────── */
+/* ────────── Responsive Rules ────────── */
 @media (max-width: 1200px) {
   .footer__container {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 36px;
   }
 
   .footer__col--brand {
-    grid-column: span 3;
-    max-width: 500px;
+    grid-column: span 4;
+    max-width: 600px;
   }
 
   .footer__cta-card {
@@ -578,14 +588,7 @@
   }
 }
 
-@media (max-width: 900px) {
-  .footer__cta-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-    padding: 32px 24px;
-  }
-
+@media (max-width: 1024px) {
   .footer__plane-doodle {
     display: none;
   }
@@ -593,27 +596,56 @@
   .footer__doodle-left {
     display: none;
   }
+}
+
+@media (max-width: 900px) {
+  .footer__cta-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 32px 28px;
+  }
 
   .footer__container {
     grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
   }
 
   .footer__col--brand {
     grid-column: span 2;
+    max-width: 100%;
+  }
+
+  .footer__bottom-container {
+    padding: 0 28px;
   }
 }
 
 @media (max-width: 640px) {
   .footer__cta-wrap {
-    padding: 32px 16px 16px;
+    padding: 24px 16px 12px;
+  }
+
+  .footer__cta-card {
+    padding: 24px 20px;
+    border-radius: 18px;
+  }
+
+  .footer__cta-title {
+    font-size: 22px;
+  }
+
+  .footer__cta-sub {
+    font-size: 13.5px;
   }
 
   .footer__main {
-    padding: 32px 16px 0;
+    padding: 28px 16px 0;
   }
 
   .footer__container {
     grid-template-columns: 1fr;
+    gap: 28px;
   }
 
   .footer__col--brand {
@@ -622,19 +654,65 @@
 
   .footer__cta-actions {
     width: 100%;
-    flex-direction: column;
   }
 
   .footer__btn {
     width: 100%;
     justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .footer__bottom {
+    margin-top: 36px;
+    padding: 20px 0 28px;
   }
 
   .footer__bottom-container {
+    padding: 0 16px;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 12px;
   }
+
+  .footer__legal {
+    justify-content: center;
+  }
 }
+
+@media (max-width: 440px) {
+  .footer__newsletter-form {
+    flex-direction: column;
+    align-items: stretch;
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 8px;
+  }
+
+  .footer__input-wrap {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 10px 14px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .footer__subscribe-btn {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .footer__cta-card {
+    padding: 20px 16px;
+  }
+
+  .footer__cta-title {
+    font-size: 20px;
+  }
+}
+
 

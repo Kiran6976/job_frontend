@@ -123,6 +123,30 @@
   border: 1px solid #a7f3d0;
 }
 
+.jd-badge--status-ongoing {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.jd-badge--status-apply-soon {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.jd-badge--status-apply-now {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.jd-badge--status-upcoming {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
 .jd-hero__bookmark {
   background: transparent;
   border: none;
