@@ -443,6 +443,8 @@ const PostJobForm = ({
   const handleLogoFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const localPreview = URL.createObjectURL(file);
+    setFormData((prev) => ({ ...prev, logoUrl: localPreview }));
     setIsUploadingLogo(true);
     const fd = new FormData();
     fd.append("file", file);
@@ -673,13 +675,18 @@ const PostJobForm = ({
         };
       }
 
-      setFormData((prev) => ({ ...prev, ...updates }));
+      // Tags & Badges
+      if (Array.isArray(p.tags) && p.tags.length > 0) {
+        setTags(p.tags);
+        updates.tags = p.tags;
+      }
 
+      setFormData((prev) => ({ ...prev, ...updates }));
 
       const filledCount = Object.keys(updates).length;
       setAutoFillResult({ pdfUrl, fieldsCount: filledCount });
       setParseStep("done");
-      showNotification(`AI extracted ${filledCount} fields from notification PDF!`, "success");
+      showNotification(`AI extracted ${filledCount} fields and ${Array.isArray(p.tags) ? p.tags.length : 0} tags from notification PDF!`, "success");
     } catch (err) {
       console.error("Auto-fill error:", err);
       showNotification("Network error during AI parsing.", "error");

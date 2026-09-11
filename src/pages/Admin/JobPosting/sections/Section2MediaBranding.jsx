@@ -1,5 +1,5 @@
-import React from "react";
-import { Palette, Zap, Building2, FileText } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Palette, Zap, Building2, FileText, Loader2 } from "lucide-react";
 import "./Section2MediaBranding.css";
 
 const Section2MediaBranding = ({
@@ -21,6 +21,12 @@ const Section2MediaBranding = ({
   setPdfFileName,
   setLogoUploadSuccess,
 }) => {
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [formData.logoUrl]);
+
   return (
     <div className="ajp__section-container ajp__section-media-branding">
       <div className="ajp__section-header">
@@ -53,24 +59,23 @@ const Section2MediaBranding = ({
           />
 
           <div className="ajp__logo-thumb-box">
-            {formData.logoUrl ? (
+            {isUploadingLogo ? (
+              <div className="ajp__logo-thumb-loading">
+                <Loader2 size={24} className="ajp__spin" color="#3b82f6" />
+              </div>
+            ) : formData.logoUrl && !imgError ? (
               <img
+                key={formData.logoUrl}
                 src={formData.logoUrl}
                 alt="Organization Logo"
                 className="ajp__logo-thumb"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                  const ph = e.target.parentElement?.querySelector(".ajp__logo-thumb-ph");
-                  if (ph) ph.style.display = "flex";
-                }}
+                onError={() => setImgError(true)}
               />
-            ) : null}
-            <div
-              className="ajp__logo-thumb-ph"
-              style={{ display: formData.logoUrl ? "none" : "flex" }}
-            >
-              <Building2 size={24} color="#64748b" />
-            </div>
+            ) : (
+              <div className="ajp__logo-thumb-ph">
+                <Building2 size={26} color="#64748b" />
+              </div>
+            )}
           </div>
 
           <div className="ajp__logo-controls">
@@ -85,8 +90,27 @@ const Section2MediaBranding = ({
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
-              <span>{isUploadingLogo ? "Uploading..." : "Upload Logo (Cloudinary)"}</span>
+              <span>{isUploadingLogo ? "Uploading Logo..." : "Upload Logo (Cloudinary)"}</span>
             </button>
+
+            {/* Presets for Logo */}
+            {PRESET_LOGOS && PRESET_LOGOS.length > 0 && (
+              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "4px" }}>
+                {PRESET_LOGOS.map((logo) => (
+                  <button
+                    key={logo.name}
+                    type="button"
+                    className={`ajp__preset-btn ${formData.logoUrl === logo.url ? "ajp__preset-btn--active" : ""}`}
+                    onClick={() => {
+                      setFormData((prev) => ({ ...prev, logoUrl: logo.url }));
+                      if (setLogoUploadSuccess) setLogoUploadSuccess(false);
+                    }}
+                  >
+                    <span>{logo.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

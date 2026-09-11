@@ -23,7 +23,6 @@ export const QUICK_LINKS = [
   { label: "Candidate Profile", href: "/profile" },
   { label: "Candidate Login", href: "/login" },
   { label: "Create Account", href: "/signup" },
-  { label: "Admin Portal", href: "/admin/login" },
 ];
 
 export const CONTACT_INFO = [

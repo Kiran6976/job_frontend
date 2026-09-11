@@ -112,6 +112,10 @@
   letter-spacing: -1.5px;
 }
 
+.hero__heading-line {
+  display: block;
+}
+
 /* Accent with Brush Stroke */
 .hero__heading--accent {
   color: #2563eb;
@@ -157,12 +161,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 10px 14px;
   flex: 1;
 }
 
 .hero__search-field--text {
-  border-right: 1px solid #e2e8f0;
+  border-right: none;
 }
 
 .hero__search-icon {
@@ -212,38 +216,6 @@
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
-/* ── Popular Searches ── */
-.hero__popular {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.hero__popular-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #475569;
-}
-
-.hero__tag {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(4px);
-  border: 1px solid #dce5ff;
-  border-radius: 999px;
-  padding: 5px 14px;
-  font-size: 12.5px;
-  color: #475569;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.hero__tag:hover {
-  background: #eff6ff;
-  border-color: #2563eb;
-  color: #2563eb;
-}
-
 /* ── Stats ── */
 .hero__stats {
   display: flex;
@@ -259,15 +231,40 @@
 }
 
 .hero__stat-icon {
-  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: #eff6ff;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #dbeafe;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.hero__stat-icon--red {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #ef4444;
+}
+
+.hero__stat-icon--blue {
+  background: #e0f2fe;
+  border-color: #bae6fd;
+  color: #0284c7;
+}
+
+.hero__stat-icon--purple {
+  background: #f3e8ff;
+  border-color: #e9d5ff;
+  color: #9333ea;
+}
+
+.hero__stat-icon--amber {
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #d97706;
 }
 
 .hero__stat-value {
@@ -279,7 +276,7 @@
 }
 
 .hero__stat-label {
-  font-size: 12px;
+  font-size: 12.5px;
   color: #64748b;
   margin: 4px 0 0;
   white-space: nowrap;
@@ -382,36 +379,167 @@
   }
 }
 
-@media (max-width: 640px) {
+/* ────────── Mobile View (≤ 768px): Uses Mobile_Hero.png ────────── */
+@media (max-width: 768px) {
   .hero {
-    padding: 28px 16px;
+    background-image: url("/Mobile_Hero.png");
+    background-position: center top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding: 20px 16px 24px;
+    min-height: auto;
   }
 
+  /* Clear desktop overlay to let the crisp sky and palace shine through */
+  .hero__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.2) 25%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.25) 85%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
+  }
+
+  .hero__bottom-fade {
+    display: none;
+  }
+
+  .hero__container {
+    padding-bottom: 0;
+    gap: 0;
+  }
+
+  .hero__left {
+    gap: 16px;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* Badge */
+  .hero__badge {
+    padding: 5px 14px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(220, 229, 255, 0.8);
+  }
+
+  /* Heading */
   .hero__heading {
-    font-size: 34px;
-    letter-spacing: -0.8px;
+    font-size: 38px;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    font-weight: 850;
+    color: #0b132b;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.8);
   }
 
+  .hero__heading-line {
+    display: block;
+  }
+
+  .hero__heading--accent {
+    margin: 0;
+  }
+
+  .hero__brush-stroke {
+    bottom: -4px;
+  }
+
+  /* Subtext */
+  .hero__subtext {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #334155;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
+  }
+
+  /* Floating Search Card - placed lower to reveal more sky and tree canopy */
   .hero__search {
     flex-direction: column;
-    padding: 8px;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12), 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(219, 234, 254, 0.8);
+    gap: 0;
+    max-width: 100%;
+    margin-top: 200px;
   }
 
   .hero__search-field--text {
     border-right: none;
-    border-bottom: 1px solid #e2e8f0;
-    width: 100%;
+    border-bottom: none;
+    padding: 10px 8px;
   }
 
   .hero__search-field {
     width: 100%;
+    box-sizing: border-box;
+  }
+
+  .hero__input {
+    font-size: 14.5px;
   }
 
   .hero__search-btn {
     width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 15px;
+    margin-top: 4px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
+  /* 2x2 Glass Card Grid for Stats - placed lower to reveal scenic lake/palace background */
   .hero__stats {
-    gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 160px;
+    margin-bottom: 24px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+  }
+
+  .hero__stat {
+    gap: 10px;
+    align-items: center;
+  }
+
+  .hero__stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .hero__stat-value {
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .hero__stat-label {
+    font-size: 11px;
+    margin-top: 2px;
+    color: #64748b;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  /* Hide right desktop callout column on mobile */
+  .hero__right {
+    display: none;
   }
 }

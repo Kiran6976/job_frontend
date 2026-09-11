@@ -1,16 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./Jobs.css";
 import Navbar from "../../components/Navbar/Navbar";
 import TopOpportunities from "../../components/TopOpportunities/TopOpportunities";
 import Footer from "../../components/Footer/Footer";
 
 const Jobs = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("q") || searchParams.get("search") || ""
+  );
+
+  useEffect(() => {
+    const q = searchParams.get("q") || searchParams.get("search") || "";
+    setSearchQuery(q);
+  }, [searchParams]);
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    console.log("Searching jobs for:", searchQuery, location);
+    if (e) e.preventDefault();
+    const trimmed = searchQuery.trim();
+    const nextParams = new URLSearchParams(searchParams);
+    if (trimmed) {
+      nextParams.set("q", trimmed);
+      nextParams.delete("search");
+    } else {
+      nextParams.delete("q");
+      nextParams.delete("search");
+    }
+    setSearchParams(nextParams);
+
+    // Smooth scroll to results
+    const target = document.querySelector(".to");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -65,32 +88,13 @@ const Jobs = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Job title, skills, or keywords"
+                  placeholder="Job title, skills, tags, or organization (e.g., Class 12, Graduate, RRB, SSC)"
                   className="jh__input"
                 />
-              </div>
-
-              <div className="jh__search-divider" />
-
-              <div className="jh__search-field jh__search-field--location">
-                <svg className="jh__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                  <circle cx="12" cy="9" r="2.5" />
-                </svg>
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Location"
-                  className="jh__input"
-                />
-                <svg className="jh__chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
               </div>
 
               <button type="submit" className="jh__search-btn">
-                Search Jobs &rarr;
+                Search Jobs →
               </button>
             </form>
 

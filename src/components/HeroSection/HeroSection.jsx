@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Briefcase,
   Building2,
@@ -5,16 +7,6 @@ import {
   Star,
 } from "lucide-react";
 import "./HeroSection.css";
-
-/* ── Static data ── */
-const POPULAR_SEARCHES = [
-  "Frontend",
-  "Backend",
-  "Full Stack",
-  "Remote",
-  "Internship",
-  "Data Analyst",
-];
 
 const STATS = [
   { icon: <Briefcase size={20} color="#2563eb" />, value: "10K+", label: "Job Opportunities" },
@@ -25,6 +17,19 @@ const STATS = [
 
 /* ── Component ── */
 const HeroSection = () => {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    if (e) e.preventDefault();
+    const trimmed = query.trim();
+    if (trimmed) {
+      navigate(`/jobs?q=${encodeURIComponent(trimmed)}`);
+    } else {
+      navigate("/jobs");
+    }
+  };
+
   return (
     <section className="hero">
       {/* Soft gradient overlay for text contrast */}
@@ -43,29 +48,31 @@ const HeroSection = () => {
 
           {/* Headline with custom brush underline */}
           <h1 className="hero__heading">
-            Find a Job <br />
-            <span className="hero__heading--accent">
-              That Fits
-              <svg
-                className="hero__brush-stroke"
-                viewBox="0 0 160 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2 9C45 3.5 115 3.5 158 8C110 11.5 50 11 2 9Z"
-                  fill="url(#heroBrushGrad)"
-                />
-                <defs>
-                  <linearGradient id="heroBrushGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.85" />
-                    <stop offset="55%" stopColor="#60a5fa" stopOpacity="0.75" />
-                    <stop offset="100%" stopColor="#93c5fd" stopOpacity="0.1" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </span> <br />
-            Your Future
+            <span className="hero__heading-line">Find a Job</span>
+            <span className="hero__heading-line hero__heading-line--accent">
+              <span className="hero__heading--accent">
+                That Fits
+                <svg
+                  className="hero__brush-stroke"
+                  viewBox="0 0 160 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 9C45 3.5 115 3.5 158 8C110 11.5 50 11 2 9Z"
+                    fill="url(#heroBrushGrad)"
+                  />
+                  <defs>
+                    <linearGradient id="heroBrushGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.85" />
+                      <stop offset="55%" stopColor="#60a5fa" stopOpacity="0.75" />
+                      <stop offset="100%" stopColor="#93c5fd" stopOpacity="0.1" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>
+            </span>
+            <span className="hero__heading-line">Your Future</span>
           </h1>
 
           {/* Sub-text */}
@@ -75,7 +82,7 @@ const HeroSection = () => {
           </p>
 
           {/* Search bar */}
-          <form className="hero__search" onSubmit={(e) => e.preventDefault()}>
+          <form className="hero__search" onSubmit={handleSearch}>
             <div className="hero__search-field hero__search-field--text">
               <svg
                 className="hero__search-icon"
@@ -89,64 +96,59 @@ const HeroSection = () => {
               </svg>
               <input
                 type="text"
-                placeholder="Job title, skills, or company"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Job title, skills, tags, or organization (e.g. Class 12, Graduate, RRB)"
                 className="hero__input"
               />
-            </div>
-
-            <div className="hero__search-field hero__search-field--location">
-              <svg
-                className="hero__search-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                <circle cx="12" cy="9" r="2.5" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Location"
-                className="hero__input"
-              />
-              <svg
-                className="hero__chevron"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
             </div>
 
             <button type="submit" className="hero__search-btn">
-              Search Jobs &rarr;
+              Search Jobs →
             </button>
           </form>
 
-          {/* Popular searches */}
-          <div className="hero__popular">
-            <span className="hero__popular-label">Popular Searches:</span>
-            {POPULAR_SEARCHES.map((tag) => (
-              <button key={tag} className="hero__tag">
-                {tag}
-              </button>
-            ))}
-          </div>
-
-          {/* Stats row */}
+          {/* Stats row / grid */}
           <div className="hero__stats">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="hero__stat">
-                <span className="hero__stat-icon">{stat.icon}</span>
-                <div>
-                  <p className="hero__stat-value">{stat.value}</p>
-                  <p className="hero__stat-label">{stat.label}</p>
-                </div>
+            <div className="hero__stat hero__stat--opportunities">
+              <span className="hero__stat-icon hero__stat-icon--red">
+                <Briefcase size={20} />
+              </span>
+              <div>
+                <p className="hero__stat-value">10K+</p>
+                <p className="hero__stat-label">Job Opportunities</p>
               </div>
-            ))}
+            </div>
+
+            <div className="hero__stat hero__stat--companies">
+              <span className="hero__stat-icon hero__stat-icon--blue">
+                <Building2 size={20} />
+              </span>
+              <div>
+                <p className="hero__stat-value">1K+</p>
+                <p className="hero__stat-label">Trusted Companies</p>
+              </div>
+            </div>
+
+            <div className="hero__stat hero__stat--seekers">
+              <span className="hero__stat-icon hero__stat-icon--purple">
+                <Users size={20} />
+              </span>
+              <div>
+                <p className="hero__stat-value">50K+</p>
+                <p className="hero__stat-label">Active Job Seekers</p>
+              </div>
+            </div>
+
+            <div className="hero__stat hero__stat--satisfaction">
+              <span className="hero__stat-icon hero__stat-icon--amber">
+                <Star size={20} fill="currentColor" />
+              </span>
+              <div>
+                <p className="hero__stat-value">4.8</p>
+                <p className="hero__stat-label">User Satisfaction</p>
+              </div>
+            </div>
           </div>
         </div>
 

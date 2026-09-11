@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "./FeaturedJobs.css";
-import { FILTER_TABS, FEATURED_JOBS, TRUST_FEATURES } from "./jobData";
+import { FILTER_TABS, FEATURED_JOBS } from "./jobData";
 import { API_ENDPOINTS } from "../../config/api";
 
 const timeAgo = (dateStr) => {
@@ -24,6 +24,15 @@ const FeaturedJobs = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [savedJobs, setSavedJobs] = useState({});
   const [customJobs, setCustomJobs] = useState([]);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -94,43 +103,14 @@ const FeaturedJobs = () => {
     }
   };
 
-  const renderTrustIcon = (icon) => {
-    switch (icon) {
-      case "shield":
-        return (
-          <div className="fj__trust-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-          </div>
-        );
-      case "document":
-        return (
-          <div className="fj__trust-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-          </div>
-        );
-      case "chart":
-        return (
-          <div className="fj__trust-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2">
-              <path d="M18 20V10M12 20V4M6 20v-6" />
-            </svg>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
+  // Convert custom published jobs from admin into card format, sorted by latest
+  const sortedCustomJobs = [...customJobs].sort((a, b) => {
+    const timeA = new Date(a.createdAt || 0).getTime();
+    const timeB = new Date(b.createdAt || 0).getTime();
+    return timeB - timeA;
+  });
 
-  // Convert custom published jobs from admin into card format
-  const formattedCustomJobs = customJobs.map((j) => {
+  const formattedCustomJobs = sortedCustomJobs.map((j) => {
     const rawTags = Array.isArray(j.tags) && j.tags.length > 0 ? j.tags : [];
     const skills =
       rawTags.length > 0
@@ -175,62 +155,79 @@ const FeaturedJobs = () => {
   // Use posted jobs if available; otherwise use default sample jobs
   const rawJobs = formattedCustomJobs.length > 0 ? formattedCustomJobs : FEATURED_JOBS;
 
-  // Filter based on activeTab
-  const displayedJobs = rawJobs.filter((job) => {
-    if (activeTab === "all") return true;
-    const loc = String(job.location || "").toLowerCase();
-    const type = String(job.type || "").toLowerCase();
-    const ind = String(job.industry || "").toLowerCase();
+  // Filter based on activeTab and limit to 4 latest cards only
+  const displayedJobs = rawJobs
+    .filter((job) => {
+      if (activeTab === "all") return true;
+      const loc = String(job.location || "").toLowerCase();
+      const type = String(job.type || "").toLowerCase();
+      const ind = String(job.industry || "").toLowerCase();
 
-    if (activeTab === "remote") return loc.includes("remote");
-    if (activeTab === "fulltime")
-      return type.includes("full") || type.includes("govt") || type.includes("national") || ind.includes("govt");
-    if (activeTab === "parttime") return type.includes("part") || type.includes("state");
-    if (activeTab === "internship") return type.includes("intern") || ind.includes("intern");
-    return true;
-  });
+      if (activeTab === "remote") return loc.includes("remote");
+      if (activeTab === "fulltime")
+        return type.includes("full") || type.includes("govt") || type.includes("national") || ind.includes("govt");
+      if (activeTab === "parttime") return type.includes("part") || type.includes("state");
+      if (activeTab === "internship") return type.includes("intern") || ind.includes("intern");
+      return true;
+    })
+    .slice(0, 4);
 
   return (
     <section className="fj">
+      {/* Background Video */}
+      <div className="fj__video-wrapper">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          defaultMuted
+          playsInline
+          preload="auto"
+          className="fj__bg-video"
+          src="/make_it_animate_1080p_20260911110940.mp4"
+        >
+          <source src="/make_it_animate_1080p_20260911110940.mp4" type="video/mp4" />
+        </video>
+        <div className="fj__video-overlay" />
+      </div>
+
       <div className="fj__container">
-        {/* ────────── Header ────────── */}
-        <div className="fj__header">
-          {/* Badge */}
-          <div className="fj__badge">
-            <svg className="fj__badge-star" viewBox="0 0 24 24" fill="#2563eb">
-              <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-            <span>Featured Opportunities</span>
-          </div>
-
-          {/* Heading with sparkle doodle */}
-          <div className="fj__heading-wrap">
-            <div className="fj__sparkle">
-              <span className="fj__sparkle-ray fj__sparkle-ray--1" />
-              <span className="fj__sparkle-ray fj__sparkle-ray--2" />
-              <span className="fj__sparkle-ray fj__sparkle-ray--3" />
+        {/* ────────── Header Row (Left: Header, Right: Doodle) ────────── */}
+        <div className="fj__header-row">
+          <div className="fj__header-left">
+            <div className="fj__pretitle-wrap">
+              <span className="fj__pretitle">OPPORTUNITIES AWAIT</span>
+              <span className="fj__pretitle-dash" />
             </div>
+
             <h2 className="fj__title">
-              Featured <span className="fj__title--accent">Jobs</span>
+              Discover Your Next <span className="fj__title-highlight">Opportunity</span>
             </h2>
+
+            <p className="fj__subtitle">
+              Find verified jobs from government, banking, education, defense and leading organizations.
+            </p>
           </div>
 
-          <p className="fj__subtitle">
-            Explore hand-picked opportunities from top organizations and commissions.
-          </p>
-
-          {/* Handwritten top-right doodle */}
-          <div className="fj__doodle-top">
+          <div className="fj__doodle-wrap">
             <span className="fj__doodle-text">
-              Great Careers Start Here
+              Better<br />Careers<br />Brighter<br />Tomorrows
             </span>
-            <svg className="fj__doodle-arrow" viewBox="0 0 50 40" fill="none" stroke="#64748b" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 5 C 25 15, 38 22, 35 32 C 34 35, 29 34, 30 28 C 30.5 24, 34 25, 38 29" />
+            <svg
+              className="fj__doodle-curve"
+              viewBox="0 0 130 24"
+              fill="none"
+              stroke="#2563eb"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+            >
+              <path d="M6 16 C 45 4, 85 4, 124 14" />
             </svg>
           </div>
         </div>
 
-        {/* ────────── Filter Tabs ────────── */}
+        {/* ────────── Filter Tabs & View All ────────── */}
         <div className="fj__filters">
           <div className="fj__tabs">
             {FILTER_TABS.map((tab) => (
@@ -247,7 +244,7 @@ const FeaturedJobs = () => {
 
           <Link to="/jobs" className="fj__view-all-btn">
             View All Jobs
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </Link>
@@ -379,84 +376,6 @@ const FeaturedJobs = () => {
               </Link>
             </div>
           )}
-        </div>
-
-        {/* ────────── Trust Banner ────────── */}
-        <div className="fj__trust-banner">
-          {/* Stack item 1: Avatars */}
-          <div className="fj__trust-item fj__trust-item--social">
-            <div className="fj__trust-avatars">
-              {TRUST_FEATURES[0].avatars.map((url, i) => (
-                <img key={i} src={url} alt="User" className="fj__trust-avatar" />
-              ))}
-              <div className="fj__trust-avatar fj__trust-avatar--plus">+</div>
-            </div>
-            <div className="fj__trust-text-group">
-              <span className="fj__trust-count">{TRUST_FEATURES[0].title}</span>
-              <span className="fj__trust-sub">{TRUST_FEATURES[0].subtitle}</span>
-            </div>
-          </div>
-
-          <div className="fj__trust-divider" />
-
-          {/* Feature 2: Verified */}
-          <div className="fj__trust-item">
-            {renderTrustIcon(TRUST_FEATURES[1].icon)}
-            <div className="fj__trust-text-group">
-              <span className="fj__trust-title">{TRUST_FEATURES[1].title}</span>
-              <span className="fj__trust-sub">{TRUST_FEATURES[1].subtitle}</span>
-            </div>
-          </div>
-
-          <div className="fj__trust-divider" />
-
-          {/* Feature 3: Easy Application */}
-          <div className="fj__trust-item">
-            {renderTrustIcon(TRUST_FEATURES[2].icon)}
-            <div className="fj__trust-text-group">
-              <span className="fj__trust-title">{TRUST_FEATURES[2].title}</span>
-              <span className="fj__trust-sub">{TRUST_FEATURES[2].subtitle}</span>
-            </div>
-          </div>
-
-          <div className="fj__trust-divider" />
-
-          {/* Feature 4: Better Opportunities */}
-          <div className="fj__trust-item">
-            {renderTrustIcon(TRUST_FEATURES[3].icon)}
-            <div className="fj__trust-text-group">
-              <span className="fj__trust-title">{TRUST_FEATURES[3].title}</span>
-              <span className="fj__trust-sub">{TRUST_FEATURES[3].subtitle}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ────────── Bottom CTA Section ────────── */}
-        <div className="fj__bottom-cta">
-          {/* Bottom Left Doodle */}
-          <div className="fj__doodle-bottom">
-            <span className="fj__doodle-text">Build<br />Your Future</span>
-            <svg className="fj__doodle-arrow-bottom" viewBox="0 0 60 40" fill="none" stroke="#64748b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 32 C 24 24, 38 12, 50 6 M 38 5 L 51 6 L 48 18" />
-            </svg>
-          </div>
-
-          {/* CTA Center Button */}
-          <div className="fj__cta-center">
-            <Link to="/jobs" className="fj__cta-btn">
-              Browse All Jobs &rarr;
-            </Link>
-            <p className="fj__cta-subtext">
-              More Opportunities. A Brighter Tomorrow.
-            </p>
-          </div>
-
-          {/* Bottom Right Decorative Dot Grid */}
-          <div className="fj__dot-grid">
-            {Array.from({ length: 24 }).map((_, idx) => (
-              <span key={idx} className="fj__dot" />
-            ))}
-          </div>
         </div>
       </div>
     </section>

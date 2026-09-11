@@ -5,6 +5,156 @@ import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
 
 
+// Comprehensive dictionary for acronyms, exam abbreviations, and synonyms
+const ACRONYM_SYNONYMS = {
+  ssc: ["staff selection commission", "cgl", "chsl", "mts", "gd", "cpo", "je", "stenographer", "selection posts", "steno"],
+  "staff selection commission": ["ssc", "cgl", "chsl", "mts", "gd", "cpo", "je", "stenographer"],
+  cgl: ["combined graduate level", "ssc", "staff selection commission"],
+  chsl: ["combined higher secondary", "ssc", "10+2", "12th", "staff selection commission"],
+  mts: ["multi tasking staff", "ssc", "staff selection commission"],
+  upsc: ["union public service commission", "civil services", "ias", "ips", "ifs", "nda", "cds", "capf", "ese", "cms", "cse"],
+  "union public service commission": ["upsc", "civil services", "ias", "ips", "ifs", "nda", "cds", "capf"],
+  ias: ["upsc", "civil services", "union public service commission"],
+  ips: ["upsc", "civil services", "union public service commission"],
+  ifs: ["upsc", "civil services", "union public service commission"],
+  cse: ["upsc", "civil services", "union public service commission"],
+  nda: ["national defence academy", "upsc", "defense", "defence"],
+  cds: ["combined defence services", "upsc", "defense", "defence"],
+  rrb: ["railway recruitment board", "railway", "railways", "indian railways", "ntpc", "group d", "alp", "rpf", "loco pilot"],
+  railway: ["rrb", "railway recruitment board", "railways", "indian railways", "ntpc", "group d", "alp", "rpf"],
+  railways: ["rrb", "railway recruitment board", "railway", "indian railways", "ntpc", "group d", "alp", "rpf"],
+  "indian railways": ["rrb", "railway recruitment board", "railway", "railways", "ntpc", "group d", "alp", "rpf"],
+  "railway recruitment board": ["rrb", "railway", "railways", "indian railways", "ntpc", "group d", "alp", "rpf"],
+  ntpc: ["non technical popular categories", "rrb", "railway", "railways"],
+  alp: ["assistant loco pilot", "rrb", "railway"],
+  rpf: ["railway protection force", "rrb", "railway"],
+  ibps: ["institute of banking personnel selection", "bank", "banking", "po", "clerk", "so", "probationary officer"],
+  "institute of banking personnel selection": ["ibps", "bank", "banking", "po", "clerk", "so"],
+  sbi: ["state bank of india", "bank", "banking", "po", "clerk"],
+  "state bank of india": ["sbi", "bank", "banking"],
+  rbi: ["reserve bank of india", "bank", "banking", "grade b", "assistant"],
+  "reserve bank of india": ["rbi", "bank", "banking"],
+  drdo: ["defence research and development organisation", "defence research and development organization", "defence", "defense", "ceptam"],
+  "defence research and development organisation": ["drdo", "defense", "defence"],
+  isro: ["indian space research organisation", "indian space research organization", "space"],
+  "indian space research organisation": ["isro", "space"],
+  nta: ["national testing agency", "neet", "jee", "cuet", "ugc net"],
+  ctet: ["teacher eligibility test", "central teacher eligibility test", "teaching", "teacher"],
+  tet: ["teacher eligibility test", "central teacher eligibility test", "teaching", "teacher"],
+  gate: ["graduate aptitude test in engineering", "engineering", "engineer"],
+  psc: ["public service commission", "state psc", "uppsc", "bpsc", "mppsc", "rpsc", "wbpsc", "tnpsc", "kpsc", "appsc", "opsc"],
+  "public service commission": ["psc", "state psc", "uppsc", "bpsc", "mppsc", "rpsc", "wbpsc", "tnpsc", "kpsc"],
+  uppsc: ["uttar pradesh public service commission", "psc"],
+  bpsc: ["bihar public service commission", "psc"],
+  mppsc: ["madhya pradesh public service commission", "psc"],
+  rpsc: ["rajasthan public service commission", "psc"],
+  wbpsc: ["west bengal public service commission", "psc"],
+  tnpsc: ["tamil nadu public service commission", "psc"],
+  kpsc: ["karnataka public service commission", "psc", "kerala public service commission"],
+  "12th": ["class 12", "12th", "10+2", "class12", "higher secondary", "intermediate", "12th pass", "+2"],
+  "class 12": ["12th", "10+2", "class12", "higher secondary", "intermediate", "12th pass", "+2"],
+  "class12": ["12th", "class 12", "10+2", "higher secondary", "intermediate", "12th pass"],
+  "10+2": ["class 12", "12th", "class12", "higher secondary", "intermediate", "12th pass", "chsl"],
+  intermediate: ["class 12", "12th", "10+2", "class12", "higher secondary"],
+  "higher secondary": ["class 12", "12th", "10+2", "class12", "intermediate", "chsl"],
+  "10th": ["class 10", "10th", "class10", "matriculation", "matric", "secondary", "10th pass"],
+  "class 10": ["10th", "class 10", "class10", "matriculation", "matric", "secondary", "10th pass", "mts"],
+  class10: ["10th", "class 10", "matriculation", "matric", "secondary", "10th pass"],
+  matric: ["class 10", "10th", "class10", "matriculation", "secondary"],
+  matriculation: ["class 10", "10th", "class10", "matric", "secondary"],
+  graduate: ["graduate", "graduation", "degree", "bachelor", "b.tech", "btech", "b.e", "be", "b.sc", "b.com", "b.a", "cgl"],
+  graduation: ["graduate", "degree", "bachelor", "b.tech", "btech", "b.e", "be", "b.sc", "b.com", "b.a", "cgl"],
+  engineering: ["engineer", "engineering", "b.tech", "btech", "b.e", "be", "diploma", "junior engineer", "assistant engineer", "je", "ae", "gate"],
+  engineer: ["engineering", "engineer", "b.tech", "btech", "b.e", "be", "diploma", "junior engineer", "assistant engineer", "je", "ae", "gate"],
+  teaching: ["teaching", "teacher", "faculty", "professor", "ctet", "tet", "pgt", "tgt", "prt", "lecturer"],
+  teacher: ["teaching", "teacher", "faculty", "professor", "ctet", "tet", "pgt", "tgt", "prt", "lecturer"],
+  defense: ["defense", "defence", "police", "army", "navy", "air force", "airforce", "nda", "cds", "afcat", "crpf", "bsf", "cisf", "itbp", "ssb", "capf", "constable", "si"],
+  defence: ["defense", "defence", "police", "army", "navy", "air force", "airforce", "nda", "cds", "afcat", "crpf", "bsf", "cisf", "itbp", "ssb", "capf", "constable", "si"],
+  police: ["police", "defense", "defence", "constable", "si", "sub inspector"],
+  army: ["army", "defense", "defence", "agniveer", "nda", "cds"],
+  navy: ["navy", "defense", "defence", "agniveer", "nda", "cds", "indian navy"],
+  airforce: ["air force", "airforce", "defense", "defence", "agniveer", "afcat", "nda"],
+  "air force": ["air force", "airforce", "defense", "defence", "agniveer", "afcat", "nda"],
+};
+
+// Helper: Extract acronym from text, e.g. "Staff Selection Commission" -> "SSC"
+const getAcronym = (text) => {
+  if (!text) return "";
+  const words = String(text)
+    .replace(/[^a-zA-Z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 0 && !["of", "and", "in", "the", "for", "to", "board", "commission"].includes(w.toLowerCase()));
+  if (words.length <= 1) return "";
+  return words.map((w) => w[0].toUpperCase()).join("");
+};
+
+// Helper: Normalize string by removing punctuation and spaces
+const normalizeStr = (str) => String(str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+// Helper: Get all search tokens and expanded aliases
+const getSearchTokens = (query) => {
+  if (!query) return [];
+  const raw = String(query).toLowerCase().trim();
+  const clean = raw.replace(/\b(jobs?|exams?|recruitment|vacancy|vacancies|posts?|forms?|online)\b/gi, "").trim();
+
+  const tokens = new Set();
+  if (raw) tokens.add(raw);
+  if (clean) tokens.add(clean);
+
+  // Split clean query into individual words
+  const words = clean.split(/\s+/).filter(Boolean);
+  words.forEach((w) => tokens.add(w));
+
+  // Expand aliases for all tokens
+  const currentTokens = Array.from(tokens);
+  currentTokens.forEach((t) => {
+    const tNorm = normalizeStr(t);
+    if (ACRONYM_SYNONYMS[t]) {
+      ACRONYM_SYNONYMS[t].forEach((alias) => tokens.add(alias.toLowerCase()));
+    }
+    // Check key match
+    Object.keys(ACRONYM_SYNONYMS).forEach((key) => {
+      if (normalizeStr(key) === tNorm) {
+        ACRONYM_SYNONYMS[key].forEach((alias) => tokens.add(alias.toLowerCase()));
+      }
+    });
+  });
+
+  return Array.from(tokens).filter(Boolean);
+};
+
+// Check if a text field matches any search token or acronym
+const checkTextMatch = (targetText, searchTokens, rawQuery) => {
+  if (!targetText || searchTokens.length === 0) return false;
+  const targetLower = String(targetText).toLowerCase();
+  const targetNorm = normalizeStr(targetText);
+  const targetAcronym = getAcronym(targetText).toLowerCase();
+  const rawQueryNorm = normalizeStr(rawQuery);
+
+  // Direct acronym match
+  if (targetAcronym && (searchTokens.includes(targetAcronym) || targetAcronym === rawQueryNorm)) {
+    return true;
+  }
+
+  // Token matches
+  return searchTokens.some((token) => {
+    const tokenLower = token.toLowerCase();
+    const tokenNorm = normalizeStr(token);
+    if (!tokenNorm) return false;
+    return (
+      targetLower.includes(tokenLower) ||
+      targetNorm.includes(tokenNorm) ||
+      (targetAcronym && targetAcronym.includes(tokenNorm))
+    );
+  });
+};
+
+// Check if tag list matches search tokens
+const checkTagsMatch = (tags, searchTokens, rawQuery) => {
+  if (!Array.isArray(tags) || tags.length === 0 || searchTokens.length === 0) return false;
+  return tags.some((tag) => checkTextMatch(tag, searchTokens, rawQuery));
+};
+
 const matchesTab = (job, tabId, tabLabel) => {
   if (!tabId || tabId === "all") return true;
   const cat = String(job.category || "").toLowerCase();
@@ -201,6 +351,7 @@ const TopOpportunities = () => {
       date2Label,
       date2Value,
       tags: j.tags && j.tags.length > 0 ? j.tags.slice(0, 3) : ["Graduate"],
+      allTags: Array.isArray(j.tags) ? j.tags : [],
       extraTagsCount: j.tags && j.tags.length > 3 ? j.tags.length - 3 : 0,
       emblem: j.logoUrl || "/emblem_india.png",
       btnText: "View Details \u2192",
@@ -298,12 +449,69 @@ const TopOpportunities = () => {
     }
   }, [searchParams, dynamicTabs]);
 
-  // Filter jobs based on activeTab
-  const displayedJobs = allFormattedJobs.filter((job) => {
-    if (activeTab === "all") return true;
-    const currentTab = dynamicTabs.find((t) => t.id === activeTab);
-    return matchesTab(job, activeTab, currentTab?.label);
-  });
+  // Read search query parameter (e.g., ?q=... or ?search=...)
+  const searchQuery = (searchParams.get("q") || searchParams.get("search") || "").trim();
+
+  // Filter jobs based on activeTab and hierarchical search criteria
+  const displayedJobs = (() => {
+    // Hierarchical search: Title -> Tags -> Organization
+    if (searchQuery) {
+      const searchTokens = getSearchTokens(searchQuery);
+
+      // Helper to run hierarchical match on a job array
+      const runHierarchicalSearch = (pool) => {
+        // Match level 1: Title (Priority 1)
+        const titleMatches = pool.filter((j) =>
+          checkTextMatch(j.title, searchTokens, searchQuery)
+        );
+
+        // Match level 2: Matching Tags (Priority 2, excluding title matches)
+        const tagMatches = pool.filter((j) => {
+          if (titleMatches.some((m) => String(m.id) === String(j.id))) return false;
+          const candidateTags = [
+            ...(Array.isArray(j.allTags) ? j.allTags : []),
+            ...(Array.isArray(j.tags) ? j.tags : []),
+          ];
+          return checkTagsMatch(candidateTags, searchTokens, searchQuery);
+        });
+
+        // Match level 3: Organization name (Priority 3, excluding previous matches)
+        const orgMatches = pool.filter((j) => {
+          if (
+            titleMatches.some((m) => String(m.id) === String(j.id)) ||
+            tagMatches.some((m) => String(m.id) === String(j.id))
+          ) {
+            return false;
+          }
+          return checkTextMatch(j.organization, searchTokens, searchQuery);
+        });
+
+        return [...titleMatches, ...tagMatches, ...orgMatches];
+      };
+
+      // Try searching within activeTab first if not 'all'
+      if (activeTab !== "all") {
+        const currentTab = dynamicTabs.find((t) => t.id === activeTab);
+        const tabScopedJobs = allFormattedJobs.filter((job) =>
+          matchesTab(job, activeTab, currentTab?.label)
+        );
+        const tabResults = runHierarchicalSearch(tabScopedJobs);
+        if (tabResults.length > 0) {
+          return tabResults;
+        }
+      }
+
+      // If activeTab is 'all' or tab search yielded 0 results, search across all jobs
+      return runHierarchicalSearch(allFormattedJobs);
+    }
+
+    // Default: category tab filter only when no search query
+    return allFormattedJobs.filter((job) => {
+      if (activeTab === "all") return true;
+      const currentTab = dynamicTabs.find((t) => t.id === activeTab);
+      return matchesTab(job, activeTab, currentTab?.label);
+    });
+  })();
 
   const toggleSaveExam = (id) => {
     setSavedExams((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -544,8 +752,10 @@ const TopOpportunities = () => {
               </div>
               <div>
                 <h3 className="to__section-title">
-                  <span className="to__flame">🔥</span>{" "}
-                  {activeTab === "all"
+                  <span className="to__flame">{searchQuery ? "🎯" : "🔥"}</span>{" "}
+                  {searchQuery
+                    ? `Results for "${searchQuery}"`
+                    : activeTab === "all"
                     ? "Trending Opportunities"
                     : dynamicTabs.find((t) => t.id === activeTab)?.label || "Opportunities"}
                 </h3>
@@ -556,6 +766,22 @@ const TopOpportunities = () => {
             </div>
 
             <div className="to__section-controls">
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const params = new URLSearchParams(searchParams);
+                    params.delete("q");
+                    params.delete("search");
+                    window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
+                    window.dispatchEvent(new Event("popstate"));
+                  }}
+                  className="to__view-all-link"
+                  style={{ background: "none", border: "none", cursor: "pointer", marginRight: "12px", color: "#ef4444" }}
+                >
+                  ✕ Clear Search
+                </button>
+              )}
               {activeTab !== "all" && (
                 <button
                   type="button"
@@ -585,13 +811,24 @@ const TopOpportunities = () => {
                 >
                   <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🔍</div>
                   <h4 style={{ fontSize: "1.15rem", fontWeight: "700", color: "#1e293b", marginBottom: "6px" }}>
-                    No opportunities found in this category
+                    {searchQuery ? `No opportunities found matching "${searchQuery}"` : "No opportunities found in this category"}
                   </h4>
                   <p style={{ color: "#64748b", fontSize: "0.95rem", marginBottom: "16px" }}>
-                    New positions are posted frequently. Check back soon or explore other categories.
+                    {searchQuery
+                      ? "Try searching for another keyword (e.g. Graduate, 12th, UPSC, SSC, RRB, Engineering)."
+                      : "New positions are posted frequently. Check back soon or explore other categories."}
                   </p>
                   <button
-                    onClick={() => setActiveTab("all")}
+                    onClick={() => {
+                      if (searchQuery) {
+                        const params = new URLSearchParams(searchParams);
+                        params.delete("q");
+                        params.delete("search");
+                        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
+                        window.dispatchEvent(new Event("popstate"));
+                      }
+                      setActiveTab("all");
+                    }}
                     style={{
                       padding: "8px 18px",
                       background: "#2563eb",

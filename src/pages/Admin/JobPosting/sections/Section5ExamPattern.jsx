@@ -920,7 +920,7 @@ const Section5ExamPattern = ({
               <input
                 type="text"
                 className="ajp__input ajp__input--sm"
-                placeholder="e.g. +1 mark"
+                placeholder="e.g. +1 mark or Merit-based"
                 value={activeData.markingScheme?.correct ?? ""}
                 onChange={(e) => handleStageMarkingSchemeChange("correct", e.target.value)}
               />
@@ -930,7 +930,7 @@ const Section5ExamPattern = ({
               <input
                 type="text"
                 className="ajp__input ajp__input--sm"
-                placeholder="e.g. -0.33 marks"
+                placeholder="e.g. No deduction or -0.33 marks"
                 value={activeData.markingScheme?.incorrect ?? ""}
                 onChange={(e) => handleStageMarkingSchemeChange("incorrect", e.target.value)}
               />
@@ -941,7 +941,7 @@ const Section5ExamPattern = ({
             <input
               type="text"
               className="ajp__input ajp__input--sm"
-              placeholder="e.g. 0 marks"
+              placeholder="e.g. 0 marks or N/A"
               value={activeData.markingScheme?.unanswered ?? ""}
               onChange={(e) => handleStageMarkingSchemeChange("unanswered", e.target.value)}
             />
@@ -957,15 +957,75 @@ const Section5ExamPattern = ({
             border: "1px solid rgba(255, 255, 255, 0.08)",
           }}
         >
-          <label className="ajp__label" style={{ color: "#fcd34d", marginBottom: "0.6rem", display: "flex", alignItems: "center", gap: "6px" }}>
-            <AlertTriangle size={15} /> Negative Marking Warning ({adminSelectedStage.toUpperCase()})
-          </label>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem", flexWrap: "wrap", gap: "6px" }}>
+            <label className="ajp__label" style={{ color: "#fcd34d", margin: 0, display: "flex", alignItems: "center", gap: "6px" }}>
+              <AlertTriangle size={15} /> Negative Marking ({adminSelectedStage.toUpperCase()})
+            </label>
+            {/* Quick Status Toggle */}
+            <div style={{ display: "flex", gap: "4px" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  handleStageNegativeMarkingChange("penalty", "0 marks");
+                  handleStageNegativeMarkingChange("advice", "No negative marking applies.");
+                  handleStageNegativeMarkingChange("text", "No negative marking applies for this selection process.");
+                  handleStageNegativeMarkingChange("enabled", false);
+                  handleStageMarkingSchemeChange("incorrect", "No deduction");
+                }}
+                style={{
+                  fontSize: "0.68rem",
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background:
+                    activeData.negativeMarking?.enabled === false ||
+                    activeData.negativeMarking?.penalty === "0 marks" ||
+                    activeData.negativeMarking?.penalty === "0" ||
+                    activeData.markingScheme?.incorrect === "No deduction"
+                      ? "#059669"
+                      : "rgba(15, 23, 42, 0.6)",
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                No Penalty
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleStageNegativeMarkingChange("penalty", "-0.33 marks");
+                  handleStageNegativeMarkingChange("advice", "Candidates are advised to avoid guessing.");
+                  handleStageNegativeMarkingChange("text", "There will be negative marking of 0.33 marks for each incorrect answer.");
+                  handleStageNegativeMarkingChange("enabled", true);
+                  handleStageMarkingSchemeChange("incorrect", "-0.33 marks");
+                }}
+                style={{
+                  fontSize: "0.68rem",
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  background:
+                    activeData.negativeMarking?.enabled === true &&
+                    activeData.negativeMarking?.penalty !== "0 marks" &&
+                    activeData.negativeMarking?.penalty !== "0"
+                      ? "#d97706"
+                      : "rgba(15, 23, 42, 0.6)",
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                Has Negative Marking
+              </button>
+            </div>
+          </div>
           <div className="ajp__field">
             <label className="ajp__label" style={{ fontSize: "0.7rem" }}>Penalty Amount</label>
             <input
               type="text"
               className="ajp__input ajp__input--sm"
-              placeholder="e.g. -0.33 marks (1/3rd)"
+              placeholder="e.g. -0.33 marks or 0 marks"
               value={activeData.negativeMarking?.penalty ?? ""}
               onChange={(e) => handleStageNegativeMarkingChange("penalty", e.target.value)}
             />
@@ -975,7 +1035,7 @@ const Section5ExamPattern = ({
             <input
               type="text"
               className="ajp__input ajp__input--sm"
-              placeholder="e.g. Candidates are advised to avoid guessing..."
+              placeholder="e.g. Candidates are advised to avoid guessing or No negative marking applies."
               value={activeData.negativeMarking?.advice ?? ""}
               onChange={(e) => handleStageNegativeMarkingChange("advice", e.target.value)}
             />

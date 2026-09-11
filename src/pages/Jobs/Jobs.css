@@ -230,10 +230,6 @@
 }
 
 .jh__search-field--query {
-  flex: 1.3;
-}
-
-.jh__search-field--location {
   flex: 1;
 }
 

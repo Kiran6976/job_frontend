@@ -425,59 +425,171 @@ const Section5ExamPattern = ({ job }) => {
             <div className="jd-pattern__marking-item">
               <span className="jd-pattern__marking-check">✔</span>
               <span className="jd-pattern__marking-label">Each incorrect answer:</span>
-              <span className="jd-pattern__marking-pill jd-pattern__marking-pill--neg">
-                {markingScheme.incorrect || "-0.66 marks"}
+              <span
+                className={`jd-pattern__marking-pill ${
+                  String(markingScheme.incorrect || "").startsWith("-")
+                    ? "jd-pattern__marking-pill--neg"
+                    : "jd-pattern__marking-pill--pos"
+                }`}
+                style={
+                  !String(markingScheme.incorrect || "").startsWith("-")
+                    ? { background: "#ecfdf5", color: "#059669" }
+                    : {}
+                }
+              >
+                {markingScheme.incorrect || "No deduction"}
               </span>
             </div>
             <div className="jd-pattern__marking-item">
               <span className="jd-pattern__marking-check">✔</span>
               <span className="jd-pattern__marking-label">Unanswered questions:</span>
               <span className="jd-pattern__marking-val">
-                {markingScheme.unanswered || "No marks"}
+                {markingScheme.unanswered || "0 marks"}
               </span>
             </div>
-            <div className="jd-pattern__marking-item">
-              <span className="jd-pattern__marking-check">✔</span>
-              <span className="jd-pattern__marking-label">Total Marks (Paper I):</span>
-              <strong className="jd-pattern__marking-val">{markingScheme.totalPaper1 || "200"}</strong>
-            </div>
-            <div className="jd-pattern__marking-item">
-              <span className="jd-pattern__marking-check">✔</span>
-              <span className="jd-pattern__marking-label">Total Marks (Paper II):</span>
-              <strong className="jd-pattern__marking-val">{markingScheme.totalPaper2 || "200"}</strong>
-            </div>
+            {markingScheme.totalPaper1 && (
+              <div className="jd-pattern__marking-item">
+                <span className="jd-pattern__marking-check">✔</span>
+                <span className="jd-pattern__marking-label">Total Marks (Paper I):</span>
+                <strong className="jd-pattern__marking-val">{markingScheme.totalPaper1}</strong>
+              </div>
+            )}
+            {markingScheme.totalPaper2 && (
+              <div className="jd-pattern__marking-item">
+                <span className="jd-pattern__marking-check">✔</span>
+                <span className="jd-pattern__marking-label">Total Marks (Paper II):</span>
+                <strong className="jd-pattern__marking-val">{markingScheme.totalPaper2}</strong>
+              </div>
+            )}
           </div>
         </div>
 
         {/* 3. Negative Marking */}
-        <div className="jd-pattern__subcard jd-pattern__subcard--warning">
-          <div className="jd-pattern__subcard-header">
-            <div className="jd-pattern__subcard-icon jd-pattern__subcard-icon--amber">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
+        {(() => {
+          const isNegativeActive =
+            negativeMarking.enabled !== false &&
+            negativeMarking.penalty &&
+            negativeMarking.penalty !== "0" &&
+            negativeMarking.penalty !== "0 marks" &&
+            !/no\s+negative|no\s+penalty|no\s+deduction|without\s+negative|nil|none/i.test(negativeMarking.penalty) &&
+            !/no\s+negative|no\s+penalty|no\s+deduction|without\s+negative|merit\s+basis/i.test(negativeMarking.text || "");
+
+          return (
+            <div
+              className={`jd-pattern__subcard ${
+                isNegativeActive ? "jd-pattern__subcard--warning" : ""
+              }`}
+              style={
+                !isNegativeActive
+                  ? { background: "#f8fafc", borderColor: "#cbd5e1" }
+                  : {}
+              }
+            >
+              <div className="jd-pattern__subcard-header">
+                <div
+                  className={`jd-pattern__subcard-icon ${
+                    isNegativeActive
+                      ? "jd-pattern__subcard-icon--amber"
+                      : "jd-pattern__subcard-icon--green"
+                  }`}
+                >
+                  {isNegativeActive ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      <path d="m9 12 2 2 4-4" />
+                    </svg>
+                  )}
+                </div>
+                <div>
+                  <h4 className="jd-pattern__subcard-title">Negative Marking</h4>
+                  <span
+                    style={{
+                      fontSize: "0.68rem",
+                      fontWeight: 700,
+                      color: isNegativeActive ? "#b45309" : "#059669",
+                    }}
+                  >
+                    {isNegativeActive ? "Penalty Applicable" : "No Negative Marking"}
+                  </span>
+                </div>
+              </div>
+              <p
+                className="jd-pattern__neg-desc"
+                style={!isNegativeActive ? { color: "#475569" } : {}}
+              >
+                {negativeMarking.text ||
+                  (isNegativeActive
+                    ? "Negative marking applies for wrong answers."
+                    : "No negative marking applies in this examination / selection.")}
+              </p>
+              <div
+                className="jd-pattern__neg-callout"
+                style={
+                  !isNegativeActive
+                    ? {
+                        background: "#ecfdf5",
+                        borderColor: "#a7f3d0",
+                      }
+                    : {}
+                }
+              >
+                <div
+                  className="jd-pattern__neg-circle"
+                  style={
+                    !isNegativeActive
+                      ? {
+                          background: "#059669",
+                          fontSize: "14px",
+                        }
+                      : {}
+                  }
+                >
+                  <span className="jd-pattern__neg-minus">
+                    {isNegativeActive ? "–" : "✓"}
+                  </span>
+                </div>
+                <div>
+                  <strong
+                    className="jd-pattern__neg-val"
+                    style={!isNegativeActive ? { color: "#065f46" } : {}}
+                  >
+                    {isNegativeActive
+                      ? negativeMarking.penalty
+                      : "0 Marks (No Penalty)"}
+                  </strong>
+                  <span
+                    className="jd-pattern__neg-val-sub"
+                    style={!isNegativeActive ? { color: "#047857" } : {}}
+                  >
+                    {isNegativeActive
+                      ? negativeMarking.penaltyLabel || "for each wrong answer"
+                      : "no marks deducted for incorrect answers"}
+                  </span>
+                </div>
+              </div>
+              {negativeMarking.advice && (
+                <div
+                  className="jd-pattern__neg-advice"
+                  style={!isNegativeActive ? { color: "#047857" } : {}}
+                >
+                  <span
+                    className="jd-pattern__neg-advice-icon"
+                    style={!isNegativeActive ? { color: "#059669" } : {}}
+                  >
+                    ℹ
+                  </span>
+                  <span>{negativeMarking.advice}</span>
+                </div>
+              )}
             </div>
-            <h4 className="jd-pattern__subcard-title">Negative Marking</h4>
-          </div>
-          <p className="jd-pattern__neg-desc">{negativeMarking.text}</p>
-          <div className="jd-pattern__neg-callout">
-            <div className="jd-pattern__neg-circle">
-              <span className="jd-pattern__neg-minus">–</span>
-            </div>
-            <div>
-              <strong className="jd-pattern__neg-val">{negativeMarking.penalty}</strong>
-              <span className="jd-pattern__neg-val-sub">{negativeMarking.penaltyLabel}</span>
-            </div>
-          </div>
-          {negativeMarking.advice && (
-            <div className="jd-pattern__neg-advice">
-              <span className="jd-pattern__neg-advice-icon">ℹ</span>
-              <span>{negativeMarking.advice}</span>
-            </div>
-          )}
-        </div>
+          );
+        })()}
 
         {/* 4. Download Detailed Syllabus */}
         <div className="jd-pattern__subcard">
