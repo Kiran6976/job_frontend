@@ -5,7 +5,7 @@ const ProfileMetrics = ({ counts = {}, onCardClick }) => {
   const cards = [
     {
       id: "applications",
-      count: counts.applications || 12,
+      count: counts.applications !== undefined ? counts.applications : 0,
       title: "Applications",
       subtitle: "Track your progress",
       theme: "blue",
@@ -21,7 +21,7 @@ const ProfileMetrics = ({ counts = {}, onCardClick }) => {
     },
     {
       id: "saved",
-      count: counts.saved || 8,
+      count: counts.saved !== undefined ? counts.saved : 0,
       title: "Saved Jobs & Exams",
       subtitle: "View your saved items",
       theme: "purple",
@@ -33,7 +33,7 @@ const ProfileMetrics = ({ counts = {}, onCardClick }) => {
     },
     {
       id: "alerts",
-      count: counts.alerts || 5,
+      count: counts.alerts !== undefined ? counts.alerts : 0,
       title: "Exam Alerts",
       subtitle: "Stay updated",
       theme: "pink",
@@ -46,7 +46,7 @@ const ProfileMetrics = ({ counts = {}, onCardClick }) => {
     },
     {
       id: "deadlines",
-      count: counts.deadlines || 3,
+      count: counts.deadlines !== undefined ? counts.deadlines : 0,
       title: "Upcoming Deadlines",
       subtitle: "Don't miss important dates",
       theme: "green",

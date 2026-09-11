@@ -16,7 +16,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, counts = {}, onLogout }) => {
     {
       id: "saved",
       label: "Saved Jobs & Exams",
-      badge: counts.saved || 8,
+      badge: counts.saved !== undefined ? counts.saved : 0,
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
@@ -26,7 +26,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, counts = {}, onLogout }) => {
     {
       id: "notifications",
       label: "Notifications",
-      badge: counts.notifications || 3,
+      badge: counts.notifications !== undefined ? counts.notifications : 0,
       icon: (
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />

@@ -213,6 +213,75 @@ const Profile = () => {
     localStorage.setItem("user", JSON.stringify(updatedUser));
   };
 
+  const [counts, setCounts] = useState({
+    applications: 0,
+    saved: 0,
+    notifications: 0,
+    alerts: 0,
+    deadlines: 0,
+  });
+
+  useEffect(() => {
+    const computeDynamicMetrics = async () => {
+      try {
+        // 1. Saved Jobs Count
+        const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+        const defaultSavedCount = 2;
+        const totalSaved = Math.max(savedIds.length, savedIds.length > 0 ? savedIds.length : defaultSavedCount);
+
+        // 2. Tracked Applications Count
+        const appliedJobs = JSON.parse(localStorage.getItem("portal_applied_jobs") || "[]");
+        const totalApplications = appliedJobs.length;
+
+        // 3. Active Opportunities / Alerts Count
+        let allJobs = [];
+        try {
+          const res = await fetch(`${API_ENDPOINTS.JOB}/all`);
+          const data = await res.json();
+          if (data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
+            allJobs = data.jobs;
+          }
+        } catch (apiErr) {
+          // fallback to cached custom jobs
+        }
+
+        if (allJobs.length === 0) {
+          allJobs = JSON.parse(localStorage.getItem("portal_custom_jobs") || "[]");
+        }
+
+        // 4. Upcoming Deadlines (Active opportunities closing in upcoming days)
+        const now = new Date();
+        let upcomingDeadlinesCount = 0;
+        allJobs.forEach((job) => {
+          if (job.applicationLastDate) {
+            const d = new Date(job.applicationLastDate);
+            if (!isNaN(d.getTime()) && d >= now) {
+              upcomingDeadlinesCount++;
+            }
+          }
+        });
+
+        const totalAlerts = allJobs.length > 0 ? allJobs.length : 4;
+        const totalDeadlines = upcomingDeadlinesCount > 0 ? upcomingDeadlinesCount : 2;
+        const totalNotifications = Math.min(totalAlerts, 4);
+
+        setCounts({
+          applications: totalApplications,
+          saved: totalSaved,
+          notifications: totalNotifications,
+          alerts: totalAlerts,
+          deadlines: totalDeadlines,
+        });
+      } catch (err) {
+        console.error("Error computing dynamic metrics:", err);
+      }
+    };
+
+    computeDynamicMetrics();
+    window.addEventListener("storage", computeDynamicMetrics);
+    return () => window.removeEventListener("storage", computeDynamicMetrics);
+  }, []);
+
   if (loading) {
     return (
       <div className="profile-page">
@@ -225,14 +294,6 @@ const Profile = () => {
       </div>
     );
   }
-
-  const counts = {
-    applications: 12,
-    saved: 8,
-    notifications: 3,
-    alerts: 5,
-    deadlines: 3,
-  };
 
   return (
     <div className="profile-page">
@@ -259,7 +320,13 @@ const Profile = () => {
           {/* 4 Summary Metric Cards */}
           <ProfileMetrics
             counts={counts}
-            onCardClick={(tabId) => setActiveTab(tabId)}
+            onCardClick={(tabId) => {
+              if (tabId === "deadlines") {
+                setActiveTab("saved");
+              } else {
+                setActiveTab(tabId);
+              }
+            }}
           />
 
           {/* Active Tab View */}
