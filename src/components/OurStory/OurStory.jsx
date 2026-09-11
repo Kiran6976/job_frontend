@@ -103,27 +103,45 @@ const OurStory = () => {
             ))}
           </div>
 
-          {/* Floating Journey Progression Card */}
-          <div className="our-story__journey-card">
-            {JOURNEY_STEPS.map((step, idx) => (
-              <React.Fragment key={idx}>
-                <div className="our-story__journey-step">
-                  <div
-                    className="our-story__step-icon-box"
-                    style={{ backgroundColor: step.iconBg }}
-                  >
-                    {step.icon}
+          {/* Bottom Row: Left Doodle + Floating Journey Progression Card */}
+          <div className="our-story__bottom-row">
+            <div className="our-story__doodle-bottom-left">
+              <span className="our-story__doodle-text-bl">
+                From<br />Aspirations<br />to Achievements
+              </span>
+              <svg
+                className="our-story__doodle-curve-bl"
+                viewBox="0 0 140 26"
+                fill="none"
+                stroke="#2563eb"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+              >
+                <path d="M6 18 C 45 4, 95 4, 134 18" />
+              </svg>
+            </div>
+
+            <div className="our-story__journey-card">
+              {JOURNEY_STEPS.map((step, idx) => (
+                <React.Fragment key={idx}>
+                  <div className="our-story__journey-step">
+                    <div
+                      className="our-story__step-icon-box"
+                      style={{ backgroundColor: step.iconBg }}
+                    >
+                      {step.icon}
+                    </div>
+                    <div className="our-story__step-info">
+                      <h4 className="our-story__step-title">{step.title}</h4>
+                      <p className="our-story__step-desc">{step.desc}</p>
+                    </div>
                   </div>
-                  <div className="our-story__step-info">
-                    <h4 className="our-story__step-title">{step.title}</h4>
-                    <p className="our-story__step-desc">{step.desc}</p>
-                  </div>
-                </div>
-                {idx < JOURNEY_STEPS.length - 1 && (
-                  <ArrowRight size={20} className="our-story__step-arrow" />
-                )}
-              </React.Fragment>
-            ))}
+                  {idx < JOURNEY_STEPS.length - 1 && (
+                    <ArrowRight size={20} className="our-story__step-arrow" />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -147,23 +165,6 @@ const OurStory = () => {
               </svg>
             </div>
           </div>
-        </div>
-
-        {/* Bottom-left Cursive Doodle */}
-        <div className="our-story__doodle-bottom-left">
-          <span className="our-story__doodle-text-bl">
-            From<br />Aspirations<br />to Achievements
-          </span>
-          <svg
-            className="our-story__doodle-curve-bl"
-            viewBox="0 0 140 26"
-            fill="none"
-            stroke="#2563eb"
-            strokeWidth="2.6"
-            strokeLinecap="round"
-          >
-            <path d="M6 18 C 45 4, 95 4, 134 18" />
-          </svg>
         </div>
       </div>
     </section>
