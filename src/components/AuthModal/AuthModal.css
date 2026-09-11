@@ -232,6 +232,8 @@
 }
 .auth-modal__input-wrapper .auth-modal__input {
   padding-right: 42px;
+}
+
 .auth-modal__eye-btn {
   position: absolute;
   right: 12px;
