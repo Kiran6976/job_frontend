@@ -1,0 +1,332 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap");
+
+/* =============================================
+   OUR STORY SECTION (SCENIC LANDSCAPE BG)
+   ============================================= */
+
+.our-story {
+  position: relative;
+  overflow: hidden;
+  min-height: 660px;
+  display: flex;
+  align-items: center;
+  background-color: #f0f6ff;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  padding: 85px 0 75px;
+}
+
+/* ────────── Background Landscape Graphic ────────── */
+.our-story__bg-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.our-story__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  display: block;
+}
+
+.our-story__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(238, 246, 255, 0.98) 0%,
+    rgba(240, 247, 255, 0.95) 34%,
+    rgba(240, 247, 255, 0.82) 48%,
+    rgba(240, 247, 255, 0.42) 66%,
+    rgba(240, 247, 255, 0.08) 82%,
+    rgba(240, 247, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+/* ────────── Main Container ────────── */
+.our-story__container {
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 0 48px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ────────── Left Column ────────── */
+.our-story__left {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pre-title */
+.our-story__pretitle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.our-story__pretitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #2563eb;
+  text-transform: uppercase;
+}
+
+.our-story__pretitle-dash {
+  display: inline-block;
+  width: 32px;
+  height: 2px;
+  background: #2563eb;
+  border-radius: 2px;
+}
+
+/* Main Heading */
+.our-story__heading {
+  font-size: clamp(2.35rem, 4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  margin: 0 0 20px;
+}
+
+.our-story__heading-dark {
+  color: #0b132b;
+}
+
+.our-story__heading-blue {
+  color: #2563eb;
+}
+
+/* Story Paragraphs */
+.our-story__p {
+  font-size: 1.02rem;
+  line-height: 1.68;
+  color: #475569;
+  margin: 0 0 14px;
+  max-width: 580px;
+  font-weight: 450;
+}
+
+/* ────────── Metrics Row ────────── */
+.our-story__metrics-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin: 24px 0 34px;
+  flex-wrap: wrap;
+}
+
+.our-story__metric-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.our-story__metric-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+}
+
+.our-story__metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.our-story__metric-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0b132b;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.our-story__metric-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* ────────── Floating Journey Card ────────── */
+.our-story__journey-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 18px 28px;
+  max-width: 860px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.our-story__journey-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.our-story__step-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.our-story__step-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.our-story__step-title {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 2px;
+  line-height: 1.2;
+}
+
+.our-story__step-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+  max-width: 175px;
+}
+
+.our-story__step-arrow {
+  color: #93c5fd;
+  flex-shrink: 0;
+}
+
+/* ────────── Doodles ────────── */
+.our-story__right {
+  position: absolute;
+  top: 60px;
+  right: 280px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.our-story__doodle-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(-8deg);
+}
+
+.our-story__doodle-text {
+  font-family: "Caveat", cursive;
+  font-size: 2.15rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.our-story__doodle-curve-top {
+  width: 140px;
+  height: 22px;
+  margin-top: 2px;
+}
+
+/* Bottom Left Doodle */
+.our-story__doodle-bottom-left {
+  position: absolute;
+  bottom: 25px;
+  left: -20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(-14deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.our-story__doodle-text-bl {
+  font-family: "Caveat", cursive;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.our-story__doodle-curve-bl {
+  width: 125px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+/* ────────── Responsive Media Queries ────────── */
+@media (max-width: 1200px) {
+  .our-story__right {
+    right: 180px;
+    top: 40px;
+  }
+}
+
+@media (max-width: 1040px) {
+  .our-story__right,
+  .our-story__doodle-bottom-left {
+    display: none;
+  }
+  
+  .our-story__journey-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .our-story__step-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .our-story {
+    padding: 60px 0 50px;
+  }
+
+  .our-story__container {
+    padding: 0 24px;
+  }
+
+  .our-story__bg-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(238, 246, 255, 0.97) 0%,
+      rgba(240, 247, 255, 0.92) 65%,
+      rgba(240, 247, 255, 0.7) 100%
+    );
+  }
+
+  .our-story__heading {
+    font-size: 2.1rem;
+  }
+
+  .our-story__metrics-row {
+    gap: 20px;
+  }
+}

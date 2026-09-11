@@ -5,27 +5,21 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import AboutHero from "../../components/AboutHero/AboutHero";
 import WhyWeExist from "../../components/WhyWeExist/WhyWeExist";
+import OurStory from "../../components/OurStory/OurStory";
 import { useAuth } from "../../context/AuthContext";
 import "./About.css";
-
-const IMPACT_METRICS = [
-  { value: "500,000+", label: "Registered Aspirants", desc: "Trusting our platform daily" },
-  { value: "10,000+", label: "Verified Jobs Published", desc: "Across UPSC, SSC, Banking, & State" },
-  { value: "28+", label: "States & UTs Covered", desc: "Complete pan-India recruitment reach" },
-  { value: "99.8%", label: "Notification Accuracy", desc: "Curated with zero misinformation" },
-];
 
 const About = () => {
   const { user, openAuthModal } = useAuth();
   const purposeRef = useRef(null);
-  const impactRef = useRef(null);
+  const storyRef = useRef(null);
 
   const scrollToPurpose = () => {
     purposeRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const scrollToImpact = () => {
-    impactRef.current?.scrollIntoView({ behavior: "smooth" });
+  const scrollToStory = () => {
+    storyRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleExploreJobs = (e) => {
@@ -42,7 +36,7 @@ const About = () => {
       <main>
         {/* ────────── Hero Section ────────── */}
         <AboutHero
-          onStoryClick={scrollToPurpose}
+          onStoryClick={scrollToStory}
           onMissionClick={scrollToPurpose}
         />
 
@@ -51,29 +45,10 @@ const About = () => {
           <WhyWeExist />
         </div>
 
-        {/* ────────── Impact Metrics ────────── */}
-        <section ref={impactRef} className="about-impact">
-          <div className="about-container">
-            <div className="about-impact__wrapper">
-              <div className="about-section-header about-section-header--light">
-                <div className="about-badge about-badge--light">OUR IMPACT</div>
-                <h2 className="about-section-title about-section-title--white">
-                  Empowering Futures at Scale
-                </h2>
-              </div>
-
-              <div className="about-impact__grid">
-                {IMPACT_METRICS.map((metric, idx) => (
-                  <div key={idx} className="about-impact__item">
-                    <span className="about-impact__value">{metric.value}</span>
-                    <h4 className="about-impact__label">{metric.label}</h4>
-                    <p className="about-impact__desc">{metric.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* ────────── Our Story Section (Dedicated Component) ────────── */}
+        <div ref={storyRef}>
+          <OurStory />
+        </div>
 
         {/* ────────── CTA Section ────────── */}
         <section className="about-cta">
