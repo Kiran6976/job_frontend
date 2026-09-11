@@ -291,7 +291,7 @@ const Section5ExamPattern = ({ job }) => {
                   <line x1="16" y1="17" x2="8" y2="17" />
                 </svg>
               </div>
-              <div>
+              <div className="jd-pattern__stage-info">
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                   <h3 className="jd-pattern__stage-title">{stageTitle}</h3>
                   {stageBadge && (
@@ -300,6 +300,15 @@ const Section5ExamPattern = ({ job }) => {
                 </div>
                 <p className="jd-pattern__stage-desc">{stageDescription}</p>
               </div>
+            </div>
+
+            {/* Mobile Scroll Indicator */}
+            <div className="jd-pattern__scroll-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                <path d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                <path d="M17 8l4 4m0 0l-4 4" />
+              </svg>
+              <span>Scroll horizontally to view full table</span>
             </div>
 
             {/* Papers Breakdown Table */}

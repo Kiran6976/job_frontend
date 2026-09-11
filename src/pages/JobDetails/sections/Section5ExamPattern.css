@@ -10,6 +10,8 @@
   margin-top: 32px;
   position: relative;
   overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -190,9 +192,24 @@
 /* 2-Column Grid: Left Main + Right Sidebar */
 .jd-pattern__grid {
   display: grid;
-  grid-template-columns: 2.1fr 1fr;
+  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
   gap: 22px;
   align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.jd-pattern__main-col {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.jd-pattern__sidebar {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 .jd-pattern__card {
@@ -202,6 +219,10 @@
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   height: 100%;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .jd-pattern__stage-banner {
@@ -211,6 +232,14 @@
   padding: 18px 22px;
   background: #f8fafc;
   border-bottom: 1px solid #f1f5f9;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.jd-pattern__stage-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .jd-pattern__stage-icon-wrap {
@@ -235,6 +264,7 @@
   font-size: 1.05rem;
   font-weight: 800;
   color: #0f172a;
+  word-break: break-word;
 }
 
 .jd-pattern__stage-badge {
@@ -244,6 +274,7 @@
   border-radius: 9999px;
   font-size: 0.7rem;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .jd-pattern__stage-desc {
@@ -251,15 +282,75 @@
   font-size: 0.8rem;
   color: #64748b;
   line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Mobile Scroll Hint */
+.jd-pattern__scroll-hint {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .jd-pattern__scroll-hint {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .jd-pattern__scroll-hint svg {
+    color: #2563eb;
+    animation: jdScrollHintAnim 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes jdScrollHintAnim {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
 }
 
 /* Table Wrap */
 .jd-pattern__table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+.jd-pattern__table-wrap::-webkit-scrollbar {
+  height: 6px;
+}
+
+.jd-pattern__table-wrap::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.jd-pattern__table-wrap::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.jd-pattern__table-wrap::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .jd-pattern__data-table {
   width: 100%;
+  min-width: 580px;
   border-collapse: collapse;
   font-size: 0.825rem;
   text-align: left;
@@ -656,7 +747,7 @@
 /* Responsive Rules for Exam Pattern Section */
 @media (max-width: 1100px) {
   .jd-pattern__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .jd-pattern__bottom-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -667,55 +758,108 @@
   }
 }
 
+@media (max-width: 860px) {
+  .jd-pattern__stage-tabs {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
 @media (max-width: 680px) {
   .jd-pattern-section {
-    padding: 20px 16px;
+    padding: 20px 14px;
+    border-radius: 16px;
+    margin-top: 20px;
+  }
+  .jd-pattern__title {
+    font-size: 1.5rem;
+  }
+  .jd-pattern__subtitle {
+    font-size: 0.84rem;
   }
   .jd-pattern__stage-tabs {
     grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 18px 0;
+  }
+  .jd-pattern__stage-tab {
+    padding: 12px 14px;
+    min-width: 0;
   }
   .jd-pattern__bottom-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .jd-pattern__subcard {
+    min-width: 0;
+    max-width: 100%;
+    padding: 14px;
   }
   .jd-pattern__header-art {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
   }
   /* Collapse main grid to single column */
   .jd-pattern__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
   /* Ensure table wrapper is scrollable and table has a min-width */
   .jd-pattern__table-wrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
   .jd-pattern__data-table {
-    min-width: 520px;
+    min-width: 560px;
   }
   /* Reduce table cell padding */
   .jd-pattern__data-table th,
   .jd-pattern__data-table td {
-    padding: 8px 10px;
-    font-size: 0.75rem;
+    padding: 9px 12px;
+    font-size: 0.76rem;
+  }
+  .jd-pattern__data-table th {
+    white-space: nowrap;
   }
   .jd-pattern__stage-banner {
-    padding: 14px 16px;
+    padding: 14px 14px;
+    gap: 10px;
+  }
+  .jd-pattern__stage-title {
+    font-size: 0.96rem;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 440px) {
+  .jd-pattern-section {
+    padding: 14px 10px;
+    border-radius: 12px;
+  }
+  .jd-pattern__title {
+    font-size: 1.3rem;
+  }
+  .jd-pattern__subtitle {
+    font-size: 0.78rem;
+  }
   .jd-pattern__data-table {
-    min-width: 440px;
+    min-width: 520px;
   }
   .jd-pattern__data-table th,
   .jd-pattern__data-table td {
-    padding: 6px 8px;
-    font-size: 0.7rem;
+    padding: 8px 10px;
+    font-size: 0.72rem;
   }
   /* Hide decorative header art on very small screens */
   .jd-pattern__header-art {
     display: none;
+  }
+  .jd-pattern__stage-banner {
+    padding: 12px 10px;
   }
 }
