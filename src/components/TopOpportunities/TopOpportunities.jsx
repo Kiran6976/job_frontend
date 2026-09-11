@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Flame, Target } from "lucide-react";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
@@ -810,7 +811,13 @@ const TopOpportunities = () => {
               </div>
               <div>
                 <h3 className="to__section-title">
-                  <span className="to__flame">{searchQuery ? "🎯" : "🔥"}</span>{" "}
+                  <span className="to__flame">
+                    {searchQuery ? (
+                      <Target size={20} className="to__flame-icon to__flame-icon--target" />
+                    ) : (
+                      <Flame size={20} className="to__flame-icon to__flame-icon--fire" />
+                    )}
+                  </span>
                   {searchQuery
                     ? `Results for "${searchQuery}"`
                     : activeTab === "all"

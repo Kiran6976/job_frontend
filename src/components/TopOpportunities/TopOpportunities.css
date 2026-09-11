@@ -327,7 +327,19 @@
 }
 
 .to__flame {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.to__flame-icon--fire {
+  color: #ea580c;
+  fill: #f97316;
+  filter: drop-shadow(0 2px 4px rgba(249, 115, 22, 0.35));
+}
+
+.to__flame-icon--target {
+  color: #2563eb;
 }
 
 .to__section-sub {
