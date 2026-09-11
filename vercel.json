@@ -1,12 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/job/:id",
+      "source": "/job/:id*",
       "has": [
         {
           "type": "header",
           "key": "user-agent",
-          "value": "(?i).*(facebookexternalhit|WhatsApp|Twitterbot|TelegramBot|LinkedInBot|Discordbot|SkypeUriPreview|Slackbot|Google-Structured-Data-Testing-Tool|curl|wget).*"
+          "value": ".*([wW]hats[aA]pp|[fF]acebookexternalhit|[tT]witterbot|[tT]elegram[bB]ot|[lL]inked[iI]n[bB]ot|[dD]iscordbot|[sS]kype[uU]ri[pP]review|[sS]lackbot|[gG]oogle|[cC]url|[wW]get).*"
         }
       ],
       "destination": "/api/job-meta?id=:id"

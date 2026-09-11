@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
   const defaultTitle = "The WorkFlow - Job Portal & Career Updates";
   const defaultDesc = "Discover government exams, recruitment notifications, admit cards, exam dates, syllabus, and career opportunities on The WorkFlow.";
-  const defaultImage = `${baseUrl}/Logo_New.png`;
+  const defaultImage = `${baseUrl}/og_workflow.jpg`;
 
   let title = defaultTitle;
   let description = defaultDesc;
@@ -36,24 +36,23 @@ export default async function handler(req, res) {
       job.postsDescription ||
       job.aboutOrg ||
       (job.slogan ? `"${job.slogan}" — Official Notification` : "") ||
-      `Official recruitment notification for ${job.title}. Check eligibility, dates, and apply on The WorkFlow.`;
+      `Official recruitment notification for ${job.title} by ${orgName}. Check vacancies, eligibility & apply now.`;
 
-    if (job.logoUrl) {
+    const orgLower = String(orgName + " " + (job.title || "")).toLowerCase();
+
+    if (job.logoUrl && !job.logoUrl.includes("emblem_india.png")) {
       if (job.logoUrl.startsWith("http://") || job.logoUrl.startsWith("https://")) {
         imageUrl = job.logoUrl;
       } else {
         const cleanPath = job.logoUrl.startsWith("/") ? job.logoUrl : `/${job.logoUrl}`;
         imageUrl = `${baseUrl}${cleanPath}`;
       }
+    } else if (orgLower.includes("ssc") || orgLower.includes("staff selection")) {
+      imageUrl = `${baseUrl}/og_ssc.jpg`;
+    } else if (orgLower.includes("upsc") || orgLower.includes("civil services")) {
+      imageUrl = `${baseUrl}/og_upsc.jpg`;
     } else {
-      const orgLower = String(orgName).toLowerCase();
-      if (orgLower.includes("ssc") || orgLower.includes("staff selection")) {
-        imageUrl = `${baseUrl}/Staff_Selection_Commission_Logo.jpg`;
-      } else if (orgLower.includes("upsc") || orgLower.includes("civil services")) {
-        imageUrl = `${baseUrl}/UPSC.png`;
-      } else {
-        imageUrl = `${baseUrl}/emblem_india.png`;
-      }
+      imageUrl = `${baseUrl}/og_workflow.jpg`;
     }
   }
 
@@ -74,7 +73,7 @@ export default async function handler(req, res) {
     <meta charset="UTF-8" />
     <title>${escapeHtml(title)}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="${escapeHtml(imageUrl)}" />
+    <link rel="icon" type="image/png" href="/Logo_New.png" />
 
     <!-- Primary Meta Tags -->
     <meta name="title" content="${escapeHtml(title)}" />
@@ -89,8 +88,8 @@ export default async function handler(req, res) {
     <meta property="og:image" content="${escapeHtml(imageUrl)}" />
     <meta property="og:image:secure_url" content="${escapeHtml(imageUrl)}" />
     <meta property="og:image:alt" content="${escapeHtml(orgName)} Logo" />
-    <meta property="og:image:width" content="600" />
-    <meta property="og:image:height" content="600" />
+    <meta property="og:image:width" content="500" />
+    <meta property="og:image:height" content="500" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -99,7 +98,7 @@ export default async function handler(req, res) {
     <meta name="twitter:description" content="${escapeHtml(description)}" />
     <meta name="twitter:image" content="${escapeHtml(imageUrl)}" />
 
-    <!-- Instant client-side redirect for human visitors -->
+    <!-- Instant client redirect for browsers -->
     <meta http-equiv="refresh" content="0;url=/job/${id || ''}">
     <script>
       window.location.replace("/job/${id || ''}");
