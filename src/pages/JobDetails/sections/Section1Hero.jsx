@@ -4,6 +4,7 @@ import "./Section1Hero.css";
 
 const Section1Hero = ({ job, timeLeft, saved, onToggleSave, vacanciesCount }) => {
   const [notified, setNotified] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const resolvedStatus = (() => {
     if (job?.applicationStartDate) {
@@ -154,22 +155,54 @@ const Section1Hero = ({ job, timeLeft, saved, onToggleSave, vacanciesCount }) =>
 
             <button
               type="button"
-              className="jd-action-card__btn-icon"
-              title="Share Opportunity"
-              onClick={() => {
-                if (navigator.clipboard) {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert("Opportunity link copied to clipboard!");
+              className={`jd-action-card__btn-icon ${copied ? "jd-action-card__btn-icon--copied" : ""}`}
+              title={copied ? "Link Copied!" : "Share Opportunity"}
+              onClick={async () => {
+                const shareUrl = window.location.href;
+                const orgName = job.organization || "The Workflow";
+                const shareText = `🏛️ ${job.title}\n🏢 ${orgName}\n\nCheck official notification, eligibility & apply now:`;
+                const copyText = `🏛️ ${job.title} (${orgName})\nApply here: ${shareUrl}`;
+
+                if (navigator.share && navigator.canShare) {
+                  try {
+                    const shareData = {
+                      title: `${job.title} - ${orgName}`,
+                      text: shareText,
+                      url: shareUrl,
+                    };
+                    if (navigator.canShare(shareData)) {
+                      await navigator.share(shareData);
+                      return;
+                    }
+                  } catch (err) {
+                    if (err.name === "AbortError") return;
+                  }
+                }
+
+                try {
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(copyText);
+                  }
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2200);
+                } catch (e) {
+                  console.error(e);
                 }
               }}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
+              {copied ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" width="16" height="16">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              )}
             </button>
           </div>
 

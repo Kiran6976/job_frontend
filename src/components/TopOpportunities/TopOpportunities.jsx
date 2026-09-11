@@ -250,16 +250,21 @@ const TopOpportunities = () => {
 
     const jobId = job._id || job.id;
     const shareUrl = `${window.location.origin}/job/${jobId}`;
-    const shareData = {
-      title: job.title || "Government Job Opportunity - The Workflow",
-      text: `${job.title} (${job.organization || "The Workflow"})\nApply here: ${shareUrl}`,
-      url: shareUrl,
-    };
+    const orgName = job.organization || "The Workflow";
+    const shareText = `🏛️ ${job.title}\n🏢 ${orgName}\n\nCheck official notification, eligibility & apply now:`;
+    const copyText = `🏛️ ${job.title} (${orgName})\nApply here: ${shareUrl}`;
 
-    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+    if (navigator.share && navigator.canShare) {
       try {
-        await navigator.share(shareData);
-        return;
+        const shareData = {
+          title: `${job.title} - ${orgName}`,
+          text: shareText,
+          url: shareUrl,
+        };
+        if (navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          return;
+        }
       } catch (err) {
         if (err.name === "AbortError") return;
       }
@@ -267,10 +272,10 @@ const TopOpportunities = () => {
 
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
+        await navigator.clipboard.writeText(copyText);
       } else {
         const textArea = document.createElement("textarea");
-        textArea.value = shareUrl;
+        textArea.value = copyText;
         textArea.style.position = "fixed";
         textArea.style.opacity = "0";
         document.body.appendChild(textArea);

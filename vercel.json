@@ -1,6 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/job/:id",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(facebookexternalhit|WhatsApp|Twitterbot|TelegramBot|LinkedInBot|Discordbot|SkypeUriPreview|Slackbot|Google-Structured-Data-Testing-Tool|curl|wget).*"
+        }
+      ],
+      "destination": "/api/job-meta?id=:id"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
