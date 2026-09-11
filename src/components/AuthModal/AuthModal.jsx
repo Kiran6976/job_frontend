@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
+import { Eye, EyeOff, ArrowRight, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { API_ENDPOINTS } from "../../config/api";
 import "./AuthModal.css";
@@ -253,14 +254,14 @@ const AuthModal = () => {
           onClick={closeAuthModal}
           aria-label="Close modal"
         >
-          &times;
+          <X size={18} />
         </button>
 
         {/* Modal Header */}
         <div className="auth-modal__header">
           <div className="auth-modal__brand-badge">The Workflow</div>
           <h3 className="auth-modal__title">
-            {isLoginTab ? "Welcome to The Workflow 👋" : "Create Your Free Account 🚀"}
+            {isLoginTab ? "Welcome to The Workflow" : "Create Your Free Account"}
           </h3>
           <p className="auth-modal__sub">
             {isLoginTab
@@ -352,7 +353,7 @@ const AuthModal = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label="Toggle password"
                 >
-                  {showPassword ? "👁️" : "🙈"}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -362,7 +363,13 @@ const AuthModal = () => {
               className="auth-modal__submit-btn"
               disabled={loading}
             >
-              {loading ? "Signing in..." : "Sign In &rarr;"}
+              {loading ? (
+                "Signing in..."
+              ) : (
+                <span className="auth-modal__btn-content">
+                  Sign In <ArrowRight size={17} />
+                </span>
+              )}
             </button>
           </form>
         ) : (
@@ -425,7 +432,7 @@ const AuthModal = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label="Toggle password"
                 >
-                  {showPassword ? "👁️" : "🙈"}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -448,7 +455,7 @@ const AuthModal = () => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   aria-label="Toggle password"
                 >
-                  {showConfirmPassword ? "👁️" : "🙈"}
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
@@ -458,7 +465,13 @@ const AuthModal = () => {
               className="auth-modal__submit-btn"
               disabled={loading}
             >
-              {loading ? "Creating Account..." : "Create Free Account &rarr;"}
+              {loading ? (
+                "Creating Account..."
+              ) : (
+                <span className="auth-modal__btn-content">
+                  Create Free Account <ArrowRight size={17} />
+                </span>
+              )}
             </button>
           </form>
         )}

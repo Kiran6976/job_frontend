@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { ArrowRight } from "lucide-react";
 import "./AboutHero.css";
 
 const ABOUT_STATS = [
@@ -78,7 +79,7 @@ const AboutHero = ({ onStoryClick, onMissionClick }) => {
               onClick={onStoryClick}
               className="about-hero__btn about-hero__btn--primary"
             >
-              Our Story <span className="about-hero__arrow">&rarr;</span>
+              Our Story <ArrowRight size={17} className="about-hero__arrow" />
             </button>
 
             <button

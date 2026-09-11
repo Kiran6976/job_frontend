@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import AboutHero from "../../components/AboutHero/AboutHero";
@@ -198,7 +199,7 @@ const About = () => {
                   onClick={handleExploreJobs}
                   className="about-hero__btn about-hero__btn--primary"
                 >
-                  Explore Opportunities &rarr;
+                  Explore Opportunities <ArrowRight size={17} />
                 </Link>
                 {!user && (
                   <button
