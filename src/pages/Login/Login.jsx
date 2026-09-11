@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./Login.css";
 import { API_ENDPOINTS } from "../../config/api";
 import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const [formData, setFormData] = useState({
 
     email: "",
@@ -51,7 +53,7 @@ const Login = () => {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
         }
-        setTimeout(() => navigate("/"), 1000);
+        setTimeout(() => navigate(from, { replace: true }), 800);
       } else {
         setMessage({
           text: data.message || "Invalid credentials. Please try again.",
@@ -86,7 +88,7 @@ const Login = () => {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
         setMessage({ text: "Logged in with Google successfully! Redirecting...", type: "success" });
-        setTimeout(() => navigate("/"), 1000);
+        setTimeout(() => navigate(from, { replace: true }), 800);
       } else {
         setMessage({ text: data.message || "Google login failed.", type: "error" });
       }
@@ -98,7 +100,10 @@ const Login = () => {
   };
 
   const handleGoogleError = () => {
-    setMessage({ text: "Google Sign-In was cancelled or failed.", type: "error" });
+    setMessage({
+      text: "Google sign-in was closed or could not be completed.",
+      type: "error",
+    });
   };
 
 
@@ -106,15 +111,15 @@ const Login = () => {
     <div className="login-page">
       {/* ────────── Top Navbar ────────── */}
       <header className="login-page__navbar">
-        <a href="/" className="login-page__logo">
+        <Link to="/" className="login-page__logo">
           <img src="/Logo.png" alt="JobPortal Logo" />
-        </a>
+        </Link>
 
         <div className="login-page__nav-auth">
           <span className="login-page__signup-prompt">Don't have an account?</span>
-          <a href="/signup" className="login-page__signup-btn">
+          <Link to="/signup" state={{ from }} className="login-page__signup-btn">
             Sign Up
-          </a>
+          </Link>
         </div>
       </header>
 

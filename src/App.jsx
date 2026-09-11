@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import JobDetails from "./pages/JobDetails/JobDetails";
 import Profile from "./pages/Profile/Profile";
 import ScrollToTop from "./components/ScrollToTop";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function HomePage() {
   return (
@@ -33,10 +34,38 @@ function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/jobs" element={<Jobs />} />
-        <Route path="/find-jobs" element={<Jobs />} />
-        <Route path="/job/:id" element={<JobDetails />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/find-jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/job/:id"
+          element={
+            <ProtectedRoute>
+              <JobDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
@@ -50,3 +79,4 @@ function App() {
 }
 
 export default App;
+

@@ -102,6 +102,17 @@ const Navbar = () => {
     window.location.reload();
   };
 
+  const handleNavClick = (e, href) => {
+    setIsMobileMenuOpen(false);
+    if (href === "/jobs" || href === "/find-jobs" || href === "/profile") {
+      const isAuth = !!(localStorage.getItem("token") || localStorage.getItem("user"));
+      if (!isAuth) {
+        e.preventDefault();
+        navigate("/login", { state: { from: href } });
+      }
+    }
+  };
+
   const isActive = (href) => {
     if (href === "/" && location.pathname === "/") return true;
     if (href !== "/" && href !== "#" && location.pathname.startsWith(href)) return true;
@@ -126,6 +137,7 @@ const Navbar = () => {
                   <Link
                     to={link.href}
                     className={`navbar__link ${active ? "navbar__link--active" : ""}`}
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     {link.label}
                   </Link>
@@ -133,6 +145,7 @@ const Navbar = () => {
                   <a
                     href={link.href}
                     className={`navbar__link ${active ? "navbar__link--active" : ""}`}
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     {link.label}
                   </a>
@@ -286,7 +299,7 @@ const Navbar = () => {
                   <Link
                     to={link.href}
                     className={`navbar__mobile-link ${active ? "navbar__mobile-link--active" : ""}`}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     <span className="navbar__mobile-link-icon">{link.icon}</span>
                     <span className="navbar__mobile-link-text">{link.label}</span>
@@ -296,7 +309,7 @@ const Navbar = () => {
                   <a
                     href={link.href}
                     className={`navbar__mobile-link ${active ? "navbar__mobile-link--active" : ""}`}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, link.href)}
                   >
                     <span className="navbar__mobile-link-icon">{link.icon}</span>
                     <span className="navbar__mobile-link-text">{link.label}</span>

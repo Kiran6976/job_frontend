@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./SignUp.css";
 import { API_ENDPOINTS } from "../../config/api";
 import { GoogleLogin } from "@react-oauth/google";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const [formData, setFormData] = useState({
 
     fullname: "",
@@ -131,7 +133,7 @@ const SignUp = () => {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
         setMessage({ text: "Signed up with Google successfully! Redirecting...", type: "success" });
-        setTimeout(() => navigate("/"), 1200);
+        setTimeout(() => navigate(from, { replace: true }), 1000);
       } else {
         setMessage({ text: data.message || "Google sign-up failed.", type: "error" });
       }
@@ -147,16 +149,15 @@ const SignUp = () => {
   };
 
   return (
-
     <div className="su">
       {/* ────────── Top Navbar ────────── */}
       <header className="su__navbar">
-        <a href="/" className="su__logo">
+        <Link to="/" className="su__logo">
           <img src="/Logo.png" alt="JobPortal Logo" />
-        </a>
+        </Link>
 
         <nav className="su__nav-links">
-          <a href="#" className="su__nav-link">Find Jobs</a>
+          <Link to="/jobs" className="su__nav-link">Find Jobs</Link>
           <a href="#" className="su__nav-link">Companies</a>
           <a href="#" className="su__nav-link">Resources</a>
           <a href="#" className="su__nav-link">About</a>
@@ -164,9 +165,9 @@ const SignUp = () => {
 
         <div className="su__nav-auth">
           <span className="su__login-prompt">Already have an account?</span>
-          <a href="/login" className="su__login-btn">
+          <Link to="/login" state={{ from }} className="su__login-btn">
             Login
-          </a>
+          </Link>
         </div>
       </header>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./FeaturedJobs.css";
 import { FILTER_TABS, FEATURED_JOBS } from "./jobData";
 import { API_ENDPOINTS } from "../../config/api";
@@ -21,10 +21,19 @@ const timeAgo = (dateStr) => {
 };
 
 const FeaturedJobs = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
   const [savedJobs, setSavedJobs] = useState({});
   const [customJobs, setCustomJobs] = useState([]);
   const videoRef = useRef(null);
+
+  const handleJobClick = (e, targetUrl) => {
+    const isAuth = !!(localStorage.getItem("token") || localStorage.getItem("user"));
+    if (!isAuth) {
+      e.preventDefault();
+      navigate("/login", { state: { from: targetUrl } });
+    }
+  };
 
   useEffect(() => {
     if (videoRef.current) {
@@ -242,7 +251,11 @@ const FeaturedJobs = () => {
             ))}
           </div>
 
-          <Link to="/jobs" className="fj__view-all-btn">
+          <Link
+            to="/jobs"
+            className="fj__view-all-btn"
+            onClick={(e) => handleJobClick(e, "/jobs")}
+          >
             View All Jobs
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
               <path d="M5 12h14M12 5l7 7-7 7" />
@@ -297,6 +310,7 @@ const FeaturedJobs = () => {
                 <Link
                   to={job.detailUrl || `/job/${job.id}`}
                   style={{ color: "inherit", textDecoration: "none" }}
+                  onClick={(e) => handleJobClick(e, job.detailUrl || `/job/${job.id}`)}
                 >
                   {job.title}
                 </Link>
@@ -361,7 +375,11 @@ const FeaturedJobs = () => {
               {/* Card Footer: Posted time & Apply button */}
               <div className="fj__card-footer">
                 <span className="fj__posted-time">{job.postedTime}</span>
-                <Link to={job.detailUrl || `/job/${job.id}`} className="fj__apply-btn">
+                <Link
+                  to={job.detailUrl || `/job/${job.id}`}
+                  className="fj__apply-btn"
+                  onClick={(e) => handleJobClick(e, job.detailUrl || `/job/${job.id}`)}
+                >
                   View Details &rarr;
                 </Link>
               </div>
@@ -371,7 +389,11 @@ const FeaturedJobs = () => {
           {displayedJobs.length === 0 && (
             <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "#64748b" }}>
               <p style={{ fontSize: "1.1rem", fontWeight: 600 }}>No opportunities found in this category.</p>
-              <Link to="/jobs" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>
+              <Link
+                to="/jobs"
+                style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}
+                onClick={(e) => handleJobClick(e, "/jobs")}
+              >
                 Browse all available opportunities &rarr;
               </Link>
             </div>

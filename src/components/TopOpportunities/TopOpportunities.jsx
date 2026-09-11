@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
@@ -224,6 +224,7 @@ const matchesTab = (job, tabId, tabLabel) => {
 };
 
 const TopOpportunities = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
   const [rawCategories, setRawCategories] = useState([]);
   const [customJobs, setCustomJobs] = useState([]);
@@ -231,6 +232,14 @@ const TopOpportunities = () => {
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [searchParams] = useSearchParams();
+
+  const handleJobClick = (e, targetUrl) => {
+    const isAuth = !!(localStorage.getItem("token") || localStorage.getItem("user"));
+    if (!isAuth) {
+      e.preventDefault();
+      navigate("/login", { state: { from: targetUrl } });
+    }
+  };
 
   useEffect(() => {
     // Load categories from API / localStorage
@@ -929,6 +938,7 @@ const TopOpportunities = () => {
                     <Link
                       to={exam.detailUrl || `/job/${exam.id}`}
                       className={`to__card-btn to__card-btn--${exam.btnVariant || "apply"}`}
+                      onClick={(e) => handleJobClick(e, exam.detailUrl || `/job/${exam.id}`)}
                     >
                       {exam.btnText || "View Details \u2192"}
                     </Link>
