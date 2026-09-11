@@ -8,10 +8,19 @@ import {
   CONTACT_INFO,
   LEGAL_LINKS,
 } from "./footerData";
+import { useAuth } from "../../context/AuthContext";
 
 const Footer = () => {
+  const { user, openAuthModal } = useAuth();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+
+  const handleLinkClick = (e, href) => {
+    if (!user && href && (href.startsWith("/job") || href.startsWith("/find-jobs"))) {
+      e.preventDefault();
+      openAuthModal(href);
+    }
+  };
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -59,7 +68,11 @@ const Footer = () => {
   const renderFooterLink = (link) => {
     if (link.href && link.href.startsWith("/")) {
       return (
-        <Link to={link.href} className="footer__link">
+        <Link
+          to={link.href}
+          onClick={(e) => handleLinkClick(e, link.href)}
+          className="footer__link"
+        >
           {link.label}
         </Link>
       );
@@ -106,7 +119,11 @@ const Footer = () => {
 
           {/* Action Buttons */}
           <div className="footer__cta-actions">
-            <Link to="/jobs" className="footer__btn footer__btn--primary">
+            <Link
+              to="/jobs"
+              onClick={(e) => handleLinkClick(e, "/jobs")}
+              className="footer__btn footer__btn--primary"
+            >
               Find a Job &rarr;
             </Link>
           </div>
@@ -264,7 +281,11 @@ const Footer = () => {
               <p className="footer__alert-desc">
                 Central &amp; State government notifications, admit cards and results updated daily.
               </p>
-              <Link to="/jobs" className="footer__alert-link">
+              <Link
+                to="/jobs"
+                onClick={(e) => handleLinkClick(e, "/jobs")}
+                className="footer__alert-link"
+              >
                 View All Opportunities &rarr;
               </Link>
             </div>
@@ -275,7 +296,7 @@ const Footer = () => {
         <div className="footer__bottom">
           <div className="footer__bottom-container">
             <span className="footer__copyright">
-              &copy; 2026 JobPortal. All rights reserved.
+              &copy; 2026 The Workflow. All rights reserved.
             </span>
 
             <span className="footer__made-with">

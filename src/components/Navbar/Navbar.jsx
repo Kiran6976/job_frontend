@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { useAuth } from "../../context/AuthContext";
 
 const NAV_LINKS = [
   {
@@ -37,33 +38,10 @@ const NAV_LINKS = [
 ];
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+  const { user, logout, openAuthModal } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAuth = () => {
-      try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
-        } else {
-          setUser(null);
-        }
-      } catch (e) {
-        setUser(null);
-      }
-    };
-
-    checkAuth();
-    window.addEventListener("storage", checkAuth);
-    window.addEventListener("focus", checkAuth);
-    return () => {
-      window.removeEventListener("storage", checkAuth);
-      window.removeEventListener("focus", checkAuth);
-    };
-  }, [location.pathname]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -94,28 +72,23 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
+    logout();
     setIsMobileMenuOpen(false);
-    navigate("/");
-    window.location.reload();
   };
 
   const handleNavClick = (e, href) => {
     setIsMobileMenuOpen(false);
     if (href === "/jobs" || href === "/find-jobs" || href === "/profile") {
-      const isAuth = !!(localStorage.getItem("token") || localStorage.getItem("user"));
-      if (!isAuth) {
+      if (!user) {
         e.preventDefault();
-        navigate("/login", { state: { from: href } });
+        openAuthModal(href);
       }
     }
   };
 
   const isActive = (href) => {
-    if (href === "/" && location.pathname === "/") return true;
-    if (href !== "/" && href !== "#" && location.pathname.startsWith(href)) return true;
+    if (href === "/") return location.pathname === "/";
+    if (href !== "#" && location.pathname.startsWith(href)) return true;
     return false;
   };
 
@@ -124,7 +97,7 @@ const Navbar = () => {
       <nav className="navbar">
         {/* ── Logo ── */}
         <Link to="/" className="navbar__logo" onClick={() => setIsMobileMenuOpen(false)}>
-          <img src="/Logo.png" alt="JobPortal Logo" />
+          <img src="/Logo.png" alt="The Workflow Logo" />
         </Link>
 
         {/* ── Desktop Navigation Links ── */}
@@ -190,12 +163,20 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="navbar__auth-desktop">
-              <Link to="/login" className="navbar__btn navbar__btn--ghost">
+              <button
+                type="button"
+                onClick={() => openAuthModal(null, "login")}
+                className="navbar__btn navbar__btn--ghost"
+              >
                 Login
-              </Link>
-              <Link to="/signup" className="navbar__btn navbar__btn--primary">
+              </button>
+              <button
+                type="button"
+                onClick={() => openAuthModal(null, "signup")}
+                className="navbar__btn navbar__btn--primary"
+              >
                 Sign Up &rarr;
-              </Link>
+              </button>
             </div>
           )}
 
@@ -270,20 +251,26 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="navbar__mobile-auth-buttons">
-            <Link
-              to="/login"
+            <button
+              type="button"
               className="navbar__mobile-btn navbar__mobile-btn--ghost"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                openAuthModal(null, "login");
+              }}
             >
               Login
-            </Link>
-            <Link
-              to="/signup"
+            </button>
+            <button
+              type="button"
               className="navbar__mobile-btn navbar__mobile-btn--primary"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                openAuthModal(null, "signup");
+              }}
             >
               Sign Up &rarr;
-            </Link>
+            </button>
           </div>
         )}
 

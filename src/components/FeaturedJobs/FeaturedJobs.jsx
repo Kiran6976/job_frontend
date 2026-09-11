@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./FeaturedJobs.css";
 import { FILTER_TABS, FEATURED_JOBS } from "./jobData";
 import { API_ENDPOINTS } from "../../config/api";
+import { useAuth } from "../../context/AuthContext";
 
 const timeAgo = (dateStr) => {
   if (!dateStr) return "Recently posted";
@@ -22,16 +23,16 @@ const timeAgo = (dateStr) => {
 
 const FeaturedJobs = () => {
   const navigate = useNavigate();
+  const { user, openAuthModal } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [savedJobs, setSavedJobs] = useState({});
   const [customJobs, setCustomJobs] = useState([]);
   const videoRef = useRef(null);
 
   const handleJobClick = (e, targetUrl) => {
-    const isAuth = !!(localStorage.getItem("token") || localStorage.getItem("user"));
-    if (!isAuth) {
+    if (!user) {
       e.preventDefault();
-      navigate("/login", { state: { from: targetUrl } });
+      openAuthModal(targetUrl);
     }
   };
 

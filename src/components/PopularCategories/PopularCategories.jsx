@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./PopularCategories.css";
 import { CATEGORY_HIGHLIGHTS } from "./categoriesData";
 import { API_ENDPOINTS } from "../../config/api";
+import { useAuth } from "../../context/AuthContext";
 
 const CATEGORY_STYLES = {
   "government exams": {
@@ -134,9 +135,17 @@ const FALLBACK_PALETTES = [
 ];
 
 const PopularCategories = () => {
+  const { user, openAuthModal } = useAuth();
   const [categories, setCategories] = useState([]);
   const [customJobs, setCustomJobs] = useState([]);
   const videoRef = useRef(null);
+
+  const handleCategoryClick = (e, targetUrl) => {
+    if (!user) {
+      e.preventDefault();
+      openAuthModal(targetUrl);
+    }
+  };
 
   useEffect(() => {
     if (videoRef.current) {
@@ -419,6 +428,12 @@ const PopularCategories = () => {
             <Link
               key={cat.id}
               to={cat.linkUrl || `/jobs?category=${encodeURIComponent(cat.title)}`}
+              onClick={(e) =>
+                handleCategoryClick(
+                  e,
+                  cat.linkUrl || `/jobs?category=${encodeURIComponent(cat.title)}`
+                )
+              }
               className="pc__card"
               style={{
                 "--card-accent": cat.topColor,

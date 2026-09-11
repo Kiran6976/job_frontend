@@ -7,6 +7,7 @@ import {
   Star,
 } from "lucide-react";
 import "./HeroSection.css";
+import { useAuth } from "../../context/AuthContext";
 
 const STATS = [
   { icon: <Briefcase size={20} color="#2563eb" />, value: "10K+", label: "Job Opportunities" },
@@ -18,15 +19,18 @@ const STATS = [
 /* ── Component ── */
 const HeroSection = () => {
   const [query, setQuery] = useState("");
+  const { user, openAuthModal } = useAuth();
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
     const trimmed = query.trim();
-    if (trimmed) {
-      navigate(`/jobs?q=${encodeURIComponent(trimmed)}`);
+    const targetUrl = trimmed ? `/jobs?q=${encodeURIComponent(trimmed)}` : "/jobs";
+
+    if (!user) {
+      openAuthModal(targetUrl);
     } else {
-      navigate("/jobs");
+      navigate(targetUrl);
     }
   };
 

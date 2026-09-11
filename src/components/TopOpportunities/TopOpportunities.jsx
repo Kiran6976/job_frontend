@@ -3,6 +3,7 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
+import { useAuth } from "../../context/AuthContext";
 
 
 // Comprehensive dictionary for acronyms, exam abbreviations, and synonyms
@@ -225,6 +226,7 @@ const matchesTab = (job, tabId, tabLabel) => {
 
 const TopOpportunities = () => {
   const navigate = useNavigate();
+  const { user, openAuthModal } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [rawCategories, setRawCategories] = useState([]);
   const [customJobs, setCustomJobs] = useState([]);
@@ -234,10 +236,9 @@ const TopOpportunities = () => {
   const [searchParams] = useSearchParams();
 
   const handleJobClick = (e, targetUrl) => {
-    const isAuth = !!(localStorage.getItem("token") || localStorage.getItem("user"));
-    if (!isAuth) {
+    if (!user) {
       e.preventDefault();
-      navigate("/login", { state: { from: targetUrl } });
+      openAuthModal(targetUrl);
     }
   };
 
