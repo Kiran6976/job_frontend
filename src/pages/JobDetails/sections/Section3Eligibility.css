@@ -11,6 +11,8 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
   margin-top: 32px;
   overflow: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header with Slogans & Landmark Backdrop Artwork */
@@ -101,15 +103,21 @@
 /* 2-Column Main Grid (Cards Left + Checklist Right) */
 .jd-el__grid {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 24px;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .jd-el__cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* Individual Criteria Card */
@@ -121,6 +129,9 @@
   border: 1px solid #edf2f7;
   border-radius: 18px;
   padding: 22px 20px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
@@ -176,6 +187,7 @@
 
 .jd-el-card__body {
   flex: 1;
+  min-width: 0;
 }
 
 .jd-el-card__title {
@@ -183,6 +195,7 @@
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 6px;
+  word-break: break-word;
 }
 
 .jd-el-card__desc {
@@ -190,6 +203,7 @@
   color: #475569;
   line-height: 1.55;
   margin: 0 0 8px;
+  word-break: break-word;
 }
 
 .jd-el-card__link {
@@ -228,13 +242,30 @@
   border-radius: 10px;
   padding: 8px 12px;
   margin-top: 6px;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .jd-el-table__row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   font-size: 11.5px;
+  min-width: 0;
+}
+
+.jd-el-table__cat {
+  color: #64748b;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.jd-el-table__val {
+  color: #0f172a;
+  font-weight: 700;
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .jd-el-table__cat {
@@ -299,22 +330,31 @@
   padding: 8px 12px;
   margin-top: 6px;
   margin-bottom: 8px;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .jd-fee-table__row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: 8px;
   font-size: 12px;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .jd-fee-table__cat {
   color: #475569;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .jd-fee-table__val {
   font-weight: 800;
   font-size: 13px;
+  text-align: right;
+  word-break: break-word;
 }
 
 .jd-fee-table__val--general {
@@ -331,20 +371,26 @@
 
 .jd-fee-meta {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 6px;
   font-size: 11.5px;
   color: #475569;
   margin-bottom: 6px;
+  word-break: break-word;
 }
 
 .jd-fee-meta__label {
   font-weight: 600;
   color: #334155;
+  flex-shrink: 0;
 }
 
 .jd-fee-meta__val {
   color: #64748b;
+  word-break: break-word;
+  flex: 1;
+  min-width: 140px;
 }
 
 .jd-fee-refund {
@@ -358,6 +404,7 @@
   border-radius: 7px;
   padding: 6px 10px;
   margin-bottom: 6px;
+  word-break: break-word;
 }
 
 .jd-fee-refund__icon {
@@ -371,12 +418,16 @@
   color: #94a3b8;
   margin: 0;
   font-style: italic;
+  word-break: break-word;
 }
 
 .jd-el__sidebar {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
 .jd-el-checker-card {
@@ -385,6 +436,9 @@
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .jd-el-checker__header {
@@ -416,6 +470,7 @@
   font-weight: 800;
   color: #0f172a;
   margin: 0 0 2px;
+  word-break: break-word;
 }
 
 .jd-el-checker__desc {
@@ -423,6 +478,7 @@
   color: #64748b;
   line-height: 1.45;
   margin: 0;
+  word-break: break-word;
 }
 
 .jd-el-checker__list {
@@ -434,11 +490,12 @@
 
 .jd-el-checker__item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   font-size: 12px;
   color: #334155;
   cursor: pointer;
+  min-width: 0;
 }
 
 .jd-el-checker__item input[type="checkbox"] {
@@ -456,6 +513,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 1px;
   transition: all 0.15s ease;
 }
 
@@ -468,6 +526,9 @@
 .jd-el-checker__text {
   line-height: 1.4;
   font-weight: 500;
+  min-width: 0;
+  flex: 1;
+  word-break: break-word;
 }
 
 .jd-el-checker__btn {
@@ -496,6 +557,9 @@
   border-radius: 20px;
   padding: 20px 22px;
   overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .jd-el-quote__bubble {
@@ -517,6 +581,7 @@
   color: #475569;
   line-height: 1.5;
   margin: 0;
+  word-break: break-word;
 }
 
 /* Stacking Books Illustration */
@@ -702,7 +767,7 @@
 /* Responsive Rules for Eligibility Section */
 @media (max-width: 1200px) {
   .jd-el__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .jd-el__header {
     flex-direction: column;
@@ -712,10 +777,97 @@
 
 @media (max-width: 900px) {
   .jd-el__cards-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .jd-el-bottom-note {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .jd-el-section {
+    padding: 20px 14px;
+    border-radius: 16px;
+    margin-top: 20px;
+  }
+  .jd-el__title {
+    font-size: 1.5rem;
+  }
+  .jd-el__sub {
+    font-size: 0.84rem;
+  }
+  .jd-el__header-artwork {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: auto;
+  }
+  .jd-el__monument-img {
+    width: 120px;
+    height: 85px;
+  }
+  .jd-el__slogan-callout {
+    font-size: 11px;
+    transform: none;
+  }
+  .jd-el-card {
+    padding: 16px 14px;
+    gap: 12px;
+    border-radius: 14px;
+  }
+  .jd-el-card__icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .jd-el-card__icon-box svg {
+    width: 20px;
+    height: 20px;
+  }
+  .jd-el-checker-card {
+    padding: 18px 14px;
+    border-radius: 16px;
+  }
+  .jd-el-quote-card {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+  .jd-el-books-art {
+    align-items: center;
+    padding-right: 0;
+    margin-top: 10px;
+  }
+  .jd-el-bottom-note {
+    padding: 14px 14px;
+    border-radius: 14px;
+    gap: 12px;
+  }
+  .jd-el-bottom-note__pdf-btn {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 440px) {
+  .jd-el-section {
+    padding: 14px 10px;
+    border-radius: 12px;
+  }
+  .jd-el__title {
+    font-size: 1.3rem;
+  }
+  .jd-el__slogan-callout {
+    display: none;
+  }
+  .jd-fee-table__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .jd-fee-table__val {
+    text-align: left;
   }
 }

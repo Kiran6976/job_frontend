@@ -273,7 +273,12 @@ const Section3Eligibility = ({ job }) => {
                     <div className="jd-fee-table__row">
                       <span className="jd-fee-table__cat">General / UR / OBC</span>
                       <strong className="jd-fee-table__val jd-fee-table__val--general">
-                        {String(job.applicationFee.general).startsWith("₹") ? job.applicationFee.general : `₹${job.applicationFee.general}`}
+                        {(() => {
+                          const val = String(job.applicationFee.general).trim();
+                          if (val === "0") return "Nil (₹0)";
+                          if (/^\d/.test(val)) return `₹${val}`;
+                          return val;
+                        })()}
                       </strong>
                     </div>
                   )}
@@ -281,7 +286,12 @@ const Section3Eligibility = ({ job }) => {
                     <div className="jd-fee-table__row">
                       <span className="jd-fee-table__cat">SC / ST / PwBD / Female / Ex-SM</span>
                       <strong className="jd-fee-table__val jd-fee-table__val--reserved">
-                        {String(job.applicationFee.sc_st_pwd_female_exsm).trim() === "0" ? "Nil (₹0)" : (String(job.applicationFee.sc_st_pwd_female_exsm).startsWith("₹") ? job.applicationFee.sc_st_pwd_female_exsm : `₹${job.applicationFee.sc_st_pwd_female_exsm}`)}
+                        {(() => {
+                          const val = String(job.applicationFee.sc_st_pwd_female_exsm).trim();
+                          if (val === "0") return "Nil (₹0)";
+                          if (/^\d/.test(val)) return `₹${val}`;
+                          return val;
+                        })()}
                       </strong>
                     </div>
                   )}
@@ -289,7 +299,12 @@ const Section3Eligibility = ({ job }) => {
                     <div className="jd-fee-table__row">
                       <span className="jd-fee-table__cat">Exempted Categories</span>
                       <strong className="jd-fee-table__val jd-fee-table__val--exempt">
-                        {String(job.applicationFee.exempted).trim() === "0" ? "Nil (₹0)" : (String(job.applicationFee.exempted).startsWith("₹") ? job.applicationFee.exempted : `₹${job.applicationFee.exempted}`)}
+                        {(() => {
+                          const val = String(job.applicationFee.exempted).trim();
+                          if (val === "0") return "Nil (₹0)";
+                          if (/^\d/.test(val)) return `₹${val}`;
+                          return val;
+                        })()}
                       </strong>
                     </div>
                   )}
