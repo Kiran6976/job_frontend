@@ -175,21 +175,20 @@ const PublishedJobsList = ({
                         className={`ajp__btn-notify-btn ${notifyState[job._id]?.success ? "ajp__btn-notify-btn--success" : ""}`}
                         onClick={() => handleNotifyJob(job)}
                         disabled={notifyState[job._id]?.loading}
-                        title="Broadcast email notification to all registered users"
-                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+                        title={
+                          notifyState[job._id]?.loading
+                            ? "Sending notification..."
+                            : notifyState[job._id]?.success
+                            ? notifyState[job._id]?.message || "Notification sent!"
+                            : "Broadcast email notification to all registered users"
+                        }
                       >
                         {notifyState[job._id]?.loading ? (
-                          <>
-                            <Loader2 size={13} className="ajp__spin" /> Sending...
-                          </>
+                          <Loader2 size={14} className="ajp__spin" />
                         ) : notifyState[job._id]?.success ? (
-                          <>
-                            <CheckCircle2 size={13} /> {notifyState[job._id]?.message || "Sent!"}
-                          </>
+                          <CheckCircle2 size={14} />
                         ) : (
-                          <>
-                            <Send size={13} /> Notify
-                          </>
+                          <Send size={14} />
                         )}
                       </button>
                       <Link
@@ -197,18 +196,16 @@ const PublishedJobsList = ({
                         target="_blank"
                         className="ajp__btn-preview-link"
                         title="View Detailed Public Page"
-                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
                       >
-                        <Eye size={13} /> View
+                        <Eye size={14} />
                       </Link>
                       <button
                         type="button"
                         className="ajp__btn-edit-btn"
                         onClick={() => onEditJob && onEditJob(job)}
-                        title="Edit all fields of this job"
-                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+                        title="Edit Opportunity"
                       >
-                        <Edit2 size={13} /> Edit
+                        <Edit2 size={14} />
                       </button>
                       <button
                         type="button"
