@@ -1,0 +1,377 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap");
+
+/* =============================================
+   WHY WE EXIST SECTION
+   ============================================= */
+
+.wwe {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 24px 70px;
+  background-color: #f3f7fd;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+/* ────────── Background Image & Graphic Overlay ────────── */
+.wwe__bg-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wwe__bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+}
+
+.wwe__bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(243, 247, 253, 0.55) 0%,
+    rgba(243, 247, 253, 0.25) 45%,
+    rgba(243, 247, 253, 0.65) 100%
+  );
+  pointer-events: none;
+}
+
+/* ────────── Main Container ────────── */
+.wwe__container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ────────── Header ────────── */
+.wwe__header {
+  text-align: center;
+  max-width: 740px;
+  margin: 0 auto 52px;
+  position: relative;
+}
+
+.wwe__pretitle-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.wwe__pretitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #3b82f6;
+  text-transform: uppercase;
+}
+
+.wwe__dash {
+  display: inline-block;
+  width: 22px;
+  height: 1.5px;
+  background: #93c5fd;
+  border-radius: 2px;
+}
+
+.wwe__title {
+  font-size: clamp(2.15rem, 3.6vw, 3.1rem);
+  font-weight: 900;
+  color: #0b132b;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  margin: 0 0 16px;
+}
+
+.wwe__title-highlight {
+  color: #2563eb;
+  position: relative;
+  display: inline-block;
+}
+
+.wwe__title-curl {
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 10px;
+  pointer-events: none;
+}
+
+.wwe__desc {
+  font-size: 1.02rem;
+  line-height: 1.68;
+  color: #475569;
+  margin: 0 auto;
+  font-weight: 450;
+  max-width: 660px;
+}
+
+/* ────────── Doodles ────────── */
+.wwe__doodle-left {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(-10deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.wwe__doodle-right {
+  position: absolute;
+  top: 30px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(8deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.wwe__doodle-text {
+  font-family: "Caveat", cursive;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.wwe__doodle-curve-left {
+  width: 120px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.wwe__doodle-curve-right {
+  width: 100px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+/* ────────── Cards Grid ────────── */
+.wwe__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-bottom: 50px;
+}
+
+.wwe__card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 34px 28px;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease-in-out;
+}
+
+.wwe__card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.wwe__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.wwe__icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wwe__card-number {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.wwe__card-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0 0 12px;
+  line-height: 1.25;
+}
+
+.wwe__card-desc {
+  font-size: 0.95rem;
+  line-height: 1.62;
+  color: #475569;
+  margin: 0 0 24px;
+  flex-grow: 1;
+}
+
+.wwe__card-btn {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wwe__btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.wwe__card:hover .wwe__btn-arrow {
+  transform: translateX(3px);
+}
+
+/* Color Variations */
+/* 01: Blue */
+.wwe__card--blue .wwe__icon-box {
+  background: #dbeafe;
+  color: #2563eb;
+}
+.wwe__card--blue .wwe__card-number {
+  color: #93c5fd;
+}
+.wwe__card--blue .wwe__card-btn {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+.wwe__card--blue:hover .wwe__card-btn {
+  background: #dbeafe;
+}
+
+/* 02: Green */
+.wwe__card--green .wwe__icon-box {
+  background: #dcfce7;
+  color: #16a34a;
+}
+.wwe__card--green .wwe__card-number {
+  color: #86efac;
+}
+.wwe__card--green .wwe__card-btn {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+.wwe__card--green:hover .wwe__card-btn {
+  background: #dcfce7;
+}
+
+/* 03: Purple */
+.wwe__card--purple .wwe__icon-box {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+.wwe__card--purple .wwe__card-number {
+  color: #d8b4fe;
+}
+.wwe__card--purple .wwe__card-btn {
+  background: #faf5ff;
+  color: #9333ea;
+  border: 1px solid #e9d5ff;
+}
+.wwe__card--purple:hover .wwe__card-btn {
+  background: #f3e8ff;
+}
+
+/* ────────── Bottom Footer Tagline ────────── */
+.wwe__footer-tagline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.wwe__footer-dash {
+  display: inline-block;
+  width: 44px;
+  height: 1.5px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.wwe__footer-text {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* ────────── Responsive Media Queries ────────── */
+@media (max-width: 1100px) {
+  .wwe__doodle-left,
+  .wwe__doodle-right {
+    opacity: 0.6;
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 960px) {
+  .wwe__doodle-left,
+  .wwe__doodle-right {
+    display: none;
+  }
+
+  .wwe__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .wwe {
+    padding: 60px 18px 50px;
+  }
+
+  .wwe__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .wwe__card {
+    padding: 26px 20px;
+  }
+
+  .wwe__title {
+    font-size: 1.95rem;
+  }
+
+  .wwe__desc {
+    font-size: 0.94rem;
+  }
+
+  .wwe__footer-text {
+    font-size: 0.7rem;
+    text-align: center;
+  }
+
+  .wwe__footer-dash {
+    width: 24px;
+  }
+}
