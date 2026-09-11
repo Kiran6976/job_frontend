@@ -494,16 +494,69 @@
   color: #7c3aed;
 }
 
-.to__bookmark-btn {
+.to__card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  margin-left: auto;
+}
+
+.to__action-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
+  border-radius: 8px;
   color: #94a3b8;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.18s ease;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.to__action-btn:hover {
+  background: #f1f5f9;
+  color: #2563eb;
+  transform: scale(1.08);
+}
+
+.to__share-btn {
+  color: #64748b;
+}
+
+.to__share-btn--copied {
+  color: #16a34a;
+  background: #dcfce7 !important;
+}
+
+.to__copied-tooltip {
+  position: absolute;
+  bottom: -26px;
+  right: 0;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: toTooltipFade 0.2s ease forwards;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes toTooltipFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .to__bookmark-btn svg {
@@ -511,8 +564,8 @@
   height: 18px;
 }
 
-.to__bookmark-btn:hover {
-  transform: scale(1.15);
+.to__bookmark-btn--active {
+  color: #2563eb;
 }
 
 .to__exam-title {

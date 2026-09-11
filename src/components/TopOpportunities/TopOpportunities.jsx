@@ -235,10 +235,53 @@ const TopOpportunities = () => {
   const [subscribed, setSubscribed] = useState(false);
   const [searchParams] = useSearchParams();
 
+  const [copiedJobId, setCopiedJobId] = useState(null);
+
   const handleJobClick = (e, targetUrl) => {
     if (!user) {
       e.preventDefault();
       openAuthModal(targetUrl);
+    }
+  };
+
+  const handleShareJob = async (e, job) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const jobId = job._id || job.id;
+    const shareUrl = `${window.location.origin}/job/${jobId}`;
+    const shareData = {
+      title: job.title || "Government Job Opportunity - The Workflow",
+      text: `${job.title} (${job.organization || "The Workflow"})\nApply here: ${shareUrl}`,
+      url: shareUrl,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if (err.name === "AbortError") return;
+      }
+    }
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+      }
+      setCopiedJobId(jobId);
+      setTimeout(() => setCopiedJobId(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
     }
   };
 
@@ -878,16 +921,44 @@ const TopOpportunities = () => {
                         </span>
                       </div>
 
-                      <button
-                        type="button"
-                        className={`to__bookmark-btn ${savedExams[exam.id] ? "to__bookmark-btn--active" : ""}`}
-                        onClick={() => toggleSaveExam(exam.id)}
-                        aria-label="Save Exam"
-                      >
-                        <svg viewBox="0 0 24 24" fill={savedExams[exam.id] ? "#2563eb" : "none"} stroke={savedExams[exam.id] ? "#2563eb" : "#94a3b8"} strokeWidth="2">
-                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                        </svg>
-                      </button>
+                      <div className="to__card-actions">
+                        <button
+                          type="button"
+                          className={`to__action-btn to__share-btn ${copiedJobId === (exam._id || exam.id) ? "to__share-btn--copied" : ""}`}
+                          onClick={(e) => handleShareJob(e, exam)}
+                          aria-label="Share Job Details"
+                          title={copiedJobId === (exam._id || exam.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
+                        >
+                          {copiedJobId === (exam._id || exam.id) ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                              <circle cx="18" cy="5" r="3" />
+                              <circle cx="6" cy="12" r="3" />
+                              <circle cx="18" cy="19" r="3" />
+                              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                            </svg>
+                          )}
+                          {copiedJobId === (exam._id || exam.id) && (
+                            <span className="to__copied-tooltip">Copied!</span>
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`to__action-btn to__bookmark-btn ${savedExams[exam.id] ? "to__bookmark-btn--active" : ""}`}
+                          onClick={() => toggleSaveExam(exam.id)}
+                          aria-label="Save Exam"
+                          title={savedExams[exam.id] ? "Saved" : "Save Exam"}
+                        >
+                          <svg viewBox="0 0 24 24" fill={savedExams[exam.id] ? "#2563eb" : "none"} stroke={savedExams[exam.id] ? "#2563eb" : "#94a3b8"} strokeWidth="2">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
 
                     {/* Exam Title & Org */}
