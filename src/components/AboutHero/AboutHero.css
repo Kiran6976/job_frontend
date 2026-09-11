@@ -1,0 +1,365 @@
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap");
+
+/* =============================================
+   ABOUT HERO SECTION (SCENIC MOUNTAIN VIDEO BG)
+   ============================================= */
+
+.about-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  background-color: #f1f6fd;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+/* ────────── Background Video Wrapper ────────── */
+.about-hero__video-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.about-hero__bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
+  display: block;
+}
+
+/* Frosted soft-light gradient overlay on the left to ensure crystal-clear text readability */
+.about-hero__gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(238, 245, 255, 0.98) 0%,
+    rgba(240, 247, 255, 0.95) 28%,
+    rgba(240, 247, 255, 0.84) 46%,
+    rgba(240, 247, 255, 0.45) 64%,
+    rgba(240, 247, 255, 0.1) 80%,
+    rgba(240, 247, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+/* ────────── Main Container ────────── */
+.about-hero__container {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 80px 48px 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ────────── Left Column ────────── */
+.about-hero__left {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pre-title with Dash */
+.about-hero__pretitle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.about-hero__pretitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #2563eb;
+  text-transform: uppercase;
+}
+
+.about-hero__pretitle-dash {
+  display: inline-block;
+  width: 32px;
+  height: 2px;
+  background: #2563eb;
+  border-radius: 2px;
+}
+
+/* Main Heading */
+.about-hero__heading {
+  font-size: clamp(2.35rem, 4.2vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+  margin: 0 0 20px;
+}
+
+.about-hero__heading-dark {
+  color: #0b132b;
+}
+
+.about-hero__heading-blue {
+  color: #2563eb;
+}
+
+.about-hero__heading-break {
+  display: block;
+}
+
+/* Paragraph Description */
+.about-hero__desc {
+  font-size: 1.05rem;
+  line-height: 1.68;
+  color: #475569;
+  max-width: 530px;
+  margin: 0 0 32px;
+  font-weight: 450;
+}
+
+/* Action Buttons */
+.about-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+
+.about-hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  font-size: 0.96rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.22s ease-in-out;
+  border: none;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.about-hero__btn--primary {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+}
+
+.about-hero__btn--primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.36);
+}
+
+.about-hero__btn--primary .about-hero__arrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.about-hero__btn--primary:hover .about-hero__arrow {
+  transform: translateX(3px);
+}
+
+.about-hero__btn--secondary {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.about-hero__btn--secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+/* ────────── Metrics / Stats Row ────────── */
+.about-hero__stats-row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.about-hero__stat-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.about-hero__stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.about-hero__stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0b132b;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.about-hero__stat-label {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.about-hero__stat-divider {
+  width: 1.5px;
+  height: 36px;
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+/* ────────── Right Column: Handwritten Doodle ────────── */
+.about-hero__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-right: 40px;
+  margin-top: -60px;
+  pointer-events: none;
+}
+
+.about-hero__doodle-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(-6deg);
+  user-select: none;
+}
+
+.about-hero__doodle-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-family: "Caveat", cursive;
+  line-height: 1.02;
+}
+
+.about-hero__doodle-strikethrough {
+  font-size: 1.6rem;
+  color: #1d4ed8;
+  position: relative;
+  opacity: 0.85;
+  font-weight: 600;
+  margin-bottom: 2px;
+  display: inline-block;
+}
+
+.about-hero__strike-bar {
+  position: absolute;
+  top: 50%;
+  left: -4%;
+  right: -4%;
+  height: 2.5px;
+  background: #1d4ed8;
+  border-radius: 2px;
+  transform: rotate(-3deg);
+}
+
+.about-hero__doodle-main {
+  font-size: 2.15rem;
+  font-weight: 700;
+  color: #1d4ed8;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+.about-hero__doodle-curve {
+  width: 140px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+/* ────────── Responsive Media Queries ────────── */
+@media (max-width: 1080px) {
+  .about-hero__container {
+    padding: 70px 32px 60px;
+  }
+  
+  .about-hero__right {
+    padding-right: 10px;
+  }
+
+  .about-hero__doodle-main {
+    font-size: 1.85rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .about-hero__container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 60px 24px 50px;
+  }
+
+  .about-hero__gradient-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(238, 245, 255, 0.96) 0%,
+      rgba(240, 247, 255, 0.92) 65%,
+      rgba(240, 247, 255, 0.7) 100%
+    );
+  }
+
+  .about-hero__right {
+    align-self: flex-end;
+    margin-top: -30px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-hero {
+    min-height: auto;
+  }
+
+  .about-hero__container {
+    padding: 48px 18px 40px;
+  }
+
+  .about-hero__heading {
+    font-size: 2.15rem;
+  }
+
+  .about-hero__desc {
+    font-size: 0.96rem;
+  }
+
+  .about-hero__stats-row {
+    gap: 18px;
+  }
+
+  .about-hero__stat-wrapper {
+    gap: 18px;
+  }
+
+  .about-hero__stat-value {
+    font-size: 1.45rem;
+  }
+
+  .about-hero__stat-divider {
+    height: 28px;
+  }
+
+  .about-hero__right {
+    display: none;
+  }
+}

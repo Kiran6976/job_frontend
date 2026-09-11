@@ -11,6 +11,7 @@ import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import JobDetails from "./pages/JobDetails/JobDetails";
 import Profile from "./pages/Profile/Profile";
+import About from "./pages/About/About";
 import ScrollToTop from "./components/ScrollToTop";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -70,6 +71,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/about" element={<About />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/register" element={<SignUp />} />
           <Route path="/login" element={<Login />} />

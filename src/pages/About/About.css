@@ -1,0 +1,335 @@
+/* =============================================
+   ABOUT PAGE STYLES
+   ============================================= */
+
+.about-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.about-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ────────── Shared Badges & Section Titles ────────── */
+.about-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.about-badge--light {
+  background: rgba(255, 255, 255, 0.15);
+  color: #93c5fd;
+}
+
+.about-section-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 54px;
+}
+
+.about-section-title {
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin: 0 0 16px;
+}
+
+.about-section-title--white {
+  color: #ffffff;
+}
+
+.about-section-sub {
+  font-size: 1.06rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.about-gradient-text {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ────────── Our Story Section ────────── */
+.about-story {
+  padding: 96px 0;
+  background: #f8fafc;
+}
+
+.about-story__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.about-story__p {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.75;
+  margin: 0 0 20px;
+}
+
+.about-story__p strong {
+  color: #0f172a;
+}
+
+.about-story__card {
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 24px;
+  padding: 48px 40px;
+  color: #ffffff;
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-story__card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.about-story__card-quote {
+  font-size: 1.28rem;
+  line-height: 1.65;
+  font-weight: 500;
+  font-style: italic;
+  color: #e2e8f0;
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.about-story__card-author {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 20px;
+}
+
+.about-story__author-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.about-story__author-title {
+  font-size: 0.86rem;
+  color: #94a3b8;
+}
+
+/* ────────── Mission & Pillars ────────── */
+.about-mission {
+  padding: 100px 0;
+  background: #ffffff;
+}
+
+.about-mission__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+}
+
+.about-mission__card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 36px 28px;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-mission__card:hover {
+  transform: translateY(-6px);
+  border-color: #cbd5e1;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+}
+
+.about-mission__icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.about-mission__icon-box svg {
+  width: 26px;
+  height: 26px;
+}
+
+.about-mission__card-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.about-mission__card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+.about-mission__card-desc {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ────────── Impact Metrics ────────── */
+.about-impact {
+  padding: 20px 0 80px;
+}
+
+.about-impact__wrapper {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%);
+  border-radius: 28px;
+  padding: 72px 48px;
+  box-shadow: 0 24px 48px -12px rgba(30, 58, 138, 0.35);
+}
+
+.about-impact__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 36px;
+}
+
+.about-impact__item {
+  text-align: center;
+  padding: 16px;
+}
+
+.about-impact__value {
+  display: block;
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #60a5fa;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.about-impact__label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px;
+}
+
+.about-impact__desc {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* ────────── CTA Section ────────── */
+.about-cta {
+  padding: 40px 0 100px;
+}
+
+.about-cta__card {
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 24px;
+  padding: 64px 36px;
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.about-cta__title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 14px;
+}
+
+.about-cta__sub {
+  font-size: 1.08rem;
+  color: #64748b;
+  max-width: 580px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+
+.about-cta__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ────────── Responsive ────────── */
+@media (max-width: 960px) {
+  .about-story__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .about-impact__wrapper {
+    padding: 56px 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-container {
+    padding: 0 20px;
+  }
+
+  .about-story {
+    padding: 60px 0;
+  }
+
+  .about-story__card {
+    padding: 32px 24px;
+  }
+
+  .about-mission {
+    padding: 60px 0;
+  }
+
+  .about-impact__value {
+    font-size: 2.2rem;
+  }
+
+  .about-cta__card {
+    padding: 40px 20px;
+  }
+
+  .about-cta__title {
+    font-size: 1.75rem;
+  }
+}

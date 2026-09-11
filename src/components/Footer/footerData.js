@@ -19,6 +19,7 @@ export const TOP_EXAMS_LINKS = [
 
 export const QUICK_LINKS = [
   { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
   { label: "Browse All Jobs", href: "/jobs" },
   { label: "Candidate Profile", href: "/profile" },
   { label: "Candidate Login", href: "/login" },
