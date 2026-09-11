@@ -10,11 +10,14 @@ import {
   Folder,
   Edit3,
   Plus,
+  Archive,
 } from "lucide-react";
 import "./AdminJobPosting.css";
 import PostJobForm from "./PostJobForm";
 import ManageCategories from "./ManageCategories";
 import PublishedJobsList from "./PublishedJobsList";
+import ArchivedJobsList from "./ArchivedJobsList";
+import { isJobExpired } from "../../../utils/jobHelpers";
 import { API_ENDPOINTS } from "../../../config/api";
 
 // Helper for category icons
@@ -204,10 +207,10 @@ const AdminJobPosting = () => {
     }
   };
 
-  // Fetch jobs
+  // Fetch jobs (including archived for admin management)
   const fetchJobs = async () => {
     try {
-      const res = await fetch(`${API_ENDPOINTS.JOB}/all`);
+      const res = await fetch(`${API_ENDPOINTS.JOB}/all?includeArchived=true`);
       const data = await res.json();
       if (res.ok && data.jobs) {
         setJobs(data.jobs);
@@ -303,6 +306,9 @@ const AdminJobPosting = () => {
     { value: "Upcoming", label: "Upcoming", color: "#a855f7", badge: "Notified" },
   ];
 
+  const publishedJobs = jobs.filter((j) => !isJobExpired(j));
+  const archivedJobs = jobs.filter((j) => isJobExpired(j));
+
   return (
     <div className="ajp">
       {/* Top Action & Navigation Bar */}
@@ -317,16 +323,16 @@ const AdminJobPosting = () => {
 
         <div className="ajp__stats">
           <div className="ajp__stat-pill">
-            <span className="ajp__stat-num">{jobs.length}</span>
-            <span className="ajp__stat-label">Active Postings</span>
+            <span className="ajp__stat-num">{publishedJobs.length}</span>
+            <span className="ajp__stat-label">Published</span>
+          </div>
+          <div className="ajp__stat-pill">
+            <span className="ajp__stat-num">{archivedJobs.length}</span>
+            <span className="ajp__stat-label">Archived</span>
           </div>
           <div className="ajp__stat-pill">
             <span className="ajp__stat-num">{categories.length}</span>
             <span className="ajp__stat-label">Categories</span>
-          </div>
-          <div className="ajp__stat-pill">
-            <span className="ajp__stat-num">{organizations.length}</span>
-            <span className="ajp__stat-label">Organizations</span>
           </div>
         </div>
       </div>
@@ -343,7 +349,7 @@ const AdminJobPosting = () => {
         </div>
       )}
 
-      {/* Three Modular Sections / Tab Switcher */}
+      {/* Modular Sections / Tab Switcher */}
       <div className="ajp__tabs">
         <button
           type="button"
@@ -383,7 +389,16 @@ const AdminJobPosting = () => {
             <line x1="3" y1="12" x2="3.01" y2="12" />
             <line x1="3" y1="18" x2="3.01" y2="18" />
           </svg>
-          <span>Published Jobs ({jobs.length})</span>
+          <span>Published Jobs ({publishedJobs.length})</span>
+        </button>
+
+        <button
+          type="button"
+          className={`ajp__tab-btn ${activeTab === "archives" ? "ajp__tab-btn--active" : ""}`}
+          onClick={() => setActiveTab("archives")}
+        >
+          <Archive size={16} />
+          <span>Archives ({archivedJobs.length})</span>
         </button>
       </div>
 
@@ -434,7 +449,20 @@ const AdminJobPosting = () => {
       {/* ── Tab 3 Component: PublishedJobsList.jsx ── */}
       {activeTab === "job-list" && (
         <PublishedJobsList
-          jobs={jobs}
+          jobs={publishedJobs}
+          onDeleteJob={handleDeleteJob}
+          onEditJob={handleEditJob}
+          onNavigatePostJob={() => {
+            setEditingJob(null);
+            setActiveTab("post-job");
+          }}
+        />
+      )}
+
+      {/* ── Tab 4 Component: ArchivedJobsList.jsx ── */}
+      {activeTab === "archives" && (
+        <ArchivedJobsList
+          jobs={archivedJobs}
           onDeleteJob={handleDeleteJob}
           onEditJob={handleEditJob}
           onNavigatePostJob={() => {

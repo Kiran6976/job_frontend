@@ -5,6 +5,7 @@ import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
+import { isJobExpired } from "../../utils/jobHelpers";
 
 
 // Comprehensive dictionary for acronyms, exam abbreviations, and synonyms
@@ -371,8 +372,9 @@ const TopOpportunities = () => {
     }
   };
 
-  // Formatted real jobs from Admin Panel
-  const allFormattedJobs = customJobs.map((j) => {
+  // Formatted real jobs from Admin Panel (Automatically excludes expired jobs)
+  const activeJobs = customJobs.filter((j) => !isJobExpired(j));
+  const allFormattedJobs = activeJobs.map((j) => {
     let date1Label = "Notification";
     let date1Value = formatFriendlyDate(j.notificationDate, "");
     if (j.applicationLastDate) {

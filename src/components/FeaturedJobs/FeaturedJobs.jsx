@@ -4,6 +4,7 @@ import "./FeaturedJobs.css";
 import { FILTER_TABS, FEATURED_JOBS } from "./jobData";
 import { API_ENDPOINTS } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
+import { isJobExpired } from "../../utils/jobHelpers";
 
 const timeAgo = (dateStr) => {
   if (!dateStr) return "Recently posted";
@@ -162,7 +163,8 @@ const FeaturedJobs = () => {
   };
 
   // Convert custom published jobs from admin into card format, sorted by latest
-  const sortedCustomJobs = [...customJobs].sort((a, b) => {
+  const activeCustomJobs = customJobs.filter((j) => !isJobExpired(j));
+  const sortedCustomJobs = [...activeCustomJobs].sort((a, b) => {
     const timeA = new Date(a.createdAt || 0).getTime();
     const timeB = new Date(b.createdAt || 0).getTime();
     return timeB - timeA;
