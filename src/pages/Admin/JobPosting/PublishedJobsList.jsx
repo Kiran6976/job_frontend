@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Megaphone, Building2, Eye, Edit2 } from "lucide-react";
+import { Megaphone, Building2, Eye, Edit2, Send, CheckCircle2, Loader2 } from "lucide-react";
+import { API_ENDPOINTS } from "../../../config/api";
 import "./PublishedJobsList.css";
 
 const formatDateDisplay = (dateStr) => {
@@ -24,6 +25,62 @@ const PublishedJobsList = ({
   onEditJob,
   onNavigatePostJob,
 }) => {
+  const [notifyState, setNotifyState] = useState({});
+
+  const handleNotifyJob = async (job) => {
+    const jobId = job._id;
+    if (notifyState[jobId]?.loading) return;
+
+    const confirmSend = window.confirm(
+      `Send email alert for "${job.title}" to all registered active users?`
+    );
+    if (!confirmSend) return;
+
+    setNotifyState((prev) => ({
+      ...prev,
+      [jobId]: { loading: true, success: false, message: "" },
+    }));
+
+    try {
+      const res = await fetch(`${API_ENDPOINTS.JOB}/notify/${jobId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setNotifyState((prev) => ({
+          ...prev,
+          [jobId]: {
+            loading: false,
+            success: true,
+            message: `Sent to ${data.count || 0} user${data.count === 1 ? "" : "s"}!`,
+          },
+        }));
+
+        setTimeout(() => {
+          setNotifyState((prev) => ({
+            ...prev,
+            [jobId]: { loading: false, success: false, message: "" },
+          }));
+        }, 3500);
+      } else {
+        alert(data.message || "Failed to broadcast email notifications.");
+        setNotifyState((prev) => ({
+          ...prev,
+          [jobId]: { loading: false, success: false, message: "" },
+        }));
+      }
+    } catch (err) {
+      console.error("Notify error:", err);
+      alert("Network error: Could not reach the notification server.");
+      setNotifyState((prev) => ({
+        ...prev,
+        [jobId]: { loading: false, success: false, message: "" },
+      }));
+    }
+  };
+
   return (
     <div className="ajp__card">
       <div className="ajp__card-head-row">
@@ -62,7 +119,7 @@ const PublishedJobsList = ({
                 <th>Application Start</th>
                 <th>Exam Date</th>
                 <th style={{ textAlign: "center" }}>Status</th>
-                <th style={{ textAlign: "right", minWidth: "180px" }}>Actions</th>
+                <th style={{ textAlign: "right", minWidth: "240px" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -113,6 +170,28 @@ const PublishedJobsList = ({
                   </td>
                   <td>
                     <div style={{ display: "flex", gap: "6px", alignItems: "center", justifyContent: "flex-end" }}>
+                      <button
+                        type="button"
+                        className={`ajp__btn-notify-btn ${notifyState[job._id]?.success ? "ajp__btn-notify-btn--success" : ""}`}
+                        onClick={() => handleNotifyJob(job)}
+                        disabled={notifyState[job._id]?.loading}
+                        title="Broadcast email notification to all registered users"
+                        style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+                      >
+                        {notifyState[job._id]?.loading ? (
+                          <>
+                            <Loader2 size={13} className="ajp__spin" /> Sending...
+                          </>
+                        ) : notifyState[job._id]?.success ? (
+                          <>
+                            <CheckCircle2 size={13} /> {notifyState[job._id]?.message || "Sent!"}
+                          </>
+                        ) : (
+                          <>
+                            <Send size={13} /> Notify
+                          </>
+                        )}
+                      </button>
                       <Link
                         to={`/job/${job._id}`}
                         target="_blank"

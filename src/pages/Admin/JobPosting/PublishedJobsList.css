@@ -202,3 +202,51 @@
   color: #ffffff;
   border-color: rgba(239, 68, 68, 0.6);
 }
+
+/* Notify Button */
+.ajp__btn-notify-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 6px;
+  color: #a78bfa;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.ajp__btn-notify-btn:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.3);
+  color: #ffffff;
+  border-color: rgba(139, 92, 246, 0.7);
+  transform: translateY(-1px);
+}
+
+.ajp__btn-notify-btn--success {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+.ajp__btn-notify-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ajp__spin {
+  animation: ajpSpin 1s linear infinite;
+}
+
+@keyframes ajpSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
