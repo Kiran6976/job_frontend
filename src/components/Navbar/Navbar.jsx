@@ -58,8 +58,12 @@ const Navbar = () => {
 
     checkAuth();
     window.addEventListener("storage", checkAuth);
-    return () => window.removeEventListener("storage", checkAuth);
-  }, []);
+    window.addEventListener("focus", checkAuth);
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("focus", checkAuth);
+    };
+  }, [location.pathname]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -234,7 +238,7 @@ const Navbar = () => {
               <div className="navbar__mobile-user-text">
                 <span className="navbar__mobile-user-name">{user.fullname || "User"}</span>
                 <span className="navbar__mobile-user-role">
-                  {user.role === "recruiter" ? "Employer Account" : "Job Seeker • View Profile &rarr;"}
+                  {user.role === "recruiter" ? "Employer Account" : "Job Seeker • View Profile →"}
                 </span>
               </div>
             </Link>
