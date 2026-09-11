@@ -19,11 +19,14 @@
 /* ────────── Breadcrumbs ────────── */
 .jd__breadcrumbs {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px 8px;
   font-size: 13px;
   color: #64748b;
-  padding: 18px 0;
+  padding: 14px 0;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .jd__bc-link {
@@ -33,6 +36,7 @@
   align-items: center;
   gap: 6px;
   transition: color 0.15s;
+  flex-shrink: 0;
 }
 
 .jd__bc-link:hover {
@@ -41,11 +45,14 @@
 
 .jd__bc-sep {
   color: #cbd5e1;
+  flex-shrink: 0;
 }
 
 .jd__bc-curr {
   color: #1e293b;
   font-weight: 600;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* ────────── Shared Modal Primitive Fallbacks ────────── */

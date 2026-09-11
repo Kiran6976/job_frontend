@@ -104,6 +104,7 @@
 
 .jd-hero__meta-top {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
@@ -172,6 +173,7 @@
   margin: 0 0 4px;
   line-height: 1.2;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .jd-hero__org {
@@ -180,6 +182,7 @@
   color: #475569;
   margin: 0 0 12px;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .jd-hero__about-text {
@@ -189,6 +192,7 @@
   max-width: 580px;
   margin: 0;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* Callout Hand-drawn Slogans */
@@ -466,12 +470,6 @@
 }
 
 @media (max-width: 768px) {
-  .jd-hero__facts-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
   .jd-hero {
     border-radius: 16px;
     margin-bottom: 20px;
@@ -482,18 +480,35 @@
   }
   .jd-hero__profile {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
     gap: 14px;
+    width: 100%;
+    min-width: 0;
+  }
+  .jd-hero__emblem-box {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    padding: 6px;
+  }
+  .jd-hero__details {
+    width: 100%;
+    min-width: 0;
   }
   .jd-hero__meta-top {
-    justify-content: center;
+    justify-content: flex-start;
   }
   .jd-hero__title {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
+    line-height: 1.25;
   }
   .jd-hero__org {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+  .jd-hero__about-text {
+    font-size: 0.85rem;
+    max-width: 100%;
   }
   .jd-hero__slogan-callout {
     transform: none;
@@ -515,10 +530,10 @@
     padding: 16px 12px 14px;
   }
   .jd-hero__title {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
   }
   .jd-hero__emblem-box {
-    width: 72px;
-    height: 72px;
+    width: 56px;
+    height: 56px;
   }
 }
