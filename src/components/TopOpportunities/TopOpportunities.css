@@ -1103,3 +1103,179 @@
   }
 }
 
+/* ==========================================================================
+   Loading Animation & Skeleton Cards for Backend Cold-Start / Render Spin-up
+   ========================================================================== */
+
+.to__loading-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.to__loading-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.05);
+}
+
+.to__loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #dbeafe;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: toSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes toSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.to__loading-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.to__loading-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 0;
+}
+
+.to__loading-desc {
+  font-size: 0.825rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Skeleton Grid */
+.to__skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.to__skeleton-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.to__skeleton-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: toShimmer 1.5s infinite;
+  transform: translateX(-100%);
+}
+
+@keyframes toShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.to__skeleton-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.to__skeleton-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f1f5f9;
+}
+
+.to__skeleton-pill {
+  width: 70px;
+  height: 22px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.to__skeleton-line {
+  height: 14px;
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.to__skeleton-line--title {
+  height: 18px;
+  width: 90%;
+  margin-top: 4px;
+}
+
+.to__skeleton-line--sub {
+  width: 60%;
+}
+
+.to__skeleton-meta-box {
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.to__skeleton-line--meta {
+  width: 80%;
+  height: 12px;
+}
+
+.to__skeleton-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.to__skeleton-tag {
+  width: 50px;
+  height: 20px;
+  border-radius: 4px;
+  background: #f1f5f9;
+}
+
+.to__skeleton-btn {
+  width: 80px;
+  height: 16px;
+  border-radius: 4px;
+  background: #e2e8f0;
+}
+
+

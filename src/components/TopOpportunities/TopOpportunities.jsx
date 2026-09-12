@@ -230,8 +230,23 @@ const TopOpportunities = () => {
   const navigate = useNavigate();
   const { user, openAuthModal } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
-  const [rawCategories, setRawCategories] = useState([]);
-  const [customJobs, setCustomJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [rawCategories, setRawCategories] = useState(() => {
+    try {
+      const saved = localStorage.getItem("portal_categories");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [customJobs, setCustomJobs] = useState(() => {
+    try {
+      const saved = localStorage.getItem("portal_custom_jobs");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [savedExams, setSavedExams] = useState({});
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -293,67 +308,54 @@ const TopOpportunities = () => {
   };
 
   useEffect(() => {
-    // Load categories from API / localStorage
-    const loadCategories = async () => {
+    let isMounted = true;
+
+    // Load categories and custom published jobs simultaneously
+    const fetchData = async () => {
       try {
-        const res = await fetch(`${API_ENDPOINTS.JOB}/category/all`);
-        const data = await res.json();
-        if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
-          const valid = data.categories.filter(
-            (c) =>
-              !c.name?.toLowerCase().includes("private") &&
-              !c.slug?.toLowerCase().includes("private")
-          );
-          setRawCategories(valid);
-          localStorage.setItem("portal_categories", JSON.stringify(valid));
-        } else {
-          const saved = localStorage.getItem("portal_categories");
-          if (saved) {
-            const valid = JSON.parse(saved).filter(
+        const [catRes, jobsRes] = await Promise.allSettled([
+          fetch(`${API_ENDPOINTS.JOB}/category/all`),
+          fetch(`${API_ENDPOINTS.JOB}/all`),
+        ]);
+
+        if (catRes.status === "fulfilled" && catRes.value.ok) {
+          const catData = await catRes.value.json();
+          if (catData.success && Array.isArray(catData.categories) && catData.categories.length > 0) {
+            const valid = catData.categories.filter(
               (c) =>
                 !c.name?.toLowerCase().includes("private") &&
                 !c.slug?.toLowerCase().includes("private")
             );
-            setRawCategories(valid);
+            if (isMounted) {
+              setRawCategories(valid);
+              localStorage.setItem("portal_categories", JSON.stringify(valid));
+            }
+          }
+        }
+
+        if (jobsRes.status === "fulfilled" && jobsRes.value.ok) {
+          const jobsData = await jobsRes.value.json();
+          if (jobsData.success && Array.isArray(jobsData.jobs)) {
+            if (isMounted) {
+              setCustomJobs(jobsData.jobs);
+              localStorage.setItem("portal_custom_jobs", JSON.stringify(jobsData.jobs));
+            }
           }
         }
       } catch (err) {
-        const saved = localStorage.getItem("portal_categories");
-        if (saved) {
-          try {
-            const valid = JSON.parse(saved).filter(
-              (c) =>
-                !c.name?.toLowerCase().includes("private") &&
-                !c.slug?.toLowerCase().includes("private")
-            );
-            setRawCategories(valid);
-          } catch (e) {}
+        console.warn("Could not fetch remote opportunities:", err);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
         }
       }
     };
 
-    // Load custom published jobs
-    const loadJobs = async () => {
-      try {
-        const res = await fetch(`${API_ENDPOINTS.JOB}/all`);
-        const data = await res.json();
+    fetchData();
 
-        if (data.success && Array.isArray(data.jobs)) {
-          setCustomJobs(data.jobs);
-          localStorage.setItem("portal_custom_jobs", JSON.stringify(data.jobs));
-        }
-      } catch (err) {
-        const saved = localStorage.getItem("portal_custom_jobs");
-        if (saved) {
-          try {
-            setCustomJobs(JSON.parse(saved));
-          } catch (e) {}
-        }
-      }
+    return () => {
+      isMounted = false;
     };
-
-    loadCategories();
-    loadJobs();
   }, []);
 
   // Format ISO date (YYYY-MM-DD) to friendly readable format
@@ -827,7 +829,9 @@ const TopOpportunities = () => {
                     : dynamicTabs.find((t) => t.id === activeTab)?.label || "Opportunities"}
                 </h3>
                 <p className="to__section-sub">
-                  {displayedJobs.length} {displayedJobs.length === 1 ? "opportunity" : "opportunities"} available. Start preparing today!
+                  {isLoading && displayedJobs.length === 0
+                    ? "Connecting to server & loading opportunities..."
+                    : `${displayedJobs.length} ${displayedJobs.length === 1 ? "opportunity" : "opportunities"} available. Start preparing today!`}
                 </p>
               </div>
             </div>
@@ -865,7 +869,40 @@ const TopOpportunities = () => {
           {/* Two-column layout: Left Cards Stream + Fixed Right Newsletter Card */}
           <div className="to__section-layout">
             <div className="to__cards-stream">
-              {displayedJobs.length === 0 ? (
+              {isLoading && displayedJobs.length === 0 ? (
+                <div className="to__loading-wrap">
+                  <div className="to__loading-banner">
+                    <div className="to__loading-spinner" />
+                    <div className="to__loading-info">
+                      <h4 className="to__loading-title">Connecting to Server...</h4>
+                      <p className="to__loading-desc">
+                        Fetching the latest verified government exam notifications. If the server was idle, it may take a moment to start up.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="to__skeleton-grid">
+                    {[1, 2, 3, 4, 5, 6].map((idx) => (
+                      <div key={idx} className="to__skeleton-card">
+                        <div className="to__skeleton-header">
+                          <div className="to__skeleton-circle" />
+                          <div className="to__skeleton-pill" />
+                        </div>
+                        <div className="to__skeleton-line to__skeleton-line--title" />
+                        <div className="to__skeleton-line to__skeleton-line--sub" />
+                        <div className="to__skeleton-meta-box">
+                          <div className="to__skeleton-line to__skeleton-line--meta" />
+                          <div className="to__skeleton-line to__skeleton-line--meta" />
+                        </div>
+                        <div className="to__skeleton-footer">
+                          <div className="to__skeleton-tag" />
+                          <div className="to__skeleton-btn" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : displayedJobs.length === 0 ? (
                 <div
                   style={{
                     padding: "48px 24px",
