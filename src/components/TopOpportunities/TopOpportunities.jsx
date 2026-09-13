@@ -400,6 +400,42 @@ const TopOpportunities = () => {
     }
   };
 
+  // Helper to categorize tag styles with emoji and badge color theme
+  const getTagConfig = (tag) => {
+    const t = String(tag || "").toLowerCase();
+    if (
+      t.includes("graduate") ||
+      t.includes("degree") ||
+      t.includes("bachelor") ||
+      t.includes("b.tech") ||
+      t.includes("btech") ||
+      t.includes("cgl")
+    ) {
+      return { icon: "🎓", type: "blue" };
+    }
+    if (
+      t.includes("12") ||
+      t.includes("10") ||
+      t.includes("matric") ||
+      t.includes("secondary") ||
+      t.includes("school") ||
+      t.includes("pass")
+    ) {
+      return { icon: "📖", type: "green" };
+    }
+    if (
+      t.includes("diploma") ||
+      t.includes("engineer") ||
+      t.includes("tech") ||
+      t.includes("certificate") ||
+      t.includes("je") ||
+      t.includes("gate")
+    ) {
+      return { icon: "📄", type: "purple" };
+    }
+    return { icon: "🏷️", type: "slate" };
+  };
+
   // Formatted real jobs from Admin Panel (Automatically excludes expired jobs)
   const activeJobs = customJobs.filter((j) => !isJobExpired(j));
   const allFormattedJobs = activeJobs.map((j) => {
@@ -422,19 +458,23 @@ const TopOpportunities = () => {
       date2Value = "Will be announced soon";
     }
 
+    let vacCount = "Multiple";
+    if (j.vacancies) {
+      vacCount = isNaN(Number(j.vacancies))
+        ? j.vacancies.replace(/vacancies/gi, "").trim()
+        : Number(j.vacancies).toLocaleString("en-IN");
+    }
+
     return {
       id: j._id || j.id,
       title: j.title,
       organization: j.organization,
-      scope: j.level || "National",
-      status: j.status || "Apply Now",
-      statusType: (j.status || "apply-now").toLowerCase().replace(/\s+/g, "-"),
+      scope: j.level || "National Level",
+      status: j.status || "Ongoing",
+      statusType: (j.status || "ongoing").toLowerCase().replace(/\s+/g, "-"),
       category: j.category || "Government Exams",
-      vacancies: j.vacancies
-        ? isNaN(Number(j.vacancies))
-          ? j.vacancies
-          : `${Number(j.vacancies).toLocaleString("en-IN")} Vacancies`
-        : "Multiple Vacancies",
+      vacanciesCount: vacCount,
+      vacanciesLabel: "Vacancies",
       date1Label,
       date1Value,
       date2Label,
@@ -443,6 +483,9 @@ const TopOpportunities = () => {
       allTags: Array.isArray(j.tags) ? j.tags : [],
       extraTagsCount: j.tags && j.tags.length > 3 ? j.tags.length - 3 : 0,
       emblem: j.logoUrl || "/emblem_india.png",
+      bannerUrl: j.bannerUrl || "/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png",
+      slogan: j.slogan || "SECURING RETIREMENTS \u2022 BUILDING A BRIGHTER TOMORROW",
+      subSlogan: j.subSlogan || "Be a part of a stronger, more inclusive India.",
       btnText: "View Details \u2192",
       btnVariant: "apply",
       detailUrl: `/job/${j._id || j.id}`,
@@ -975,122 +1018,178 @@ const TopOpportunities = () => {
             ) : (
               displayedJobs.map((exam) => (
                 <div key={exam.id} className="to__exam-card">
-                  {/* Top Row: Emblem, Badges, Bookmark */}
-                  <div className="to__card-top">
-                    <div className="to__exam-emblem-wrap">
-                      <img
-                        src={exam.emblem}
-                        alt={exam.title}
-                        className="to__exam-emblem"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "/emblem_india.png";
-                        }}
-                      />
-                    </div>
+                  {/* Card Background Image & Gradient Overlay */}
+                  <div className="to__card-bg-wrap">
+                    <img
+                      src={exam.bannerUrl || "/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png"}
+                      alt=""
+                      className="to__card-bg-img"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png";
+                      }}
+                    />
+                    <div className="to__card-bg-overlay" />
+                  </div>
 
-                    <div className="to__badge-group">
-                      <span className="to__badge-pill to__badge-pill--scope">
-                        {exam.scope}
-                      </span>
-                      <span className={`to__badge-pill to__badge-pill--${exam.statusType}`}>
-                        {exam.status}
-                      </span>
-                    </div>
+                  {/* Card Foreground Content */}
+                  <div className="to__card-content">
+                    {/* Top Row: Emblem, Badges, and Action Buttons */}
+                    <div className="to__card-top">
+                      <div className="to__card-top-left">
+                        <div className="to__exam-emblem-wrap">
+                          <img
+                            src={exam.emblem}
+                            alt={exam.title}
+                            className="to__exam-emblem"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/emblem_india.png";
+                            }}
+                          />
+                        </div>
 
-                    <div className="to__card-actions">
-                      <button
-                        type="button"
-                        className={`to__action-btn to__share-btn ${copiedJobId === (exam._id || exam.id) ? "to__share-btn--copied" : ""}`}
-                        onClick={(e) => handleShareJob(e, exam)}
-                        aria-label="Share Job Details"
-                        title={copiedJobId === (exam._id || exam.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
-                      >
-                        {copiedJobId === (exam._id || exam.id) ? (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
-                            <polyline points="20 6 9 17 4 12" />
+                        <div className="to__badge-group">
+                          <span className="to__badge-pill to__badge-pill--scope">
+                            <span className="to__badge-icon-mini">🏛️</span>
+                            {exam.scope}
+                          </span>
+                          <span className={`to__badge-pill to__badge-pill--${exam.statusType}`}>
+                            <span className="to__status-dot" />
+                            {exam.status}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="to__card-actions">
+                        <button
+                          type="button"
+                          className={`to__action-btn to__share-btn ${copiedJobId === (exam._id || exam.id) ? "to__share-btn--copied" : ""}`}
+                          onClick={(e) => handleShareJob(e, exam)}
+                          aria-label="Share Job Details"
+                          title={copiedJobId === (exam._id || exam.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
+                        >
+                          {copiedJobId === (exam._id || exam.id) ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                              <circle cx="18" cy="5" r="3" />
+                              <circle cx="6" cy="12" r="3" />
+                              <circle cx="18" cy="19" r="3" />
+                              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                            </svg>
+                          )}
+                          {copiedJobId === (exam._id || exam.id) && (
+                            <span className="to__copied-tooltip">Copied!</span>
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`to__action-btn to__bookmark-btn ${savedExams[exam.id] ? "to__bookmark-btn--active" : ""}`}
+                          onClick={() => toggleSaveExam(exam.id)}
+                          aria-label="Save Exam"
+                          title={savedExams[exam.id] ? "Saved" : "Save Exam"}
+                        >
+                          <svg viewBox="0 0 24 24" fill={savedExams[exam.id] ? "#2563eb" : "none"} stroke={savedExams[exam.id] ? "#2563eb" : "#475569"} strokeWidth="2" width="17" height="17">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                           </svg>
-                        ) : (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                            <circle cx="18" cy="5" r="3" />
-                            <circle cx="6" cy="12" r="3" />
-                            <circle cx="18" cy="19" r="3" />
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Exam Title & Org */}
+                    <h4 className="to__exam-title">{exam.title}</h4>
+                    <p className="to__exam-org">{exam.organization}</p>
+
+                    {/* Slogan / Sub-Tagline */}
+                    <div className="to__tagline-wrap">
+                      <div className="to__tagline-bar" />
+                      <span className="to__tagline-text">{exam.slogan}</span>
+                    </div>
+
+                    {/* Middle 3-Column Info Strip Box */}
+                    <div className="to__info-strip">
+                      <div className="to__info-col to__info-col--vacancies">
+                        <div className="to__info-col-icon to__info-col-icon--blue">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
                           </svg>
-                        )}
-                        {copiedJobId === (exam._id || exam.id) && (
-                          <span className="to__copied-tooltip">Copied!</span>
-                        )}
-                      </button>
+                        </div>
+                        <div className="to__info-col-data">
+                          <span className="to__info-col-val">{exam.vacanciesCount}</span>
+                          <span className="to__info-col-lbl">{exam.vacanciesLabel}</span>
+                        </div>
+                      </div>
 
-                      <button
-                        type="button"
-                        className={`to__action-btn to__bookmark-btn ${savedExams[exam.id] ? "to__bookmark-btn--active" : ""}`}
-                        onClick={() => toggleSaveExam(exam.id)}
-                        aria-label="Save Exam"
-                        title={savedExams[exam.id] ? "Saved" : "Save Exam"}
+                      <div className="to__info-col to__info-col--apply">
+                        <div className="to__info-col-icon to__info-col-icon--green">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                          </svg>
+                        </div>
+                        <div className="to__info-col-data">
+                          <span className="to__info-col-lbl">{exam.date1Label}:</span>
+                          <span className="to__info-col-val">{exam.date1Value}</span>
+                        </div>
+                      </div>
+
+                      <div className="to__info-col to__info-col--exam">
+                        <div className="to__info-col-icon to__info-col-icon--purple">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                          </svg>
+                        </div>
+                        <div className="to__info-col-data">
+                          <span className="to__info-col-lbl">{exam.date2Label}:</span>
+                          <span className="to__info-col-val">{exam.date2Value}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tags */}
+                    <div className="to__tags">
+                      {exam.tags.map((tag) => {
+                        const conf = getTagConfig(tag);
+                        return (
+                          <span key={tag} className={`to__tag to__tag--${conf.type}`}>
+                            <span className="to__tag-emoji">{conf.icon}</span>
+                            <span>{tag}</span>
+                          </span>
+                        );
+                      })}
+                      {exam.extraTagsCount > 0 && (
+                        <span className="to__tag to__tag--count">+{exam.extraTagsCount}</span>
+                      )}
+                    </div>
+
+                    {/* Bottom Row: Slogan + View Details */}
+                    <div className="to__card-footer">
+                      <div className="to__card-motto">
+                        <div className="to__motto-bar" />
+                        <p className="to__motto-text">{exam.subSlogan}</p>
+                      </div>
+
+                      <Link
+                        to={exam.detailUrl || `/job/${exam.id}`}
+                        className="to__view-details-btn"
+                        onClick={(e) => handleJobClick(e, exam.detailUrl || `/job/${exam.id}`)}
                       >
-                        <svg viewBox="0 0 24 24" fill={savedExams[exam.id] ? "#2563eb" : "none"} stroke={savedExams[exam.id] ? "#2563eb" : "#94a3b8"} strokeWidth="2">
-                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                        </svg>
-                      </button>
+                        <span>View Details</span>
+                        <span className="to__btn-arrow">&rarr;</span>
+                      </Link>
                     </div>
                   </div>
-
-                  {/* Exam Title & Org */}
-                  <h4 className="to__exam-title">{exam.title}</h4>
-                  <p className="to__exam-org">{exam.organization}</p>
-
-                  {/* Info List */}
-                  <div className="to__exam-info">
-                    <div className="to__info-row">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                      </svg>
-                      <span>{exam.vacancies}</span>
-                    </div>
-
-                    <div className="to__info-row">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
-                      </svg>
-                      <span><strong>{exam.date1Label}:</strong> {exam.date1Value}</span>
-                    </div>
-
-                    <div className="to__info-row">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                      </svg>
-                      <span><strong>{exam.date2Label}:</strong> {exam.date2Value}</span>
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="to__tags">
-                    {exam.tags.map((tag) => (
-                      <span key={tag} className="to__tag">{tag}</span>
-                    ))}
-                    {exam.extraTagsCount > 0 && (
-                      <span className="to__tag to__tag--count">+{exam.extraTagsCount}</span>
-                    )}
-                  </div>
-
-                  {/* Action Button: View Details */}
-                  <Link
-                    to={exam.detailUrl || `/job/${exam.id}`}
-                    className={`to__card-btn to__card-btn--${exam.btnVariant || "apply"}`}
-                    onClick={(e) => handleJobClick(e, exam.detailUrl || `/job/${exam.id}`)}
-                  >
-                    {exam.btnText || "View Details \u2192"}
-                  </Link>
                 </div>
               ))
             )}
