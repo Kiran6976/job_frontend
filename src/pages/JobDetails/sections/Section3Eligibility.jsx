@@ -357,46 +357,55 @@ const Section3Eligibility = ({ job }) => {
                   <span className={`jd-el-checker__status-tag jd-el-checker__status-tag--${evalResult.isEligible ? "green" : "red"}`}>
                     {evalResult.isEligible ? "ELIGIBLE TO APPLY" : "NOT ELIGIBLE"}
                   </span>
-                  <h3 className="jd-el-checker__title">Instant Eligibility Verdict</h3>
+                  <h3 className="jd-el-checker__title">Parameter-by-Parameter Check</h3>
                 </div>
               </div>
 
-              {/* Breakdown Rows */}
-              <div className="jd-el-checker__breakdown">
-                <div className="jd-el-breakdown-row">
-                  <span className="jd-el-breakdown-label">🎂 Your Exact Age:</span>
-                  <span className="jd-el-breakdown-val">
-                    <strong>{evalResult.userAge?.formatted}</strong>
-                  </span>
-                </div>
+              {/* Parameter-by-Parameter Breakdown List */}
+              <div className="jd-el-param-list">
+                {evalResult.parameters?.map((param, pIdx) => (
+                  <div
+                    key={pIdx}
+                    className={`jd-el-param-item ${param.passed ? "jd-el-param-item--pass" : "jd-el-param-item--fail"}`}
+                  >
+                    <div className="jd-el-param-top">
+                      <div className="jd-el-param-name">
+                        <span className={`jd-el-param-badge ${param.passed ? "jd-el-param-badge--pass" : "jd-el-param-badge--fail"}`}>
+                          {param.passed ? "✔ PASS" : "✖ NOT MET"}
+                        </span>
+                        <span>{param.name}</span>
+                      </div>
+                    </div>
 
-                <div className="jd-el-breakdown-row">
-                  <span className="jd-el-breakdown-label">📅 Allowed Age Window:</span>
-                  <span className="jd-el-breakdown-val">
-                    {evalResult.minAge} – {evalResult.effectiveMaxAge} yrs ({evalResult.category} {evalResult.relaxationYears > 0 ? `+${evalResult.relaxationYears}y` : ""})
-                  </span>
-                </div>
-
-                <div className="jd-el-breakdown-row">
-                  <span className="jd-el-breakdown-label">🛡️ Age Verdict:</span>
-                  <span className={`jd-el-breakdown-val ${evalResult.agePassed ? "jd-el-text--green" : "jd-el-text--red"}`}>
-                    {evalResult.agePassed ? "✔ Within Limit" : "✖ Limit Exceeded"}
-                  </span>
-                </div>
-
-                <div className="jd-el-breakdown-row">
-                  <span className="jd-el-breakdown-label">🎓 Education Match:</span>
-                  <span className={`jd-el-breakdown-val ${evalResult.qualPassed ? "jd-el-text--green" : "jd-el-text--red"}`}>
-                    {evalResult.qualPassed ? "✔ Criteria Met" : "✖ Check Criteria"}
-                  </span>
-                </div>
+                    <div className="jd-el-param-details">
+                      <div className="jd-el-param-subrow">
+                        <span className="jd-el-param-k">Your Profile:</span>
+                        <span className="jd-el-param-v">{param.userValue}</span>
+                      </div>
+                      <div className="jd-el-param-subrow">
+                        <span className="jd-el-param-k">Requirement:</span>
+                        <span className="jd-el-param-v">{param.requiredValue}</span>
+                      </div>
+                      {param.detail && (
+                        <div className={`jd-el-param-note ${param.passed ? "jd-el-param-note--pass" : "jd-el-param-note--fail"}`}>
+                          {param.detail}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* Explanatory Message */}
+              {/* Explanatory Final Verdict Box */}
               <div className={`jd-el-verdict-box jd-el-verdict-box--${evalResult.isEligible ? "green" : "red"}`}>
+                <div className="jd-el-verdict-title">
+                  {evalResult.isEligible ? "🎉 Eligibility Confirmed" : "⚠️ Ineligibility Reason"}
+                </div>
                 <p className="jd-el-verdict-text">
                   {evalResult.isEligible
-                    ? `🎉 You meet all basic age and educational criteria for this recruitment! (${evalResult.remainingTimeText})`
+                    ? `You fulfill all mandatory requirements for this vacancy! (${evalResult.remainingTimeText})`
+                    : evalResult.ineligibleReasons?.length > 0
+                    ? evalResult.ineligibleReasons.map((r) => `${r.parameter}: ${r.reason}`).join(" • ")
                     : evalResult.ageMessage || evalResult.qualMessage}
                 </p>
               </div>

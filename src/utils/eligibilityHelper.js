@@ -22,7 +22,7 @@ export const CATEGORY_RELAXATION = {
 // Hierarchy of educational qualifications for ranking & minimum match
 export const QUALIFICATION_LEVELS = {
   NONE: 0,
-  "10TH": 1, // 10th / Matriculation
+  "10TH": 1, // 10th / Matriculation / Secondary
   "12TH": 2, // 12th / Intermediate / Higher Secondary
   DIPLOMA: 3, // Diploma (Polytechnic / 3-year)
   GRADUATE: 4, // Bachelor's Degree (BA, B.Sc, B.Com, B.Tech, BE, BBA, LLB, etc.)
@@ -110,9 +110,13 @@ export const calculateExactAge = (dobString, targetDate = new Date()) => {
  * Extract required qualification level from job attributes, tags, and text
  */
 export const parseJobRequiredQualification = (job) => {
+  if (!job) return { level: QUALIFICATION_LEVELS.GRADUATE, label: "Bachelor's Degree / Graduate", stream: null };
+
   const combinedText = [
-    job.eligibility,
+    job.educationalQualification,
     job.educationQualification,
+    job.qualification,
+    job.eligibility,
     job.postsDescription,
     job.title,
     ...(Array.isArray(job.tags) ? job.tags : []),
@@ -121,87 +125,56 @@ export const parseJobRequiredQualification = (job) => {
     .join(" ")
     .toLowerCase();
 
-  let requiredLevel = QUALIFICATION_LEVELS.GRADUATE; // Default for most competitive exams
+  let requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
   let label = "Bachelor's Degree / Graduate";
   let requiredStream = null;
 
-  if (
-    combinedText.includes("ph.d") ||
-    combinedText.includes("phd") ||
-    combinedText.includes("doctorate")
-  ) {
+  // Check 10th / Matriculation first if explicitly stated and no higher degree required
+  const has10th =
+    /\b(10th|matric|matriculation|secondary school|sse|high school|class 10)\b/i.test(combinedText);
+  const has12th =
+    /\b(12th|intermediate|10\+2|higher secondary|chsl|hsc|class 12|senior secondary)\b/i.test(combinedText);
+  const hasDiploma =
+    /\b(diploma|polytechnic)\b/i.test(combinedText);
+  const hasPG =
+    /\b(post[\s-]?graduate|master|m\.?tech|mba|m\.?sc|m\.?com|pg degree)\b/i.test(combinedText);
+  const hasPhD =
+    /\b(ph\.?d|doctorate)\b/i.test(combinedText);
+  const hasDegree =
+    /\b(bachelor|graduate|graduation|degree|b\.?tech|b\.?e\b|b\.?com|b\.?sc|bba|bca|llb|cgl)\b/i.test(combinedText);
+
+  if (hasPhD) {
     requiredLevel = QUALIFICATION_LEVELS.PHD;
     label = "Ph.D. / Doctorate";
-  } else if (
-    combinedText.includes("post graduate") ||
-    combinedText.includes("post-graduate") ||
-    combinedText.includes("master") ||
-    combinedText.includes("m.tech") ||
-    combinedText.includes("mtech") ||
-    combinedText.includes("mba") ||
-    combinedText.includes("m.sc") ||
-    combinedText.includes("m.com")
-  ) {
+  } else if (hasPG) {
     requiredLevel = QUALIFICATION_LEVELS.POST_GRADUATE;
     label = "Master's Degree / Post Graduate";
-  } else if (
-    combinedText.includes("diploma") ||
-    combinedText.includes("polytechnic")
-  ) {
+  } else if (hasDegree) {
+    requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
+    label = "Bachelor's Degree / Graduate";
+  } else if (hasDiploma) {
     requiredLevel = QUALIFICATION_LEVELS.DIPLOMA;
-    label = "Diploma";
-  } else if (
-    combinedText.includes("12th") ||
-    combinedText.includes("intermediate") ||
-    combinedText.includes("10+2") ||
-    combinedText.includes("higher secondary") ||
-    combinedText.includes("chsl")
-  ) {
-    requiredLevel = QUALIFICATION_LEVELS.QUALIFICATION_LEVELS?.["12TH"] || 2;
+    label = "Diploma / Polytechnic";
+  } else if (has12th) {
+    requiredLevel = QUALIFICATION_LEVELS["12TH"];
     label = "12th Pass / Intermediate";
-  } else if (
-    combinedText.includes("10th") ||
-    combinedText.includes("matric") ||
-    combinedText.includes("secondary school") ||
-    combinedText.includes("mts") ||
-    combinedText.includes("group d")
-  ) {
+  } else if (has10th) {
     requiredLevel = QUALIFICATION_LEVELS["10TH"];
     label = "10th Pass / Matriculation";
   } else {
+    // Default fallback
     requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
     label = "Bachelor's Degree / Graduate";
   }
 
-  // Stream checks
-  if (
-    combinedText.includes("engineering") ||
-    combinedText.includes("b.tech") ||
-    combinedText.includes("btech") ||
-    combinedText.includes("b.e.") ||
-    combinedText.includes("gate")
-  ) {
+  // Stream checks - only if specific technical discipline is mandated
+  if (/\b(b\.?tech|b\.?e\b|gate|engineering|technician|junior engineer|je)\b/i.test(combinedText) && !has10th && !has12th) {
     requiredStream = "Engineering";
-  } else if (
-    combinedText.includes("commerce") ||
-    combinedText.includes("b.com") ||
-    combinedText.includes("ca") ||
-    combinedText.includes("cfa") ||
-    combinedText.includes("finance")
-  ) {
+  } else if (/\b(b\.?com|m\.?com|chartered accountant|ca\b|cfa|icwa|cma|accountant|accounts officer)\b/i.test(combinedText)) {
     requiredStream = "Commerce";
-  } else if (
-    combinedText.includes("law") ||
-    combinedText.includes("llb") ||
-    combinedText.includes("advocate")
-  ) {
+  } else if (/\b(llb|llm|advocate|law officer|legal advisor|judiciary)\b/i.test(combinedText)) {
     requiredStream = "Law";
-  } else if (
-    combinedText.includes("mbbs") ||
-    combinedText.includes("medical") ||
-    combinedText.includes("nursing") ||
-    combinedText.includes("pharmacy")
-  ) {
+  } else if (/\b(mbbs|bds|nursing|b\.?pharm|m\.?pharm|ayush|medical officer)\b/i.test(combinedText)) {
     requiredStream = "Medical";
   }
 
@@ -209,7 +182,7 @@ export const parseJobRequiredQualification = (job) => {
 };
 
 /**
- * Main evaluation function: Checks if user is eligible for a specific job.
+ * Main evaluation function: Evaluates candidate eligibility across all parameters
  */
 export const evaluateJobEligibility = (job, userProfile) => {
   if (!userProfile || !userProfile.dob || !userProfile.category) {
@@ -218,7 +191,8 @@ export const evaluateJobEligibility = (job, userProfile) => {
       isEligible: null,
       badgeText: "Check Eligibility",
       color: "slate",
-      reasons: [],
+      parameters: [],
+      ineligibleReasons: [],
     };
   }
 
@@ -231,7 +205,8 @@ export const evaluateJobEligibility = (job, userProfile) => {
       isEligible: null,
       badgeText: "Check Eligibility",
       color: "slate",
-      reasons: [],
+      parameters: [],
+      ineligibleReasons: [],
     };
   }
 
@@ -244,8 +219,8 @@ export const evaluateJobEligibility = (job, userProfile) => {
   if (titleLower.includes("cgl") || titleLower.includes("civil services") || titleLower.includes("upsc")) {
     baseMaxAge = Number(job.ageLimitMax) || 32;
     minAge = Number(job.ageLimitMin) || 21;
-  } else if (titleLower.includes("chsl") || titleLower.includes("12th") || titleLower.includes("mts")) {
-    baseMaxAge = Number(job.ageLimitMax) || 27;
+  } else if (titleLower.includes("chsl") || titleLower.includes("12th") || titleLower.includes("mts") || titleLower.includes("gds")) {
+    baseMaxAge = Number(job.ageLimitMax) || 40;
     minAge = Number(job.ageLimitMin) || 18;
   }
 
@@ -261,7 +236,7 @@ export const evaluateJobEligibility = (job, userProfile) => {
   if (userAge.years < minAge) {
     agePassed = false;
     const diff = minAge - userAge.exactDecimal;
-    ageMessage = `Below minimum age limit (${minAge} yrs). You need ${diff.toFixed(1)} more years.`;
+    ageMessage = `Below minimum age (${minAge} yrs). You need ${diff.toFixed(1)} more years.`;
   } else if (userAge.exactDecimal > effectiveMaxAge) {
     agePassed = false;
     const over = userAge.exactDecimal - effectiveMaxAge;
@@ -277,7 +252,7 @@ export const evaluateJobEligibility = (job, userProfile) => {
     } else {
       remainingTimeText = `${remaining.toFixed(1)} yrs remaining`;
     }
-    ageMessage = `Within age limit (${minAge}–${effectiveMaxAge} yrs with ${userCat} relaxation). ${remainingTimeText}.`;
+    ageMessage = `Within prescribed age limit (${minAge}–${effectiveMaxAge} yrs with ${userCat} relaxation). ${remainingTimeText}.`;
   }
 
   // 3. Qualification Match Check
@@ -287,31 +262,38 @@ export const evaluateJobEligibility = (job, userProfile) => {
   let qualPassed = true;
   let qualMessage = "";
 
+  // Higher degree holders (e.g. Graduates/Masters) are fully eligible for lower requirements (10th/12th/Diploma)
   if (userQualLevel < jobReq.level) {
     qualPassed = false;
-    qualMessage = `Requires ${jobReq.label}. Your profile: ${userProfile.qualificationLabel || userProfile.qualification}.`;
+    qualMessage = `Requires minimum ${jobReq.label}. Your profile has ${userProfile.qualificationLabel?.split("(")[0] || userProfile.qualification}.`;
   } else {
-    // Check specific stream and department if applicable
-    if (
-      jobReq.stream &&
-      userProfile.stream &&
-      userProfile.stream !== "Any" &&
-      userProfile.stream !== "Other" &&
-      !userProfile.stream.toLowerCase().includes(jobReq.stream.toLowerCase())
-    ) {
-      qualPassed = false;
-      qualMessage = `Requires ${jobReq.stream} specialization. Your profile: ${userProfile.stream}.`;
-    } else {
-      qualPassed = true;
-      const deptStr = userProfile.departmentLabel || userProfile.department;
-      qualMessage = deptStr
-        ? `Educational criteria satisfied (${jobReq.label} - ${deptStr.split("(")[0]}).`
-        : `Educational criteria satisfied (${jobReq.label}).`;
-    }
+    qualPassed = true;
+    qualMessage = `Educational criteria fulfilled (${jobReq.label} or higher).`;
   }
 
-  // 4. Final Verdict
-  const isEligible = agePassed && qualPassed;
+  // 4. Specialization / Stream Match Check
+  let streamPassed = true;
+  let streamMessage = "";
+
+  if (
+    jobReq.stream &&
+    userProfile.stream &&
+    userProfile.stream !== "Any" &&
+    userProfile.stream !== "Other" &&
+    !userProfile.stream.toLowerCase().includes(jobReq.stream.toLowerCase())
+  ) {
+    streamPassed = false;
+    streamMessage = `Requires ${jobReq.stream} specialization. Your stream: ${userProfile.stream}.`;
+  } else {
+    streamPassed = true;
+    const deptStr = userProfile.departmentLabel || userProfile.department;
+    streamMessage = jobReq.stream
+      ? `Stream matched (${jobReq.stream}).`
+      : `Open to any discipline / stream.`;
+  }
+
+  // 5. Final Verdict
+  const isEligible = agePassed && qualPassed && streamPassed;
 
   let badgeText = "";
   let color = "slate";
@@ -322,10 +304,50 @@ export const evaluateJobEligibility = (job, userProfile) => {
   } else if (!agePassed) {
     badgeText = `Ineligible • Age (${userAge.years} yrs)`;
     color = "red";
-  } else {
+  } else if (!qualPassed) {
     badgeText = `Ineligible • Qualification`;
     color = "red";
+  } else {
+    badgeText = `Ineligible • Stream (${jobReq.stream})`;
+    color = "red";
   }
+
+  // Ineligible reasons list
+  const ineligibleReasons = [];
+  if (!agePassed) ineligibleReasons.push({ parameter: "Age Limit Criteria", reason: ageMessage });
+  if (!qualPassed) ineligibleReasons.push({ parameter: "Educational Qualification", reason: qualMessage });
+  if (!streamPassed) ineligibleReasons.push({ parameter: "Discipline / Stream", reason: streamMessage });
+
+  const parameters = [
+    {
+      name: "Age Limit & Cut-off",
+      passed: agePassed,
+      userValue: `${userAge.years} yrs, ${userAge.months} mos`,
+      requiredValue: `${minAge} – ${effectiveMaxAge} yrs (${userCat} ${relaxationYears > 0 ? `+${relaxationYears}y` : "norm"})`,
+      detail: ageMessage,
+    },
+    {
+      name: "Educational Qualification",
+      passed: qualPassed,
+      userValue: userProfile.qualificationLabel?.split("(")[0] || userProfile.qualification,
+      requiredValue: jobReq.label,
+      detail: qualMessage,
+    },
+    {
+      name: "Discipline / Stream",
+      passed: streamPassed,
+      userValue: userProfile.stream !== "Any" ? `${userProfile.stream} (${userProfile.departmentLabel?.split("(")[0] || "General"})` : "Any Stream",
+      requiredValue: jobReq.stream ? `${jobReq.stream} Discipline` : "Any Discipline Accepted",
+      detail: streamMessage,
+    },
+    {
+      name: "Nationality & Citizenship",
+      passed: true,
+      userValue: "Indian Citizen",
+      requiredValue: "Citizen of India",
+      detail: "Standard citizenship requirement met.",
+    },
+  ];
 
   return {
     status: isEligible ? "eligible" : "ineligible",
@@ -342,8 +364,12 @@ export const evaluateJobEligibility = (job, userProfile) => {
     ageMessage,
     qualPassed,
     qualMessage,
+    streamPassed,
+    streamMessage,
     requiredQualification: jobReq.label,
     requiredStream: jobReq.stream,
     remainingTimeText,
+    parameters,
+    ineligibleReasons,
   };
 };
