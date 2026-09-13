@@ -1547,16 +1547,24 @@
 }
 
 .to__el-edit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11px;
   font-weight: 700;
   color: #2563eb;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   line-height: 1.2;
+}
+
+.to__el-edit-icon {
+  color: #2563eb;
+  flex-shrink: 0;
 }
 
 .to__el-edit-pill:hover {
@@ -1575,16 +1583,36 @@
 .to__el-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
   font-weight: 700;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   background: #ffffff;
   color: #1e293b;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
   white-space: nowrap;
+}
+
+.to__el-chip-icon {
+  flex-shrink: 0;
+}
+
+.to__el-chip-icon--age {
+  color: #64748b;
+}
+
+.to__el-chip-icon--cat {
+  color: #2563eb;
+}
+
+.to__el-chip-icon--qual {
+  color: #16a34a;
+}
+
+.to__el-chip-icon--stream {
+  color: #9333ea;
 }
 
 .to__el-chip--age {

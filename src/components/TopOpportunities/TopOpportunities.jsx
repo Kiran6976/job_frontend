@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase, Sparkles } from "lucide-react";
+import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase, Sparkles, Calendar, Compass, Pencil } from "lucide-react";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
@@ -980,22 +980,27 @@ const TopOpportunities = () => {
                       onClick={() => setIsEligibilityModalOpen(true)}
                       title="Update your age & qualification profile"
                     >
-                      Edit Profile ✎
+                      <Pencil size={11} className="to__el-edit-icon" />
+                      <span>Edit Profile</span>
                     </button>
                   </div>
                   <div className="to__el-chips">
                     <span className="to__el-chip to__el-chip--age">
-                      🎂 {calculateExactAge(eligibilityProfile.dob)?.formatted}
+                      <Calendar size={13} className="to__el-chip-icon to__el-chip-icon--age" />
+                      <span>{calculateExactAge(eligibilityProfile.dob)?.formatted}</span>
                     </span>
                     <span className="to__el-chip to__el-chip--cat">
-                      🏷️ {eligibilityProfile.category}
+                      <Tag size={13} className="to__el-chip-icon to__el-chip-icon--cat" />
+                      <span>{eligibilityProfile.category}</span>
                     </span>
                     <span className="to__el-chip to__el-chip--qual">
-                      🎓 {eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]?.trim()}
+                      <GraduationCap size={13} className="to__el-chip-icon to__el-chip-icon--qual" />
+                      <span>{eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]?.trim()}</span>
                     </span>
                     {eligibilityProfile.stream && eligibilityProfile.stream !== "Any" && (
                       <span className="to__el-chip to__el-chip--stream">
-                        🔬 {eligibilityProfile.stream}
+                        <Compass size={13} className="to__el-chip-icon to__el-chip-icon--stream" />
+                        <span>{eligibilityProfile.stream}</span>
                       </span>
                     )}
                   </div>
@@ -1007,7 +1012,9 @@ const TopOpportunities = () => {
                 className="to__el-cta-btn"
                 onClick={() => setIsEligibilityModalOpen(true)}
               >
-                <div className="to__el-cta-icon-box">🎯</div>
+                <div className="to__el-cta-icon-box">
+                  <Target size={20} />
+                </div>
                 <div className="to__el-cta-text">
                   <span className="to__el-cta-title">Instant Eligibility Calculator</span>
                   <span className="to__el-cta-sub">

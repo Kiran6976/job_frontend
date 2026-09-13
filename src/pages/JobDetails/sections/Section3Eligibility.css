@@ -1036,8 +1036,19 @@
 }
 
 .jd-el-compact-icon {
-  font-size: 14px;
-  line-height: 1;
+  flex-shrink: 0;
+}
+
+.jd-el-compact-icon--age {
+  color: #64748b;
+}
+
+.jd-el-compact-icon--qual {
+  color: #16a34a;
+}
+
+.jd-el-compact-icon--stream {
+  color: #9333ea;
 }
 
 .jd-el-compact-label {

@@ -7,7 +7,7 @@ import {
   ELIGIBILITY_EVENT,
 } from "../../../utils/eligibilityHelper";
 import EligibilityModal from "../../../components/EligibilityModal/EligibilityModal";
-import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
+import { CheckCircle2, XCircle, Sparkles, Calendar, GraduationCap, Compass, Pencil } from "lucide-react";
 import "./Section3Eligibility.css";
 
 const Section3Eligibility = ({ job }) => {
@@ -365,7 +365,7 @@ const Section3Eligibility = ({ job }) => {
               <div className="jd-el-compact-list">
                 <div className="jd-el-compact-row">
                   <div className="jd-el-compact-left">
-                    <span className="jd-el-compact-icon">🎂</span>
+                    <Calendar size={14} className="jd-el-compact-icon jd-el-compact-icon--age" />
                     <span className="jd-el-compact-label">Age:</span>
                     <span className="jd-el-compact-val">
                       {evalResult.userAge?.years} yrs <span className="jd-el-compact-sub">({evalResult.minAge}–{evalResult.effectiveMaxAge} yrs allowed)</span>
@@ -378,7 +378,7 @@ const Section3Eligibility = ({ job }) => {
 
                 <div className="jd-el-compact-row">
                   <div className="jd-el-compact-left">
-                    <span className="jd-el-compact-icon">🎓</span>
+                    <GraduationCap size={14} className="jd-el-compact-icon jd-el-compact-icon--qual" />
                     <span className="jd-el-compact-label">Education:</span>
                     <span className="jd-el-compact-val">
                       {eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]?.trim()} <span className="jd-el-compact-sub">(Min: {evalResult.requiredQualification?.split("(")[0]?.split("/")[0]?.trim()})</span>
@@ -392,7 +392,7 @@ const Section3Eligibility = ({ job }) => {
                 {evalResult.hasStreamRestriction && (
                   <div className="jd-el-compact-row">
                     <div className="jd-el-compact-left">
-                      <span className="jd-el-compact-icon">🔬</span>
+                      <Compass size={14} className="jd-el-compact-icon jd-el-compact-icon--stream" />
                       <span className="jd-el-compact-label">Stream:</span>
                       <span className="jd-el-compact-val">
                         {eligibilityProfile.stream} <span className="jd-el-compact-sub">({evalResult.streamPassed ? "Accepted" : `Req: ${evalResult.acceptedStreams?.join("/")}`})</span>
@@ -419,7 +419,8 @@ const Section3Eligibility = ({ job }) => {
                 className="jd-el-checker__btn jd-el-checker__btn--secondary"
                 onClick={() => setIsModalOpen(true)}
               >
-                Update Profile ✎
+                <Pencil size={13} style={{ marginRight: "6px" }} />
+                <span>Update Profile</span>
               </button>
             </div>
           ) : (
