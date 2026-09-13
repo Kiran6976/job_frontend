@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://theworkflow.online/sitemap.xml
+Sitemap: https://www.theworkflow.online/sitemap.xml
