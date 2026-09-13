@@ -12,6 +12,7 @@ import {
   Check,
   BookOpen,
   Briefcase,
+  Layers,
 } from "lucide-react";
 import {
   getStoredEligibilityProfile,
@@ -53,8 +54,74 @@ const STREAM_OPTIONS = [
   { value: "Management", label: "Business & Management", sub: "BBA, MBA, PGDM, Marketing, HR, Operations" },
 ];
 
+// Department / Specialization options mapped per stream
+const DEPARTMENT_OPTIONS = {
+  Engineering: [
+    { value: "Any_Engg", label: "Any / All Engineering Branches", sub: "Eligible for all B.Tech / BE opportunities" },
+    { value: "CSE_IT", label: "Computer Science & IT (CSE / IT)", sub: "Software, Programming, Data & Networks" },
+    { value: "EE", label: "Electrical Engineering (EE / EEE)", sub: "Power Systems, Electrical Machines & Circuits" },
+    { value: "ECE", label: "Electronics & Communication (ECE / ETC)", sub: "Signals, VLSI, Embedded & Telecommunication" },
+    { value: "ME", label: "Mechanical Engineering (ME)", sub: "Thermal, Design, Production & Automobile" },
+    { value: "CE", label: "Civil Engineering (CE)", sub: "Structures, Transportation, Water Resources & Survey" },
+    { value: "CHE", label: "Chemical Engineering", sub: "Petrochemicals, Process & Polymers" },
+    { value: "AERO", label: "Aerospace / Aeronautical Engineering", sub: "Avionics, Propulsion & Flight Mechanics" },
+    { value: "BT", label: "Biotechnology / Biomedical", sub: "Bioinformatics, Genetic & Medical Engineering" },
+    { value: "OTHER_ENGG", label: "Other Engineering Branch", sub: "Mining, Metallurgical, Marine, Textile, etc." },
+  ],
+  Commerce: [
+    { value: "General_Comm", label: "General Commerce (B.Com / M.Com)", sub: "Accounting, Business Studies & Taxation" },
+    { value: "CA", label: "Chartered Accountancy (CA / Inter CA)", sub: "ICAI certified or pursuing" },
+    { value: "CMA", label: "Cost & Management Accounting (CMA / ICWA)", sub: "ICMAI certified" },
+    { value: "CS", label: "Company Secretary (CS)", sub: "ICSI certified" },
+    { value: "Finance_Analyst", label: "Finance & Investment (CFA / MBA Finance)", sub: "Financial Markets & Banking" },
+    { value: "Econ_Stats", label: "Economics & Business Statistics", sub: "Economic analysis & Quantitative methods" },
+  ],
+  Science: [
+    { value: "Physics", label: "Physics / Applied Physics", sub: "Mechanics, Quantum & Astrophysics" },
+    { value: "Chemistry", label: "Chemistry / Applied Chemistry", sub: "Organic, Inorganic & Analytical Chemistry" },
+    { value: "Maths_Stats", label: "Mathematics & Statistics", sub: "Pure/Applied Maths & Actuarial" },
+    { value: "Bio_Life", label: "Biology / Botany / Zoology / Life Sciences", sub: "Genetics, Microbiology & Biochemistry" },
+    { value: "Agri_Forest", label: "Agriculture, Forestry & Horticulture", sub: "Agronomy, Soil Science & Plant Breeding" },
+    { value: "CS_BSc_BCA", label: "Computer Science (B.Sc CS / BCA / MCA)", sub: "Computing & Information Technology" },
+    { value: "Geology_Env", label: "Geology / Earth & Environmental Sciences", sub: "Geophysics, Ecology & Environment" },
+  ],
+  Arts: [
+    { value: "History_Arch", label: "History & Archaeology", sub: "Ancient, Medieval & Modern Indian History" },
+    { value: "Pol_IR", label: "Political Science & International Relations", sub: "Governance, Diplomacy & Constitution" },
+    { value: "Pub_Ad", label: "Public Administration", sub: "Administrative theory & Public Policy" },
+    { value: "Sociology_MSW", label: "Sociology & Social Work (MSW)", sub: "Social welfare & Community development" },
+    { value: "Economics_BA", label: "Economics", sub: "Micro/Macro Economics & Public Finance" },
+    { value: "Languages", label: "Languages & Literature (English / Hindi / Regional)", sub: "Translation & Linguistics" },
+    { value: "Psychology", label: "Psychology & Behavioral Sciences", sub: "Clinical & Applied Psychology" },
+    { value: "Media_Journ", label: "Journalism & Mass Communication", sub: "Print, Broadcast & Digital Media" },
+  ],
+  Law: [
+    { value: "General_Law", label: "General Law (LLB 3-Yr / 5-Yr Integrated)", sub: "Civil, Criminal & Constitutional Law" },
+    { value: "Corporate_Law", label: "Corporate, Commercial & Tax Law", sub: "Company law, IPR & Arbitration" },
+    { value: "LLM_Master", label: "LLM (Master of Laws)", sub: "Specialized Legal Master's" },
+    { value: "Advocate_Bar", label: "Practicing Advocate / Bar Council Registered", sub: "Active court practice experience" },
+  ],
+  Medical: [
+    { value: "MBBS", label: "MBBS (Allopathic Medicine & Surgery)", sub: "MCI / NMC registered practitioner" },
+    { value: "BDS", label: "BDS (Dental Surgery)", sub: "DCI registered dental surgeon" },
+    { value: "AYUSH", label: "AYUSH Medicine (BAMS / BHMS / BUMS)", sub: "Ayurveda, Homeopathy & Unani" },
+    { value: "Nursing", label: "Nursing (B.Sc Nursing / GNM / M.Sc Nursing)", sub: "INC registered nurse" },
+    { value: "Pharmacy", label: "Pharmacy (B.Pharm / M.Pharm / Pharm.D)", sub: "PCI registered pharmacist" },
+    { value: "Physiotherapy", label: "Physiotherapy & Rehabilitation (BPT / MPT)", sub: "Physical therapist" },
+    { value: "Allied_MLT", label: "Medical Lab Tech / Allied Health (MLT / Radiology)", sub: "Diagnostics & Imaging" },
+  ],
+  Management: [
+    { value: "General_Mgmt", label: "General Management (BBA / MBA / PGDM)", sub: "Core Business & Administration" },
+    { value: "Marketing", label: "Marketing & Sales Management", sub: "Brand, Digital Marketing & Retail" },
+    { value: "HR", label: "Human Resources (HR / Personnel Management)", sub: "Talent, Industrial Relations & Labor Law" },
+    { value: "Finance_Mgmt", label: "Financial Management", sub: "Corporate Finance, Investment & Banking" },
+    { value: "Operations_SCM", label: "Operations & Supply Chain Management", sub: "Logistics, Procurement & Quality" },
+    { value: "Analytics_IT", label: "Business Analytics & IT Management", sub: "Data-driven Decision Making & Systems" },
+  ],
+};
+
 // Custom Elegant Dropdown Component
-const CustomDropdown = ({ label, icon, options, value, onChange, placeholder }) => {
+const CustomDropdown = ({ label, icon, options, value, onChange, placeholder, required = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -73,7 +140,7 @@ const CustomDropdown = ({ label, icon, options, value, onChange, placeholder }) 
   return (
     <div className="c-dropdown" ref={dropdownRef}>
       <label className="el-modal__label">
-        {icon} {label} <span className="el-modal__req">*</span>
+        {icon} {label} {required && <span className="el-modal__req">*</span>}
       </label>
 
       {/* Trigger Button */}
@@ -152,7 +219,8 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
   const [category, setCategory] = useState("UR");
   const [gender, setGender] = useState("Male");
   const [qualification, setQualification] = useState("GRADUATE");
-  const [stream, setStream] = useState("Any");
+  const [stream, setStream] = useState("Engineering");
+  const [department, setDepartment] = useState("CSE_IT");
   const [hasExistingProfile, setHasExistingProfile] = useState(false);
 
   useEffect(() => {
@@ -164,6 +232,7 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
         if (stored.gender) setGender(stored.gender);
         if (stored.qualification) setQualification(stored.qualification);
         if (stored.stream) setStream(stored.stream);
+        if (stored.department) setDepartment(stored.department);
         setHasExistingProfile(true);
       } else {
         setHasExistingProfile(false);
@@ -171,11 +240,24 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
     }
   }, [isOpen]);
 
+  // When stream changes, automatically set department to the first department of the new stream
+  const handleStreamChange = (newStream) => {
+    setStream(newStream);
+    const availableDepts = DEPARTMENT_OPTIONS[newStream];
+    if (availableDepts && availableDepts.length > 0) {
+      setDepartment(availableDepts[0].value);
+    } else {
+      setDepartment("");
+    }
+  };
+
   if (!isOpen) return null;
 
   const ageData = calculateExactAge(dob);
   const selectedCatObj = CATEGORY_OPTIONS.find((c) => c.value === category) || CATEGORY_OPTIONS[0];
   const selectedQualObj = QUALIFICATION_OPTIONS.find((q) => q.value === qualification) || QUALIFICATION_OPTIONS[3];
+  const availableDepts = DEPARTMENT_OPTIONS[stream] || [];
+  const selectedDeptObj = availableDepts.find((d) => d.value === department) || availableDepts[0];
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -189,6 +271,8 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
       qualification,
       qualificationLabel: selectedQualObj.label,
       stream,
+      department: stream !== "Any" ? department : "",
+      departmentLabel: stream !== "Any" && selectedDeptObj ? selectedDeptObj.label : "",
       updatedAt: new Date().toISOString(),
     };
 
@@ -293,16 +377,30 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
             </div>
 
             {/* 5. Custom Stream / Specialization Dropdown */}
-            <div className="el-modal__field el-modal__field--full">
+            <div className={`el-modal__field ${stream === "Any" ? "el-modal__field--full" : ""}`}>
               <CustomDropdown
-                label="Field of Study / Discipline (Stream)"
+                label="Field of Study / Stream"
                 icon={<Briefcase size={15} />}
                 options={STREAM_OPTIONS}
                 value={stream}
-                onChange={(val) => setStream(val)}
+                onChange={handleStreamChange}
                 placeholder="Select Field of Study / Stream"
               />
             </div>
+
+            {/* 6. Contextual Department / Branch Dropdown (shows if Stream is not 'Any') */}
+            {stream !== "Any" && availableDepts.length > 0 && (
+              <div className="el-modal__field el-modal__field--dept-fade">
+                <CustomDropdown
+                  label="Department / Branch / Specialization"
+                  icon={<Layers size={15} />}
+                  options={availableDepts}
+                  value={department}
+                  onChange={(val) => setDepartment(val)}
+                  placeholder="Select Department / Branch"
+                />
+              </div>
+            )}
           </div>
 
           {/* Quick Summary Card */}
@@ -313,7 +411,11 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
                 <span className="el-chip">🎂 {ageData ? `${ageData.years} yrs ${ageData.months} mos` : "--"}</span>
                 <span className="el-chip">🛡️ {selectedCatObj.label.split("(")[0]}</span>
                 <span className="el-chip">🎓 {selectedQualObj.label.split("(")[0]}</span>
-                {stream !== "Any" && <span className="el-chip">🔬 {stream}</span>}
+                {stream !== "Any" && (
+                  <span className="el-chip">
+                    🔬 {stream} {selectedDeptObj ? `• ${selectedDeptObj.label.split("(")[0]}` : ""}
+                  </span>
+                )}
               </div>
             </div>
             <div className="el-modal__summary-badge">

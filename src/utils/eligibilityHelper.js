@@ -291,7 +291,7 @@ export const evaluateJobEligibility = (job, userProfile) => {
     qualPassed = false;
     qualMessage = `Requires ${jobReq.label}. Your profile: ${userProfile.qualificationLabel || userProfile.qualification}.`;
   } else {
-    // Check specific stream if applicable
+    // Check specific stream and department if applicable
     if (
       jobReq.stream &&
       userProfile.stream &&
@@ -303,7 +303,10 @@ export const evaluateJobEligibility = (job, userProfile) => {
       qualMessage = `Requires ${jobReq.stream} specialization. Your profile: ${userProfile.stream}.`;
     } else {
       qualPassed = true;
-      qualMessage = `Educational criteria satisfied (${jobReq.label}).`;
+      const deptStr = userProfile.departmentLabel || userProfile.department;
+      qualMessage = deptStr
+        ? `Educational criteria satisfied (${jobReq.label} - ${deptStr.split("(")[0]}).`
+        : `Educational criteria satisfied (${jobReq.label}).`;
     }
   }
 
