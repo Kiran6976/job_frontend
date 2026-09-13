@@ -389,7 +389,7 @@ const Section3Eligibility = ({ job }) => {
                   </span>
                 </div>
 
-                {(evalResult.requiredStream || (evalResult.acceptedStreams?.length > 0 && !evalResult.acceptedStreams.includes("Any"))) && (
+                {evalResult.hasStreamRestriction && (
                   <div className="jd-el-compact-row">
                     <div className="jd-el-compact-left">
                       <span className="jd-el-compact-icon">🔬</span>

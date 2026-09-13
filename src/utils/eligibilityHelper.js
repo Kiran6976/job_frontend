@@ -109,13 +109,22 @@ export const calculateExactAge = (dobString, targetDate = new Date()) => {
 /**
  * Extract accepted streams / disciplines from job text
  */
-export const parseJobAcceptedStreams = (text) => {
+export const parseJobAcceptedStreams = (text, requiredLevel = QUALIFICATION_LEVELS.GRADUATE) => {
+  // 10th and 12th pass jobs have NO college stream/discipline restrictions
+  if (requiredLevel < QUALIFICATION_LEVELS.GRADUATE) {
+    return ["Any"];
+  }
+
   const t = String(text || "").toLowerCase();
+
+  // If the job explicitly accepts any discipline / any graduate / general degree
+  const hasAny = /\b(any discipline|any graduate|any degree|recognized university|any stream|in any discipline|any subject|or equivalent degree)\b/i.test(t);
+
   const accepted = [];
   if (/\b(b\.?tech|engineering|technician|junior engineer|je\b|cse|ece|eee|civil|mechanical|electrical|it\b|information technology)\b/i.test(t)) {
     accepted.push("Engineering");
   }
-  if (/\b(b\.?com|m\.?com|commerce|finance|economics|ca\b|cfa|icwa|cma|accountant|accounts|aca|fca|acs|fcs|acma|fcma)\b/i.test(t)) {
+  if (/\b(b\.?com|m\.?com|commerce|finance|economics|ca\b|cfa\b|icwa|cma\b|accountant|accounts|aca\b|fca\b|acs\b|fcs\b|acma\b|fcma\b)\b/i.test(t)) {
     accepted.push("Commerce");
   }
   if (/\b(llb|llm|law\b|advocate|legal|judiciary)\b/i.test(t)) {
@@ -124,15 +133,17 @@ export const parseJobAcceptedStreams = (text) => {
   if (/\b(mbbs|bds|nursing|b\.?pharm|m\.?pharm|ayush|medical|doctor|veterinary)\b/i.test(t)) {
     accepted.push("Medical");
   }
-  if (/\b(b\.?sc|m\.?sc|science|physics|chemistry|mathematics|statistics|data science|botany|zoology|geology|agriculture)\b/i.test(t)) {
+  if (/\b(b\.?sc|m\.?sc|science degree|physics degree|chemistry degree|statistics degree|data science|botany|zoology|geology|agriculture)\b/i.test(t)) {
     accepted.push("Science");
   }
-  if (/\b(b\.?a\b|m\.?a\b|arts|humanities|hindi|english|history|political science|sociology|journalism)\b/i.test(t)) {
+  if (/\b(b\.?a\b|m\.?a\b|arts degree|humanities|sociology|journalism)\b/i.test(t)) {
     accepted.push("Arts");
   }
-  if (/\b(any discipline|any graduate|any degree|recognized university|any stream|in any discipline)\b/i.test(t)) {
+
+  if (hasAny || accepted.length === 0) {
     accepted.push("Any");
   }
+
   return accepted;
 };
 
@@ -140,7 +151,7 @@ export const parseJobAcceptedStreams = (text) => {
  * Extract required qualification level from job attributes, tags, and text
  */
 export const parseJobRequiredQualification = (job) => {
-  if (!job) return { level: QUALIFICATION_LEVELS.GRADUATE, label: "Bachelor's Degree / Graduate", stream: null, acceptedStreams: [] };
+  if (!job) return { level: QUALIFICATION_LEVELS.GRADUATE, label: "Bachelor's Degree / Graduate", stream: null, acceptedStreams: ["Any"] };
 
   // Primary qualification fields
   const primaryQualText = [
@@ -209,7 +220,7 @@ export const parseJobRequiredQualification = (job) => {
   }
 
   const fullText = (primaryQualText + " " + fallbackText).toLowerCase();
-  const acceptedStreams = parseJobAcceptedStreams(fullText);
+  const acceptedStreams = parseJobAcceptedStreams(fullText, requiredLevel);
   let requiredStream = acceptedStreams.length === 1 && acceptedStreams[0] !== "Any" ? acceptedStreams[0] : null;
 
   return { level: requiredLevel, label, stream: requiredStream, acceptedStreams };
@@ -306,18 +317,13 @@ export const evaluateJobEligibility = (job, userProfile) => {
   }
 
   // 4. Specialization / Stream Match Check
+  const acceptedStreams = jobReq.acceptedStreams || [];
+  const hasStreamRestriction = jobReq.level >= QUALIFICATION_LEVELS.GRADUATE && acceptedStreams.length > 0 && !acceptedStreams.includes("Any");
+
   let streamPassed = true;
   let streamMessage = "";
 
-  const acceptedStreams = jobReq.acceptedStreams || [];
-
-  if (
-    acceptedStreams.length > 0 &&
-    !acceptedStreams.includes("Any") &&
-    userProfile.stream &&
-    userProfile.stream !== "Any" &&
-    userProfile.stream !== "Other"
-  ) {
+  if (hasStreamRestriction && userProfile.stream && userProfile.stream !== "Any" && userProfile.stream !== "Other") {
     const matchesStream = acceptedStreams.some(
       (s) =>
         userProfile.stream.toLowerCase().includes(s.toLowerCase()) ||
@@ -334,7 +340,7 @@ export const evaluateJobEligibility = (job, userProfile) => {
     }
   } else {
     streamPassed = true;
-    streamMessage = acceptedStreams.length > 0 && !acceptedStreams.includes("Any") && userProfile.stream
+    streamMessage = hasStreamRestriction && userProfile.stream
       ? `Stream matched (${userProfile.stream}).`
       : `Open to any discipline / stream.`;
   }
@@ -410,6 +416,7 @@ export const evaluateJobEligibility = (job, userProfile) => {
     requiredQualification: jobReq.label,
     requiredStream: jobReq.stream,
     acceptedStreams: jobReq.acceptedStreams,
+    hasStreamRestriction,
     remainingTimeText,
     parameters,
     ineligibleReasons,
