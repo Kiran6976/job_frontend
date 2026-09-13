@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./FeaturedJobs.css";
-import { FILTER_TABS } from "./jobData";
 import { API_ENDPOINTS } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
 import { isJobExpired } from "../../utils/jobHelpers";
@@ -25,7 +24,6 @@ const timeAgo = (dateStr) => {
 const FeaturedJobs = () => {
   const navigate = useNavigate();
   const { user, openAuthModal } = useAuth();
-  const [activeTab, setActiveTab] = useState("all");
   const [savedJobs, setSavedJobs] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [customJobs, setCustomJobs] = useState(() => {
@@ -137,50 +135,6 @@ const FeaturedJobs = () => {
     setSavedJobs((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const renderTabIcon = (type) => {
-    switch (type) {
-      case "grid":
-        return (
-          <svg className="fj__tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-          </svg>
-        );
-      case "home":
-        return (
-          <svg className="fj__tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-        );
-      case "briefcase":
-        return (
-          <svg className="fj__tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-          </svg>
-        );
-      case "clock":
-        return (
-          <svg className="fj__tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-        );
-      case "academic":
-        return (
-          <svg className="fj__tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-            <path d="M6 12v5c3 3 9 3 12 0v-5" />
-          </svg>
-        );
-      default:
-        return null;
-    }
-  };
-
   // Convert custom published jobs from admin into card format, sorted by latest
   const activeCustomJobs = customJobs.filter((j) => !isJobExpired(j));
   const sortedCustomJobs = [...activeCustomJobs].sort((a, b) => {
@@ -231,25 +185,8 @@ const FeaturedJobs = () => {
     };
   });
 
-  // Use real posted jobs only (no dummy fallback)
-  const rawJobs = formattedCustomJobs;
-
-  // Filter based on activeTab and limit to 4 latest cards only
-  const displayedJobs = rawJobs
-    .filter((job) => {
-      if (activeTab === "all") return true;
-      const loc = String(job.location || "").toLowerCase();
-      const type = String(job.type || "").toLowerCase();
-      const ind = String(job.industry || "").toLowerCase();
-
-      if (activeTab === "remote") return loc.includes("remote");
-      if (activeTab === "fulltime")
-        return type.includes("full") || type.includes("govt") || type.includes("national") || ind.includes("govt");
-      if (activeTab === "parttime") return type.includes("part") || type.includes("state");
-      if (activeTab === "internship") return type.includes("intern") || ind.includes("intern");
-      return true;
-    })
-    .slice(0, 4);
+  // Limit to 4 latest cards only
+  const displayedJobs = formattedCustomJobs.slice(0, 4);
 
   return (
     <section className="fj">
@@ -306,21 +243,8 @@ const FeaturedJobs = () => {
           </div>
         </div>
 
-        {/* ────────── Filter Tabs & View All ────────── */}
-        <div className="fj__filters">
-          <div className="fj__tabs">
-            {FILTER_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                className={`fj__tab-btn ${activeTab === tab.id ? "fj__tab-btn--active" : ""}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {renderTabIcon(tab.icon)}
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </div>
-
+        {/* ────────── View All Link Row ────────── */}
+        <div className="fj__actions-row">
           <Link
             to="/jobs"
             className="fj__view-all-btn"
