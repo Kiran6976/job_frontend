@@ -1,7 +1,7 @@
-/* ────────── Profile Metrics 4-Card Grid ────────── */
+/* ────────── Profile Metrics 3-Card Grid ────────── */
 .pm-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-top: 20px;
 }
