@@ -1,55 +1,151 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   X,
   CheckCircle2,
-  AlertCircle,
   Calendar,
   GraduationCap,
   Sparkles,
   ShieldCheck,
   User,
   RotateCcw,
+  ChevronDown,
+  Check,
+  BookOpen,
+  Briefcase,
 } from "lucide-react";
 import {
   getStoredEligibilityProfile,
   saveEligibilityProfile,
   clearEligibilityProfile,
   calculateExactAge,
-  CATEGORY_RELAXATION,
 } from "../../utils/eligibilityHelper";
 import "./EligibilityModal.css";
 
 const CATEGORY_OPTIONS = [
-  { value: "UR", label: "UR (General / Unreserved)", relaxation: 0 },
-  { value: "OBC", label: "OBC (Non-Creamy Layer)", relaxation: 3 },
-  { value: "SC", label: "SC (Scheduled Castes)", relaxation: 5 },
-  { value: "ST", label: "ST (Scheduled Tribes)", relaxation: 5 },
-  { value: "EWS", label: "EWS (Economically Weaker Section)", relaxation: 0 },
-  { value: "PwBD_GEN", label: "PwBD / Divyangjan (General/EWS)", relaxation: 10 },
-  { value: "PwBD_OBC", label: "PwBD (OBC - NCL)", relaxation: 13 },
-  { value: "PwBD_SCST", label: "PwBD (SC / ST)", relaxation: 15 },
-  { value: "EX_SERVICEMEN", label: "Ex-Servicemen (Defence)", relaxation: 3 },
+  { value: "UR", label: "UR (General / Unreserved)", sub: "Open category", relaxation: 0, tag: "Standard Max Age" },
+  { value: "OBC", label: "OBC (Non-Creamy Layer)", sub: "Other Backward Classes", relaxation: 3, tag: "+3 Yrs Relaxation" },
+  { value: "SC", label: "SC (Scheduled Castes)", sub: "Scheduled Castes", relaxation: 5, tag: "+5 Yrs Relaxation" },
+  { value: "ST", label: "ST (Scheduled Tribes)", sub: "Scheduled Tribes", relaxation: 5, tag: "+5 Yrs Relaxation" },
+  { value: "EWS", label: "EWS (Economically Weaker Section)", sub: "Income & Asset criteria", relaxation: 0, tag: "Standard Max Age" },
+  { value: "PwBD_GEN", label: "PwBD (General / EWS)", sub: "Benchmark Disabilities", relaxation: 10, tag: "+10 Yrs Relaxation" },
+  { value: "PwBD_OBC", label: "PwBD (OBC - NCL)", sub: "Disability + OBC", relaxation: 13, tag: "+13 Yrs Relaxation" },
+  { value: "PwBD_SCST", label: "PwBD (SC / ST)", sub: "Disability + SC/ST", relaxation: 15, tag: "+15 Yrs Relaxation" },
+  { value: "EX_SERVICEMEN", label: "Ex-Servicemen (Defence)", sub: "Armed Forces Veteran", relaxation: 3, tag: "+3 Yrs Relaxation" },
 ];
 
 const QUALIFICATION_OPTIONS = [
-  { value: "10TH", label: "10th Pass / Matriculation" },
-  { value: "12TH", label: "12th Pass / Intermediate / 10+2" },
-  { value: "DIPLOMA", label: "Diploma / Polytechnic (3-Year)" },
-  { value: "GRADUATE", label: "Graduate / Bachelor's Degree (BA, B.Sc, B.Com, B.Tech, etc.)" },
-  { value: "POST_GRADUATE", label: "Post Graduate / Master's (MA, M.Sc, M.Com, M.Tech, MBA, etc.)" },
-  { value: "PHD", label: "Doctorate / Ph.D." },
+  { value: "10TH", label: "10th Pass / Matriculation", sub: "Secondary School Certificate (SSC / SSLC)" },
+  { value: "12TH", label: "12th Pass / Intermediate (10+2)", sub: "Higher Secondary (Science / Commerce / Arts)" },
+  { value: "DIPLOMA", label: "Diploma / Polytechnic", sub: "3-Year Technical / Vocational Diploma" },
+  { value: "GRADUATE", label: "Graduate / Bachelor's Degree", sub: "B.Tech, BE, B.Sc, B.Com, BA, BBA, BCA, LLB, etc." },
+  { value: "POST_GRADUATE", label: "Post Graduate / Master's Degree", sub: "M.Tech, M.Sc, M.Com, MA, MBA, MCA, LLM, etc." },
+  { value: "PHD", label: "Doctorate / Ph.D.", sub: "Doctor of Philosophy / Research" },
 ];
 
 const STREAM_OPTIONS = [
-  { value: "Any", label: "Any Stream / General" },
-  { value: "Engineering", label: "Engineering / Technology (B.Tech / BE)" },
-  { value: "Commerce", label: "Commerce / Accounting / Finance (B.Com / CA)" },
-  { value: "Science", label: "Science (B.Sc / M.Sc / Physics / Chemistry / Maths)" },
-  { value: "Arts", label: "Arts / Humanities / Social Sciences" },
-  { value: "Law", label: "Law (LLB / LLM)" },
-  { value: "Medical", label: "Medical / Nursing / Pharmacy" },
-  { value: "Management", label: "Business Management (BBA / MBA)" },
+  { value: "Any", label: "Any Stream / All Graduates", sub: "General eligibility for all streams" },
+  { value: "Engineering", label: "Engineering & Technology", sub: "B.Tech, BE, GATE disciplines (CS, Mech, Civil, EE, EC)" },
+  { value: "Commerce", label: "Commerce, Finance & Accounts", sub: "B.Com, M.Com, CA, CFA, CS, ICWA, Finance" },
+  { value: "Science", label: "Science & Mathematics", sub: "B.Sc, M.Sc (Physics, Chemistry, Maths, Bio, Biotech)" },
+  { value: "Arts", label: "Arts, Humanities & Social Sciences", sub: "BA, MA (History, Polity, Economics, English, etc.)" },
+  { value: "Law", label: "Law & Legal Studies", sub: "LLB, LLM, Bar Council registered" },
+  { value: "Medical", label: "Medical, Nursing & Pharmacy", sub: "MBBS, BDS, B.Pharm, Nursing, AYUSH" },
+  { value: "Management", label: "Business & Management", sub: "BBA, MBA, PGDM, Marketing, HR, Operations" },
 ];
+
+// Custom Elegant Dropdown Component
+const CustomDropdown = ({ label, icon, options, value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const selectedOption = options.find((o) => o.value === value) || options[0];
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="c-dropdown" ref={dropdownRef}>
+      <label className="el-modal__label">
+        {icon} {label} <span className="el-modal__req">*</span>
+      </label>
+
+      {/* Trigger Button */}
+      <button
+        type="button"
+        className={`c-dropdown__trigger ${isOpen ? "c-dropdown__trigger--open" : ""}`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+      >
+        <div className="c-dropdown__trigger-content">
+          <span className="c-dropdown__trigger-title">{selectedOption?.label || placeholder}</span>
+          {selectedOption?.tag && (
+            <span
+              className={`c-dropdown__badge ${
+                selectedOption.relaxation > 0 ? "c-dropdown__badge--green" : "c-dropdown__badge--gray"
+              }`}
+            >
+              {selectedOption.tag}
+            </span>
+          )}
+        </div>
+        <ChevronDown size={18} className={`c-dropdown__chevron ${isOpen ? "c-dropdown__chevron--rotated" : ""}`} />
+      </button>
+
+      {/* Floating Menu */}
+      {isOpen && (
+        <div className="c-dropdown__menu" role="listbox">
+          <div className="c-dropdown__list">
+            {options.map((option) => {
+              const isSelected = option.value === value;
+              return (
+                <div
+                  key={option.value}
+                  className={`c-dropdown__item ${isSelected ? "c-dropdown__item--selected" : ""}`}
+                  onClick={() => {
+                    onChange(option.value);
+                    setIsOpen(false);
+                  }}
+                  role="option"
+                  aria-selected={isSelected}
+                >
+                  <div className="c-dropdown__item-info">
+                    <div className="c-dropdown__item-header">
+                      <span className="c-dropdown__item-title">{option.label}</span>
+                      {option.tag && (
+                        <span
+                          className={`c-dropdown__badge ${
+                            option.relaxation > 0 ? "c-dropdown__badge--green" : "c-dropdown__badge--gray"
+                          }`}
+                        >
+                          {option.tag}
+                        </span>
+                      )}
+                    </div>
+                    {option.sub && <span className="c-dropdown__item-sub">{option.sub}</span>}
+                  </div>
+
+                  {isSelected && (
+                    <div className="c-dropdown__check">
+                      <Check size={16} strokeWidth={2.5} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
   const [dob, setDob] = useState("2001-05-15");
@@ -120,7 +216,7 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
             <div>
               <h2 className="el-modal__title">Instant Eligibility Calculator</h2>
               <p className="el-modal__subtitle">
-                Set your details once to instantly see your eligibility & age limits across all exams.
+                Set your details once to instantly see your real-time eligibility &amp; age limits across all exams.
               </p>
             </div>
           </div>
@@ -153,39 +249,22 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
               )}
             </div>
 
-            {/* 2. Category & Reservation */}
+            {/* 2. Custom Reservation Category Dropdown */}
             <div className="el-modal__field">
-              <label className="el-modal__label">
-                <ShieldCheck size={15} /> Reservation Category <span className="el-modal__req">*</span>
-              </label>
-              <select
-                className="el-modal__select"
+              <CustomDropdown
+                label="Reservation Category"
+                icon={<ShieldCheck size={15} />}
+                options={CATEGORY_OPTIONS}
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                {CATEGORY_OPTIONS.map((cat) => (
-                  <option key={cat.value} value={cat.value}>
-                    {cat.label} {cat.relaxation > 0 ? `(+${cat.relaxation} yrs relaxation)` : ""}
-                  </option>
-                ))}
-              </select>
-              <div className="el-modal__live-benefit">
-                {selectedCatObj.relaxation > 0 ? (
-                  <span className="el-benefit-tag el-benefit-tag--green">
-                    ✓ +{selectedCatObj.relaxation} Years Age Relaxation Applicable
-                  </span>
-                ) : (
-                  <span className="el-benefit-tag el-benefit-tag--gray">
-                    Standard Unreserved Max Age Limit Applicable
-                  </span>
-                )}
-              </div>
+                onChange={(val) => setCategory(val)}
+                placeholder="Select Reservation Category"
+              />
             </div>
 
-            {/* 3. Gender */}
+            {/* 3. Gender Toggle */}
             <div className="el-modal__field">
               <label className="el-modal__label">
-                <User size={15} /> Gender
+                <User size={15} /> Gender <span className="el-modal__req">*</span>
               </label>
               <div className="el-modal__gender-group">
                 {["Male", "Female", "Other"].map((g) => (
@@ -201,40 +280,28 @@ const EligibilityModal = ({ isOpen, onClose, onProfileSaved }) => {
               </div>
             </div>
 
-            {/* 4. Highest Qualification */}
+            {/* 4. Custom Highest Qualification Dropdown */}
             <div className="el-modal__field">
-              <label className="el-modal__label">
-                <GraduationCap size={15} /> Highest Educational Qualification <span className="el-modal__req">*</span>
-              </label>
-              <select
-                className="el-modal__select"
+              <CustomDropdown
+                label="Highest Educational Qualification"
+                icon={<GraduationCap size={15} />}
+                options={QUALIFICATION_OPTIONS}
                 value={qualification}
-                onChange={(e) => setQualification(e.target.value)}
-              >
-                {QUALIFICATION_OPTIONS.map((qual) => (
-                  <option key={qual.value} value={qual.value}>
-                    {qual.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setQualification(val)}
+                placeholder="Select Educational Qualification"
+              />
             </div>
 
-            {/* 5. Stream / Specialization */}
+            {/* 5. Custom Stream / Specialization Dropdown */}
             <div className="el-modal__field el-modal__field--full">
-              <label className="el-modal__label">
-                Field of Study / Stream (Optional)
-              </label>
-              <select
-                className="el-modal__select"
+              <CustomDropdown
+                label="Field of Study / Discipline (Stream)"
+                icon={<Briefcase size={15} />}
+                options={STREAM_OPTIONS}
                 value={stream}
-                onChange={(e) => setStream(e.target.value)}
-              >
-                {STREAM_OPTIONS.map((st) => (
-                  <option key={st.value} value={st.value}>
-                    {st.label}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setStream(val)}
+                placeholder="Select Field of Study / Stream"
+              />
             </div>
           </div>
 
