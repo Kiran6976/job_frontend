@@ -455,14 +455,19 @@ const TopOpportunities = () => {
       date2Value = formatFriendlyDate(j.resultDate, "");
     }
     if (!date2Value) {
-      date2Value = "Will be announced soon";
+      date2Value = "Announced soon";
     }
 
     let vacCount = "Multiple";
+    let vacLabel = "Vacancies";
     if (j.vacancies) {
-      vacCount = isNaN(Number(j.vacancies))
-        ? j.vacancies.replace(/vacancies/gi, "").trim()
-        : Number(j.vacancies).toLocaleString("en-IN");
+      const raw = String(j.vacancies).trim();
+      if (!isNaN(Number(raw))) {
+        vacCount = Number(raw).toLocaleString("en-IN");
+      } else {
+        const clean = raw.replace(/vacancies/gi, "").trim();
+        vacCount = clean || raw;
+      }
     }
 
     return {
@@ -474,7 +479,7 @@ const TopOpportunities = () => {
       statusType: (j.status || "ongoing").toLowerCase().replace(/\s+/g, "-"),
       category: j.category || "Government Exams",
       vacanciesCount: vacCount,
-      vacanciesLabel: "Vacancies",
+      vacanciesLabel: vacLabel,
       date1Label,
       date1Value,
       date2Label,
