@@ -248,8 +248,6 @@ const TopOpportunities = () => {
     }
   });
   const [savedExams, setSavedExams] = useState({});
-  const [subscribeEmail, setSubscribeEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
   const [searchParams] = useSearchParams();
 
   const [copiedJobId, setCopiedJobId] = useState(null);
@@ -580,15 +578,6 @@ const TopOpportunities = () => {
     setSavedExams((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (subscribeEmail.trim()) {
-      setSubscribed(true);
-      setSubscribeEmail("");
-      setTimeout(() => setSubscribed(false), 4000);
-    }
-  };
-
   const renderTabIcon = (icon) => {
     if (!icon) return null;
     if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(icon)) {
@@ -866,270 +855,207 @@ const TopOpportunities = () => {
             </div>
           </div>
 
-          {/* Two-column layout: Left Cards Stream + Fixed Right Newsletter Card */}
-          <div className="to__section-layout">
-            <div className="to__cards-stream">
-              {isLoading && displayedJobs.length === 0 ? (
-                <div className="to__loading-wrap">
-                  <div className="to__loading-banner">
-                    <div className="to__loading-spinner" />
-                    <div className="to__loading-info">
-                      <h4 className="to__loading-title">Connecting to Server...</h4>
-                      <p className="to__loading-desc">
-                        Fetching the latest verified government exam notifications. If the server was idle, it may take a moment to start up.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="to__skeleton-grid">
-                    {[1, 2, 3, 4, 5, 6].map((idx) => (
-                      <div key={idx} className="to__skeleton-card">
-                        <div className="to__skeleton-header">
-                          <div className="to__skeleton-circle" />
-                          <div className="to__skeleton-pill" />
-                        </div>
-                        <div className="to__skeleton-line to__skeleton-line--title" />
-                        <div className="to__skeleton-line to__skeleton-line--sub" />
-                        <div className="to__skeleton-meta-box">
-                          <div className="to__skeleton-line to__skeleton-line--meta" />
-                          <div className="to__skeleton-line to__skeleton-line--meta" />
-                        </div>
-                        <div className="to__skeleton-footer">
-                          <div className="to__skeleton-tag" />
-                          <div className="to__skeleton-btn" />
-                        </div>
-                      </div>
-                    ))}
+          {/* Cards Stream (4 per row) */}
+          <div className="to__cards-stream">
+            {isLoading && displayedJobs.length === 0 ? (
+              <div className="to__loading-wrap">
+                <div className="to__loading-banner">
+                  <div className="to__loading-spinner" />
+                  <div className="to__loading-info">
+                    <h4 className="to__loading-title">Connecting to Server...</h4>
+                    <p className="to__loading-desc">
+                      Fetching the latest verified government exam notifications. If the server was idle, it may take a moment to start up.
+                    </p>
                   </div>
                 </div>
-              ) : displayedJobs.length === 0 ? (
-                <div
-                  style={{
-                    padding: "48px 24px",
-                    textAlign: "center",
-                    background: "#f8fafc",
-                    borderRadius: "16px",
-                    border: "1px dashed #cbd5e1",
-                    width: "100%",
-                  }}
-                >
-                  <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🔍</div>
-                  <h4 style={{ fontSize: "1.15rem", fontWeight: "700", color: "#1e293b", marginBottom: "6px" }}>
-                    {searchQuery ? `No opportunities found matching "${searchQuery}"` : "No opportunities found in this category"}
-                  </h4>
-                  <p style={{ color: "#64748b", fontSize: "0.95rem", marginBottom: "16px" }}>
-                    {searchQuery
-                      ? "Try searching for another keyword (e.g. Graduate, 12th, UPSC, SSC, RRB, Engineering)."
-                      : "New positions are posted frequently. Check back soon or explore other categories."}
-                  </p>
-                  <button
-                    onClick={() => {
-                      if (searchQuery) {
-                        const params = new URLSearchParams(searchParams);
-                        params.delete("q");
-                        params.delete("search");
-                        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
-                        window.dispatchEvent(new Event("popstate"));
-                      }
-                      setActiveTab("all");
-                    }}
-                    style={{
-                      padding: "8px 18px",
-                      background: "#2563eb",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "8px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                    }}
-                  >
-                    View All Opportunities
-                  </button>
-                </div>
-              ) : (
-                displayedJobs.map((exam) => (
-                  <div key={exam.id} className="to__exam-card">
-                    {/* Top Row: Emblem, Badges, Bookmark */}
-                    <div className="to__card-top">
-                      <div className="to__exam-emblem-wrap">
-                        <img
-                          src={exam.emblem}
-                          alt={exam.title}
-                          className="to__exam-emblem"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/emblem_india.png";
-                          }}
-                        />
+
+                <div className="to__skeleton-grid">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+                    <div key={idx} className="to__skeleton-card">
+                      <div className="to__skeleton-header">
+                        <div className="to__skeleton-circle" />
+                        <div className="to__skeleton-pill" />
                       </div>
-
-                      <div className="to__badge-group">
-                        <span className="to__badge-pill to__badge-pill--scope">
-                          {exam.scope}
-                        </span>
-                        <span className={`to__badge-pill to__badge-pill--${exam.statusType}`}>
-                          {exam.status}
-                        </span>
+                      <div className="to__skeleton-line to__skeleton-line--title" />
+                      <div className="to__skeleton-line to__skeleton-line--sub" />
+                      <div className="to__skeleton-meta-box">
+                        <div className="to__skeleton-line to__skeleton-line--meta" />
+                        <div className="to__skeleton-line to__skeleton-line--meta" />
                       </div>
-
-                      <div className="to__card-actions">
-                        <button
-                          type="button"
-                          className={`to__action-btn to__share-btn ${copiedJobId === (exam._id || exam.id) ? "to__share-btn--copied" : ""}`}
-                          onClick={(e) => handleShareJob(e, exam)}
-                          aria-label="Share Job Details"
-                          title={copiedJobId === (exam._id || exam.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
-                        >
-                          {copiedJobId === (exam._id || exam.id) ? (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                          ) : (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                              <circle cx="18" cy="5" r="3" />
-                              <circle cx="6" cy="12" r="3" />
-                              <circle cx="18" cy="19" r="3" />
-                              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                            </svg>
-                          )}
-                          {copiedJobId === (exam._id || exam.id) && (
-                            <span className="to__copied-tooltip">Copied!</span>
-                          )}
-                        </button>
-
-                        <button
-                          type="button"
-                          className={`to__action-btn to__bookmark-btn ${savedExams[exam.id] ? "to__bookmark-btn--active" : ""}`}
-                          onClick={() => toggleSaveExam(exam.id)}
-                          aria-label="Save Exam"
-                          title={savedExams[exam.id] ? "Saved" : "Save Exam"}
-                        >
-                          <svg viewBox="0 0 24 24" fill={savedExams[exam.id] ? "#2563eb" : "none"} stroke={savedExams[exam.id] ? "#2563eb" : "#94a3b8"} strokeWidth="2">
-                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                          </svg>
-                        </button>
+                      <div className="to__skeleton-footer">
+                        <div className="to__skeleton-tag" />
+                        <div className="to__skeleton-btn" />
                       </div>
                     </div>
-
-                    {/* Exam Title & Org */}
-                    <h4 className="to__exam-title">{exam.title}</h4>
-                    <p className="to__exam-org">{exam.organization}</p>
-
-                    {/* Info List */}
-                    <div className="to__exam-info">
-                      <div className="to__info-row">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
-                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                          <circle cx="9" cy="7" r="4" />
-                        </svg>
-                        <span>{exam.vacancies}</span>
-                      </div>
-
-                      <div className="to__info-row">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
-                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        <span><strong>{exam.date1Label}:</strong> {exam.date1Value}</span>
-                      </div>
-
-                      <div className="to__info-row">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                          <polyline points="14 2 14 8 20 8" />
-                          <line x1="16" y1="13" x2="8" y2="13" />
-                          <line x1="16" y1="17" x2="8" y2="17" />
-                        </svg>
-                        <span><strong>{exam.date2Label}:</strong> {exam.date2Value}</span>
-                      </div>
-                    </div>
-
-                    {/* Tags */}
-                    <div className="to__tags">
-                      {exam.tags.map((tag) => (
-                        <span key={tag} className="to__tag">{tag}</span>
-                      ))}
-                      {exam.extraTagsCount > 0 && (
-                        <span className="to__tag to__tag--count">+{exam.extraTagsCount}</span>
-                      )}
-                    </div>
-
-                    {/* Action Button: View Details */}
-                    <Link
-                      to={exam.detailUrl || `/job/${exam.id}`}
-                      className={`to__card-btn to__card-btn--${exam.btnVariant || "apply"}`}
-                      onClick={(e) => handleJobClick(e, exam.detailUrl || `/job/${exam.id}`)}
-                    >
-                      {exam.btnText || "View Details \u2192"}
-                    </Link>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Right Column: Anchored Stay Updated Newsletter Card */}
-            <aside className="to__sidebar-col">
-              <div className="to__newsletter-card">
-                <div className="to__nl-bell">
-                  <svg viewBox="0 0 24 24" fill="#2563eb">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                  </svg>
-                </div>
-
-                <h4 className="to__nl-title">Stay Updated</h4>
-                <p className="to__nl-sub">
-                  Get notified about the latest government exams, results, and job alerts.
-                </p>
-
-                {subscribed && (
-                  <div className="to__nl-success">Subscribed successfully!</div>
-                )}
-
-                <form className="to__nl-form" onSubmit={handleSubscribe}>
-                  <div className="to__nl-input-wrap">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" className="to__nl-input-icon">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    <input
-                      type="email"
-                      value={subscribeEmail}
-                      onChange={(e) => setSubscribeEmail(e.target.value)}
-                      placeholder="Enter your email address"
-                      required
-                    />
-                  </div>
-
-                  <button type="submit" className="to__nl-btn">
-                    Notify Me &rarr;
-                  </button>
-                </form>
-
-                <div className="to__nl-divider">
-                  <span>OR</span>
-                </div>
-
-                <div className="to__nl-socials">
-                  <a href="#" className="to__nl-social to__nl-social--telegram">
-                    <svg viewBox="0 0 24 24" fill="#0088cc" width="16" height="16">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
-                    </svg>
-                    <span>Join Telegram</span>
-                  </a>
-
-                  <a href="#" className="to__nl-social to__nl-social--whatsapp">
-                    <svg viewBox="0 0 24 24" fill="#25D366" width="16" height="16">
-                      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
-                    </svg>
-                    <span>Join WhatsApp</span>
-                  </a>
+                  ))}
                 </div>
               </div>
-            </aside>
+            ) : displayedJobs.length === 0 ? (
+              <div
+                style={{
+                  padding: "48px 24px",
+                  textAlign: "center",
+                  background: "#f8fafc",
+                  borderRadius: "16px",
+                  border: "1px dashed #cbd5e1",
+                  width: "100%",
+                }}
+              >
+                <div style={{ fontSize: "2.5rem", marginBottom: "12px" }}>🔍</div>
+                <h4 style={{ fontSize: "1.15rem", fontWeight: "700", color: "#1e293b", marginBottom: "6px" }}>
+                  {searchQuery ? `No opportunities found matching "${searchQuery}"` : "No opportunities found in this category"}
+                </h4>
+                <p style={{ color: "#64748b", fontSize: "0.95rem", marginBottom: "16px" }}>
+                  {searchQuery
+                    ? "Try searching for another keyword (e.g. Graduate, 12th, UPSC, SSC, RRB, Engineering)."
+                    : "New positions are posted frequently. Check back soon or explore other categories."}
+                </p>
+                <button
+                  onClick={() => {
+                    if (searchQuery) {
+                      const params = new URLSearchParams(searchParams);
+                      params.delete("q");
+                      params.delete("search");
+                      window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
+                      window.dispatchEvent(new Event("popstate"));
+                    }
+                    setActiveTab("all");
+                  }}
+                  style={{
+                    padding: "8px 18px",
+                    background: "#2563eb",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                  }}
+                >
+                  View All Opportunities
+                </button>
+              </div>
+            ) : (
+              displayedJobs.map((exam) => (
+                <div key={exam.id} className="to__exam-card">
+                  {/* Top Row: Emblem, Badges, Bookmark */}
+                  <div className="to__card-top">
+                    <div className="to__exam-emblem-wrap">
+                      <img
+                        src={exam.emblem}
+                        alt={exam.title}
+                        className="to__exam-emblem"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "/emblem_india.png";
+                        }}
+                      />
+                    </div>
+
+                    <div className="to__badge-group">
+                      <span className="to__badge-pill to__badge-pill--scope">
+                        {exam.scope}
+                      </span>
+                      <span className={`to__badge-pill to__badge-pill--${exam.statusType}`}>
+                        {exam.status}
+                      </span>
+                    </div>
+
+                    <div className="to__card-actions">
+                      <button
+                        type="button"
+                        className={`to__action-btn to__share-btn ${copiedJobId === (exam._id || exam.id) ? "to__share-btn--copied" : ""}`}
+                        onClick={(e) => handleShareJob(e, exam)}
+                        aria-label="Share Job Details"
+                        title={copiedJobId === (exam._id || exam.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
+                      >
+                        {copiedJobId === (exam._id || exam.id) ? (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                            <circle cx="18" cy="5" r="3" />
+                            <circle cx="6" cy="12" r="3" />
+                            <circle cx="18" cy="19" r="3" />
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                          </svg>
+                        )}
+                        {copiedJobId === (exam._id || exam.id) && (
+                          <span className="to__copied-tooltip">Copied!</span>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        className={`to__action-btn to__bookmark-btn ${savedExams[exam.id] ? "to__bookmark-btn--active" : ""}`}
+                        onClick={() => toggleSaveExam(exam.id)}
+                        aria-label="Save Exam"
+                        title={savedExams[exam.id] ? "Saved" : "Save Exam"}
+                      >
+                        <svg viewBox="0 0 24 24" fill={savedExams[exam.id] ? "#2563eb" : "none"} stroke={savedExams[exam.id] ? "#2563eb" : "#94a3b8"} strokeWidth="2">
+                          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Exam Title & Org */}
+                  <h4 className="to__exam-title">{exam.title}</h4>
+                  <p className="to__exam-org">{exam.organization}</p>
+
+                  {/* Info List */}
+                  <div className="to__exam-info">
+                    <div className="to__info-row">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                      </svg>
+                      <span>{exam.vacancies}</span>
+                    </div>
+
+                    <div className="to__info-row">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                      <span><strong>{exam.date1Label}:</strong> {exam.date1Value}</span>
+                    </div>
+
+                    <div className="to__info-row">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="to__info-icon">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                      </svg>
+                      <span><strong>{exam.date2Label}:</strong> {exam.date2Value}</span>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="to__tags">
+                    {exam.tags.map((tag) => (
+                      <span key={tag} className="to__tag">{tag}</span>
+                    ))}
+                    {exam.extraTagsCount > 0 && (
+                      <span className="to__tag to__tag--count">+{exam.extraTagsCount}</span>
+                    )}
+                  </div>
+
+                  {/* Action Button: View Details */}
+                  <Link
+                    to={exam.detailUrl || `/job/${exam.id}`}
+                    className={`to__card-btn to__card-btn--${exam.btnVariant || "apply"}`}
+                    onClick={(e) => handleJobClick(e, exam.detailUrl || `/job/${exam.id}`)}
+                  >
+                    {exam.btnText || "View Details \u2192"}
+                  </Link>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

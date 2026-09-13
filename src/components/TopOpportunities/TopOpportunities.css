@@ -404,25 +404,11 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
-/* Two-column layout with fixed right sidebar */
-.to__section-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 20px;
-  align-items: start;
-}
-
 .to__cards-stream {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 18px;
-  align-items: stretch;
-}
-
-.to__sidebar-col {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   width: 100%;
-  position: sticky;
-  top: 24px;
 }
 
 
@@ -1043,6 +1029,7 @@
 }
 
 /* ────────── Responsive ────────── */
+/* ────────── Responsive ────────── */
 @media (max-width: 1280px) {
   .to__banner {
     flex-direction: column;
@@ -1054,8 +1041,9 @@
     display: none;
   }
 
-  .to__section-layout {
-    grid-template-columns: minmax(0, 1fr) 300px;
+  .to__cards-stream,
+  .to__skeleton-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .to__grid--private {
@@ -1068,15 +1056,9 @@
 }
 
 @media (max-width: 1024px) {
-  .to__section-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .to__sidebar-col {
-    position: static;
-    max-width: 480px;
-    margin: 0 auto;
-    width: 100%;
+  .to__cards-stream,
+  .to__skeleton-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -1090,16 +1072,13 @@
   }
 
   .to__cards-stream,
+  .to__skeleton-grid,
   .to__grid--private {
     grid-template-columns: 1fr;
   }
 
   .to__quiz-card {
     grid-column: span 1;
-  }
-
-  .to__sidebar-col {
-    max-width: 100%;
   }
 }
 
@@ -1161,11 +1140,11 @@
   line-height: 1.4;
 }
 
-/* Skeleton Grid */
+/* Skeleton Grid (4 cards in a row) */
 .to__skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   width: 100%;
 }
 
