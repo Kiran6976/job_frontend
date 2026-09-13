@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./FeaturedJobs.css";
-import { FILTER_TABS, FEATURED_JOBS } from "./jobData";
+import { FILTER_TABS } from "./jobData";
 import { API_ENDPOINTS } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
 import { isJobExpired } from "../../utils/jobHelpers";
@@ -27,7 +27,15 @@ const FeaturedJobs = () => {
   const { user, openAuthModal } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [savedJobs, setSavedJobs] = useState({});
-  const [customJobs, setCustomJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [customJobs, setCustomJobs] = useState(() => {
+    try {
+      const saved = localStorage.getItem("portal_custom_jobs");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const videoRef = useRef(null);
 
   const [copiedJobId, setCopiedJobId] = useState(null);
@@ -94,24 +102,35 @@ const FeaturedJobs = () => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     const loadJobs = async () => {
       try {
         const res = await fetch(`${API_ENDPOINTS.JOB}/all`);
         const data = await res.json();
 
-        if (data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
-          setCustomJobs(data.jobs);
-          localStorage.setItem("portal_custom_jobs", JSON.stringify(data.jobs));
+        if (data.success && Array.isArray(data.jobs)) {
+          if (isMounted) {
+            setCustomJobs(data.jobs);
+            localStorage.setItem("portal_custom_jobs", JSON.stringify(data.jobs));
+          }
         } else {
           const fallback = JSON.parse(localStorage.getItem("portal_custom_jobs") || "[]");
-          if (fallback.length > 0) setCustomJobs(fallback);
+          if (isMounted && fallback.length > 0) setCustomJobs(fallback);
         }
       } catch (err) {
         const fallback = JSON.parse(localStorage.getItem("portal_custom_jobs") || "[]");
-        if (fallback.length > 0) setCustomJobs(fallback);
+        if (isMounted && fallback.length > 0) setCustomJobs(fallback);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
     loadJobs();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const toggleSaveJob = (id) => {
@@ -212,8 +231,8 @@ const FeaturedJobs = () => {
     };
   });
 
-  // Use posted jobs if available; otherwise use default sample jobs
-  const rawJobs = formattedCustomJobs.length > 0 ? formattedCustomJobs : FEATURED_JOBS;
+  // Use real posted jobs only (no dummy fallback)
+  const rawJobs = formattedCustomJobs;
 
   // Filter based on activeTab and limit to 4 latest cards only
   const displayedJobs = rawJobs
@@ -314,170 +333,211 @@ const FeaturedJobs = () => {
           </Link>
         </div>
 
-        {/* ────────── Job Cards Grid ────────── */}
-        <div className="fj__grid">
-          {displayedJobs.map((job) => (
-            <div key={job.id} className="fj__card">
-              {/* Card Header: Company Logo, Info & Save Heart */}
-              <div className="fj__card-top">
-                <div className="fj__card-company">
-                  <div className="fj__card-logo-wrap">
-                    <img
-                      src={job.logo}
-                      alt={job.company}
-                      className="fj__card-logo"
-                      onError={(e) => {
-                        e.target.src = "/emblem_india.png";
-                      }}
-                    />
+        {/* ────────── Job Cards Grid / Loading State ────────── */}
+        {isLoading && displayedJobs.length === 0 ? (
+          <div className="fj__loading-wrap">
+            <div className="fj__loading-banner">
+              <div className="fj__loading-spinner" />
+              <div className="fj__loading-info">
+                <h4 className="fj__loading-title">Connecting to Server...</h4>
+                <p className="fj__loading-desc">
+                  Fetching latest opportunities. If the server was idle, it may take a few moments to spin up.
+                </p>
+              </div>
+            </div>
+
+            <div className="fj__skeleton-grid">
+              {[1, 2, 3, 4].map((idx) => (
+                <div key={idx} className="fj__skeleton-card">
+                  <div className="fj__skeleton-top">
+                    <div className="fj__skeleton-logo" />
+                    <div className="fj__skeleton-company-info">
+                      <div className="fj__skeleton-line fj__skeleton-line--org" />
+                      <div className="fj__skeleton-line fj__skeleton-line--cat" />
+                    </div>
                   </div>
-                  <div className="fj__card-company-info">
-                    <div className="fj__card-company-name-row">
-                      <h4 className="fj__card-company-name">{job.company}</h4>
-                      {job.verified && (
-                        <svg className="fj__verified-badge" viewBox="0 0 24 24" fill="#2563eb">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  <div className="fj__skeleton-line fj__skeleton-line--title" />
+                  <div className="fj__skeleton-line fj__skeleton-line--desc" />
+                  <div className="fj__skeleton-line fj__skeleton-line--desc-short" />
+                  <div className="fj__skeleton-meta">
+                    <div className="fj__skeleton-line fj__skeleton-line--badge" />
+                    <div className="fj__skeleton-line fj__skeleton-line--badge" />
+                  </div>
+                  <div className="fj__skeleton-footer">
+                    <div className="fj__skeleton-line fj__skeleton-line--time" />
+                    <div className="fj__skeleton-btn" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="fj__grid">
+            {displayedJobs.map((job) => (
+              <div key={job.id} className="fj__card">
+                {/* Card Header: Company Logo, Info & Save Heart */}
+                <div className="fj__card-top">
+                  <div className="fj__card-company">
+                    <div className="fj__card-logo-wrap">
+                      <img
+                        src={job.logo}
+                        alt={job.company}
+                        className="fj__card-logo"
+                        onError={(e) => {
+                          e.target.src = "/emblem_india.png";
+                        }}
+                      />
+                    </div>
+                    <div className="fj__card-company-info">
+                      <div className="fj__card-company-name-row">
+                        <h4 className="fj__card-company-name">{job.company}</h4>
+                        {job.verified && (
+                          <svg className="fj__verified-badge" viewBox="0 0 24 24" fill="#2563eb">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="fj__card-industry">{job.industry}</span>
+                    </div>
+                  </div>
+
+                  <div className="fj__card-actions">
+                    <button
+                      type="button"
+                      className={`fj__action-btn fj__share-btn ${copiedJobId === (job._id || job.id) ? "fj__share-btn--copied" : ""}`}
+                      onClick={(e) => handleShareJob(e, job)}
+                      aria-label="Share job details"
+                      title={copiedJobId === (job._id || job.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
+                    >
+                      {copiedJobId === (job._id || job.id) ? (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                          <circle cx="18" cy="5" r="3" />
+                          <circle cx="6" cy="12" r="3" />
+                          <circle cx="18" cy="19" r="3" />
+                          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                         </svg>
                       )}
-                    </div>
-                    <span className="fj__card-industry">{job.industry}</span>
+                      {copiedJobId === (job._id || job.id) && (
+                        <span className="fj__copied-tooltip">Copied!</span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      className={`fj__action-btn fj__heart-btn ${savedJobs[job.id] ? "fj__heart-btn--active" : ""}`}
+                      onClick={() => toggleSaveJob(job.id)}
+                      aria-label="Save job"
+                      title={savedJobs[job.id] ? "Saved" : "Save Job"}
+                    >
+                      <svg viewBox="0 0 24 24" fill={savedJobs[job.id] ? "#ef4444" : "none"} stroke={savedJobs[job.id] ? "#ef4444" : "#94a3b8"} strokeWidth="1.8">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
 
-                <div className="fj__card-actions">
-                  <button
-                    type="button"
-                    className={`fj__action-btn fj__share-btn ${copiedJobId === (job._id || job.id) ? "fj__share-btn--copied" : ""}`}
-                    onClick={(e) => handleShareJob(e, job)}
-                    aria-label="Share job details"
-                    title={copiedJobId === (job._id || job.id) ? "Link Copied to Clipboard!" : "Share Job Link"}
+                {/* Title & Description */}
+                <h3 className="fj__card-title">
+                  <Link
+                    to={job.detailUrl || `/job/${job.id}`}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                    onClick={(e) => handleJobClick(e, job.detailUrl || `/job/${job.id}`)}
                   >
-                    {copiedJobId === (job._id || job.id) ? (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.4" width="16" height="16">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                        <circle cx="18" cy="5" r="3" />
-                        <circle cx="6" cy="12" r="3" />
-                        <circle cx="18" cy="19" r="3" />
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                      </svg>
-                    )}
-                    {copiedJobId === (job._id || job.id) && (
-                      <span className="fj__copied-tooltip">Copied!</span>
-                    )}
-                  </button>
+                    {job.title}
+                  </Link>
+                </h3>
+                <p className="fj__card-desc">{job.description}</p>
 
-                  <button
-                    type="button"
-                    className={`fj__action-btn fj__heart-btn ${savedJobs[job.id] ? "fj__heart-btn--active" : ""}`}
-                    onClick={() => toggleSaveJob(job.id)}
-                    aria-label="Save job"
-                    title={savedJobs[job.id] ? "Saved" : "Save Job"}
-                  >
-                    <svg viewBox="0 0 24 24" fill={savedJobs[job.id] ? "#ef4444" : "none"} stroke={savedJobs[job.id] ? "#ef4444" : "#94a3b8"} strokeWidth="1.8">
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                {/* Location & Type badge */}
+                <div className="fj__card-meta">
+                  <div className="fj__meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="fj__meta-icon">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                      <circle cx="12" cy="9" r="2.5" />
                     </svg>
-                  </button>
+                    <span>{job.location}</span>
+                  </div>
+
+                  <span className={`fj__type-badge fj__type-badge--${job.typeVariant}`}>
+                    {job.typeVariant === "green" && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+                        <rect x="2" y="7" width="20" height="14" rx="2" />
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                      </svg>
+                    )}
+                    {job.typeVariant === "blue" && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                      </svg>
+                    )}
+                    {job.typeVariant === "purple" && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                    )}
+                    {job.type}
+                  </span>
                 </div>
-              </div>
 
-              {/* Title & Description */}
-              <h3 className="fj__card-title">
-                <Link
-                  to={job.detailUrl || `/job/${job.id}`}
-                  style={{ color: "inherit", textDecoration: "none" }}
-                  onClick={(e) => handleJobClick(e, job.detailUrl || `/job/${job.id}`)}
-                >
-                  {job.title}
-                </Link>
-              </h3>
-              <p className="fj__card-desc">{job.description}</p>
-
-              {/* Location & Type badge */}
-              <div className="fj__card-meta">
-                <div className="fj__meta-item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="fj__meta-icon">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                    <circle cx="12" cy="9" r="2.5" />
+                {/* Salary */}
+                <div className="fj__card-salary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.8" className="fj__salary-icon">
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                   </svg>
-                  <span>{job.location}</span>
+                  <span>{job.salary}</span>
                 </div>
 
-                <span className={`fj__type-badge fj__type-badge--${job.typeVariant}`}>
-                  {job.typeVariant === "green" && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
-                      <rect x="2" y="7" width="20" height="14" rx="2" />
-                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                    </svg>
+                {/* Skills Tags */}
+                <div className="fj__card-skills">
+                  {job.skills.map((skill) => (
+                    <span key={skill} className="fj__skill-tag">
+                      {skill}
+                    </span>
+                  ))}
+                  {job.extraSkillsCount > 0 && (
+                    <span className="fj__skill-tag fj__skill-tag--count">
+                      +{job.extraSkillsCount}
+                    </span>
                   )}
-                  {job.typeVariant === "blue" && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
-                      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                    </svg>
-                  )}
-                  {job.typeVariant === "purple" && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="13" height="13">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                  )}
-                  {job.type}
-                </span>
-              </div>
+                </div>
 
-              {/* Salary */}
-              <div className="fj__card-salary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.8" className="fj__salary-icon">
-                  <rect x="2" y="7" width="20" height="14" rx="2" />
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                </svg>
-                <span>{job.salary}</span>
+                {/* Card Footer: Posted time & Apply button */}
+                <div className="fj__card-footer">
+                  <span className="fj__posted-time">{job.postedTime}</span>
+                  <Link
+                    to={job.detailUrl || `/job/${job.id}`}
+                    className="fj__apply-btn"
+                    onClick={(e) => handleJobClick(e, job.detailUrl || `/job/${job.id}`)}
+                  >
+                    View Details &rarr;
+                  </Link>
+                </div>
               </div>
+            ))}
 
-              {/* Skills Tags */}
-              <div className="fj__card-skills">
-                {job.skills.map((skill) => (
-                  <span key={skill} className="fj__skill-tag">
-                    {skill}
-                  </span>
-                ))}
-                {job.extraSkillsCount > 0 && (
-                  <span className="fj__skill-tag fj__skill-tag--count">
-                    +{job.extraSkillsCount}
-                  </span>
-                )}
-              </div>
-
-              {/* Card Footer: Posted time & Apply button */}
-              <div className="fj__card-footer">
-                <span className="fj__posted-time">{job.postedTime}</span>
+            {displayedJobs.length === 0 && (
+              <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "48px 20px", color: "#64748b", background: "rgba(255,255,255,0.92)", backdropFilter: "blur(10px)", borderRadius: "18px", border: "1px dashed #cbd5e1" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "8px" }}>🔍</div>
+                <h4 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#1e293b", margin: "0 0 6px" }}>No opportunities found in this category</h4>
+                <p style={{ color: "#64748b", fontSize: "0.95rem", margin: "0 0 16px" }}>New job opportunities are added regularly. Explore all listings or check back soon.</p>
                 <Link
-                  to={job.detailUrl || `/job/${job.id}`}
-                  className="fj__apply-btn"
-                  onClick={(e) => handleJobClick(e, job.detailUrl || `/job/${job.id}`)}
+                  to="/jobs"
+                  style={{ display: "inline-block", padding: "8px 18px", background: "#2563eb", color: "#ffffff", fontWeight: 600, borderRadius: "8px", textDecoration: "none" }}
+                  onClick={(e) => handleJobClick(e, "/jobs")}
                 >
-                  View Details &rarr;
+                  Browse all opportunities &rarr;
                 </Link>
               </div>
-            </div>
-          ))}
-
-          {displayedJobs.length === 0 && (
-            <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px", color: "#64748b" }}>
-              <p style={{ fontSize: "1.1rem", fontWeight: 600 }}>No opportunities found in this category.</p>
-              <Link
-                to="/jobs"
-                style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}
-                onClick={(e) => handleJobClick(e, "/jobs")}
-              >
-                Browse all available opportunities &rarr;
-              </Link>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -523,7 +523,8 @@
 
 /* ────────── Responsive ────────── */
 @media (max-width: 1200px) {
-  .fj__grid {
+  .fj__grid,
+  .fj__skeleton-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -549,8 +550,203 @@
     text-align: left;
   }
 
-  .fj__grid {
+  .fj__grid,
+  .fj__skeleton-grid {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Loading Animation & Skeleton Cards for FeaturedJobs
+   ========================================================================== */
+
+.fj__loading-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.fj__loading-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(219, 234, 254, 0.9);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.06);
+}
+
+.fj__loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #dbeafe;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: fjSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes fjSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fj__loading-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fj__loading-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 0;
+}
+
+.fj__loading-desc {
+  font-size: 0.825rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Skeleton Grid */
+.fj__skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.fj__skeleton-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  min-height: 280px;
+}
+
+.fj__skeleton-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: fjShimmer 1.5s infinite;
+  transform: translateX(-100%);
+}
+
+@keyframes fjShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.fj__skeleton-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fj__skeleton-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  flex-shrink: 0;
+}
+
+.fj__skeleton-company-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.fj__skeleton-line {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.fj__skeleton-line--org {
+  width: 75%;
+  height: 14px;
+}
+
+.fj__skeleton-line--cat {
+  width: 45%;
+  height: 11px;
+}
+
+.fj__skeleton-line--title {
+  width: 90%;
+  height: 18px;
+  margin-top: 4px;
+}
+
+.fj__skeleton-line--desc {
+  width: 95%;
+  height: 12px;
+}
+
+.fj__skeleton-line--desc-short {
+  width: 65%;
+  height: 12px;
+}
+
+.fj__skeleton-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.fj__skeleton-line--badge {
+  width: 35%;
+  height: 16px;
+  border-radius: 999px;
+}
+
+.fj__skeleton-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.fj__skeleton-line--time {
+  width: 30%;
+  height: 12px;
+}
+
+.fj__skeleton-btn {
+  width: 90px;
+  height: 32px;
+  border-radius: 8px;
+  background: #e2e8f0;
+}
+
 
