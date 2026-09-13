@@ -381,7 +381,7 @@ const Section3Eligibility = ({ job }) => {
                     <span className="jd-el-compact-icon">🎓</span>
                     <span className="jd-el-compact-label">Education:</span>
                     <span className="jd-el-compact-val">
-                      {eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]} <span className="jd-el-compact-sub">(Min: {evalResult.requiredQualification?.split("(")[0]?.split("/")[0]})</span>
+                      {eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]?.trim()} <span className="jd-el-compact-sub">(Min: {evalResult.requiredQualification?.split("(")[0]?.split("/")[0]?.trim()})</span>
                     </span>
                   </div>
                   <span className={`jd-el-compact-tag ${evalResult.qualPassed ? "jd-el-compact-tag--pass" : "jd-el-compact-tag--fail"}`}>
