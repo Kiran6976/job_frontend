@@ -306,16 +306,10 @@ export const evaluateJobEligibility = (job, userProfile) => {
   let color = "slate";
 
   if (isEligible) {
-    badgeText = `Eligible • ${remainingTimeText || "Verified"}`;
+    badgeText = "Eligible";
     color = "green";
-  } else if (!agePassed) {
-    badgeText = `Ineligible • Age (${userAge.years} yrs)`;
-    color = "red";
-  } else if (!qualPassed) {
-    badgeText = `Ineligible • Qualification`;
-    color = "red";
   } else {
-    badgeText = `Ineligible • Stream (${jobReq.stream})`;
+    badgeText = "Ineligible";
     color = "red";
   }
 
