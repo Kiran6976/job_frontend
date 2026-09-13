@@ -7,7 +7,7 @@ import {
   ELIGIBILITY_EVENT,
 } from "../../../utils/eligibilityHelper";
 import EligibilityModal from "../../../components/EligibilityModal/EligibilityModal";
-import { CheckCircle2, XCircle, Sparkles, User, Calendar, ShieldCheck, GraduationCap } from "lucide-react";
+import { CheckCircle2, XCircle, Sparkles } from "lucide-react";
 import "./Section3Eligibility.css";
 
 const Section3Eligibility = ({ job }) => {
@@ -351,63 +351,67 @@ const Section3Eligibility = ({ job }) => {
             <div className={`jd-el-checker-card jd-el-checker-card--result jd-el-checker-card--${evalResult.isEligible ? "eligible" : "ineligible"}`}>
               <div className="jd-el-checker__header">
                 <div className={`jd-el-checker__result-icon-box jd-el-checker__result-icon-box--${evalResult.isEligible ? "green" : "red"}`}>
-                  {evalResult.isEligible ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
+                  {evalResult.isEligible ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
                 </div>
                 <div>
                   <span className={`jd-el-checker__status-tag jd-el-checker__status-tag--${evalResult.isEligible ? "green" : "red"}`}>
-                    {evalResult.isEligible ? "ELIGIBLE TO APPLY" : "NOT ELIGIBLE"}
+                    {evalResult.isEligible ? "ELIGIBLE" : "NOT ELIGIBLE"}
                   </span>
-                  <h3 className="jd-el-checker__title">Parameter-by-Parameter Check</h3>
+                  <h3 className="jd-el-checker__title">Your Eligibility Status</h3>
                 </div>
               </div>
 
-              {/* Parameter-by-Parameter Breakdown List */}
-              <div className="jd-el-param-list">
-                {evalResult.parameters?.map((param, pIdx) => (
-                  <div
-                    key={pIdx}
-                    className={`jd-el-param-item ${param.passed ? "jd-el-param-item--pass" : "jd-el-param-item--fail"}`}
-                  >
-                    <div className="jd-el-param-top">
-                      <div className="jd-el-param-name">
-                        <span className={`jd-el-param-badge ${param.passed ? "jd-el-param-badge--pass" : "jd-el-param-badge--fail"}`}>
-                          {param.passed ? "✔ PASS" : "✖ NOT MET"}
-                        </span>
-                        <span>{param.name}</span>
-                      </div>
-                    </div>
-
-                    <div className="jd-el-param-details">
-                      <div className="jd-el-param-subrow">
-                        <span className="jd-el-param-k">Your Profile:</span>
-                        <span className="jd-el-param-v">{param.userValue}</span>
-                      </div>
-                      <div className="jd-el-param-subrow">
-                        <span className="jd-el-param-k">Requirement:</span>
-                        <span className="jd-el-param-v">{param.requiredValue}</span>
-                      </div>
-                      {param.detail && (
-                        <div className={`jd-el-param-note ${param.passed ? "jd-el-param-note--pass" : "jd-el-param-note--fail"}`}>
-                          {param.detail}
-                        </div>
-                      )}
-                    </div>
+              {/* Clean Compact Rows */}
+              <div className="jd-el-compact-list">
+                <div className="jd-el-compact-row">
+                  <div className="jd-el-compact-left">
+                    <span className="jd-el-compact-icon">🎂</span>
+                    <span className="jd-el-compact-label">Age:</span>
+                    <span className="jd-el-compact-val">
+                      {evalResult.userAge?.years} yrs <span className="jd-el-compact-sub">({evalResult.minAge}–{evalResult.effectiveMaxAge} yrs allowed)</span>
+                    </span>
                   </div>
-                ))}
+                  <span className={`jd-el-compact-tag ${evalResult.agePassed ? "jd-el-compact-tag--pass" : "jd-el-compact-tag--fail"}`}>
+                    {evalResult.agePassed ? "✔" : "✖"}
+                  </span>
+                </div>
+
+                <div className="jd-el-compact-row">
+                  <div className="jd-el-compact-left">
+                    <span className="jd-el-compact-icon">🎓</span>
+                    <span className="jd-el-compact-label">Education:</span>
+                    <span className="jd-el-compact-val">
+                      {eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]} <span className="jd-el-compact-sub">(Min: {evalResult.requiredQualification?.split("(")[0]?.split("/")[0]})</span>
+                    </span>
+                  </div>
+                  <span className={`jd-el-compact-tag ${evalResult.qualPassed ? "jd-el-compact-tag--pass" : "jd-el-compact-tag--fail"}`}>
+                    {evalResult.qualPassed ? "✔" : "✖"}
+                  </span>
+                </div>
+
+                {evalResult.requiredStream && (
+                  <div className="jd-el-compact-row">
+                    <div className="jd-el-compact-left">
+                      <span className="jd-el-compact-icon">🔬</span>
+                      <span className="jd-el-compact-label">Stream:</span>
+                      <span className="jd-el-compact-val">
+                        {eligibilityProfile.stream} <span className="jd-el-compact-sub">(Req: {evalResult.requiredStream})</span>
+                      </span>
+                    </div>
+                    <span className={`jd-el-compact-tag ${evalResult.streamPassed ? "jd-el-compact-tag--pass" : "jd-el-compact-tag--fail"}`}>
+                      {evalResult.streamPassed ? "✔" : "✖"}
+                    </span>
+                  </div>
+                )}
               </div>
 
-              {/* Explanatory Final Verdict Box */}
-              <div className={`jd-el-verdict-box jd-el-verdict-box--${evalResult.isEligible ? "green" : "red"}`}>
-                <div className="jd-el-verdict-title">
-                  {evalResult.isEligible ? "🎉 Eligibility Confirmed" : "⚠️ Ineligibility Reason"}
-                </div>
-                <p className="jd-el-verdict-text">
-                  {evalResult.isEligible
-                    ? `You fulfill all mandatory requirements for this vacancy! (${evalResult.remainingTimeText})`
-                    : evalResult.ineligibleReasons?.length > 0
-                    ? evalResult.ineligibleReasons.map((r) => `${r.parameter}: ${r.reason}`).join(" • ")
-                    : evalResult.ageMessage || evalResult.qualMessage}
-                </p>
+              {/* Clean Summary Message */}
+              <div className={`jd-el-compact-note ${evalResult.isEligible ? "jd-el-compact-note--pass" : "jd-el-compact-note--fail"}`}>
+                {evalResult.isEligible
+                  ? `🎉 You meet all criteria (${evalResult.remainingTimeText}).`
+                  : evalResult.ineligibleReasons?.length > 0
+                  ? `⚠️ ${evalResult.ineligibleReasons[0].reason}`
+                  : `⚠️ ${evalResult.ageMessage || evalResult.qualMessage}`}
               </div>
 
               <button
@@ -415,7 +419,7 @@ const Section3Eligibility = ({ job }) => {
                 className="jd-el-checker__btn jd-el-checker__btn--secondary"
                 onClick={() => setIsModalOpen(true)}
               >
-                Update My Profile ✎
+                Update Profile ✎
               </button>
             </div>
           ) : (
