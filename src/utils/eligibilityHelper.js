@@ -107,10 +107,40 @@ export const calculateExactAge = (dobString, targetDate = new Date()) => {
 };
 
 /**
+ * Extract accepted streams / disciplines from job text
+ */
+export const parseJobAcceptedStreams = (text) => {
+  const t = String(text || "").toLowerCase();
+  const accepted = [];
+  if (/\b(b\.?tech|engineering|technician|junior engineer|je\b|cse|ece|eee|civil|mechanical|electrical|it\b|information technology)\b/i.test(t)) {
+    accepted.push("Engineering");
+  }
+  if (/\b(b\.?com|m\.?com|commerce|finance|economics|ca\b|cfa|icwa|cma|accountant|accounts|aca|fca|acs|fcs|acma|fcma)\b/i.test(t)) {
+    accepted.push("Commerce");
+  }
+  if (/\b(llb|llm|law\b|advocate|legal|judiciary)\b/i.test(t)) {
+    accepted.push("Law");
+  }
+  if (/\b(mbbs|bds|nursing|b\.?pharm|m\.?pharm|ayush|medical|doctor|veterinary)\b/i.test(t)) {
+    accepted.push("Medical");
+  }
+  if (/\b(b\.?sc|m\.?sc|science|physics|chemistry|mathematics|statistics|data science|botany|zoology|geology|agriculture)\b/i.test(t)) {
+    accepted.push("Science");
+  }
+  if (/\b(b\.?a\b|m\.?a\b|arts|humanities|hindi|english|history|political science|sociology|journalism)\b/i.test(t)) {
+    accepted.push("Arts");
+  }
+  if (/\b(any discipline|any graduate|any degree|recognized university|any stream|in any discipline)\b/i.test(t)) {
+    accepted.push("Any");
+  }
+  return accepted;
+};
+
+/**
  * Extract required qualification level from job attributes, tags, and text
  */
 export const parseJobRequiredQualification = (job) => {
-  if (!job) return { level: QUALIFICATION_LEVELS.GRADUATE, label: "Bachelor's Degree / Graduate", stream: null };
+  if (!job) return { level: QUALIFICATION_LEVELS.GRADUATE, label: "Bachelor's Degree / Graduate", stream: null, acceptedStreams: [] };
 
   // Primary qualification fields
   const primaryQualText = [
@@ -133,10 +163,6 @@ export const parseJobRequiredQualification = (job) => {
 
   const textToScan = (primaryQualText.trim() || fallbackText.trim()).toLowerCase();
 
-  let requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
-  let label = "Bachelor's Degree / Graduate";
-  let requiredStream = null;
-
   const has10th = /\b(10th|matric|matriculation|secondary school|sse\b|sslc\b|high school|class 10|10 th)\b/i.test(textToScan);
   const has12th = /\b(12th|intermediate|10\+2|higher secondary|chsl\b|hsc\b|class 12|senior secondary|12 th)\b/i.test(textToScan);
   const hasDiploma = /\b(diploma|polytechnic|iti\b)\b/i.test(textToScan);
@@ -144,48 +170,49 @@ export const parseJobRequiredQualification = (job) => {
   const hasPhD = /\b(ph\.?d|doctorate|doctoral)\b/i.test(textToScan);
   const hasDegree = /\b(bachelor(?:'s)?|graduate|graduation|degree|b\.?tech|b\.?sc|b\.?com|bba\b|bca\b|llb\b|mbbs\b|b\.?pharm|bds\b|cgl\b|b\.e\.|bachelor of)\b/i.test(textToScan);
 
-  if (hasPhD) {
-    requiredLevel = QUALIFICATION_LEVELS.PHD;
-    label = "Ph.D. / Doctorate";
-  } else if (hasPG) {
-    requiredLevel = QUALIFICATION_LEVELS.POST_GRADUATE;
-    label = "Master's Degree / Post Graduate";
-  } else if (has10th && !hasDegree && !hasDiploma && !has12th) {
+  let requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
+  let label = "Bachelor's Degree / Graduate";
+
+  // When multiple entry pathways are accepted, find the lowest entry tier:
+  if (has10th && !has12th && !hasDiploma && !hasDegree && !hasPG && !hasPhD) {
     requiredLevel = QUALIFICATION_LEVELS["10TH"];
     label = "10th Pass / Matriculation";
-  } else if (has12th && !hasDegree) {
+  } else if (has12th && !hasDiploma && !hasDegree && !hasPG && !hasPhD) {
     requiredLevel = QUALIFICATION_LEVELS["12TH"];
     label = "12th Pass / Intermediate";
-  } else if (hasDiploma && !hasDegree) {
+  } else if (hasDiploma && !hasDegree && !hasPG && !hasPhD) {
+    requiredLevel = QUALIFICATION_LEVELS.DIPLOMA;
+    label = "Diploma / Polytechnic";
+  } else if (has10th && !hasDegree && !hasPG && !hasPhD) {
+    requiredLevel = QUALIFICATION_LEVELS["10TH"];
+    label = "10th Pass / Matriculation";
+  } else if (has12th && !hasDegree && !hasPG && !hasPhD) {
+    requiredLevel = QUALIFICATION_LEVELS["12TH"];
+    label = "12th Pass / Intermediate";
+  } else if (hasDiploma && !hasDegree && !hasPG && !hasPhD) {
     requiredLevel = QUALIFICATION_LEVELS.DIPLOMA;
     label = "Diploma / Polytechnic";
   } else if (hasDegree) {
+    // Bachelor's degree pathway is available (e.g. Master's in any discipline OR Bachelor's in Law/Engineering)
     requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
     label = "Bachelor's Degree / Graduate";
-  } else if (has10th) {
-    requiredLevel = QUALIFICATION_LEVELS["10TH"];
-    label = "10th Pass / Matriculation";
+  } else if (hasPG) {
+    requiredLevel = QUALIFICATION_LEVELS.POST_GRADUATE;
+    label = "Master's Degree / Post Graduate";
+  } else if (hasPhD) {
+    requiredLevel = QUALIFICATION_LEVELS.PHD;
+    label = "Ph.D. / Doctorate";
   } else {
     // Default fallback
     requiredLevel = QUALIFICATION_LEVELS.GRADUATE;
     label = "Bachelor's Degree / Graduate";
   }
 
-  // Stream checks - only if specific technical discipline is mandated (not for general 10th/12th pass)
   const fullText = (primaryQualText + " " + fallbackText).toLowerCase();
-  if (requiredLevel >= QUALIFICATION_LEVELS.GRADUATE) {
-    if (/\b(b\.?tech|engineering|technician|junior engineer|je\b)\b/i.test(fullText)) {
-      requiredStream = "Engineering";
-    } else if (/\b(b\.?com|m\.?com|chartered accountant|cfa\b|icwa|cma\b|accountant|accounts officer)\b/i.test(fullText)) {
-      requiredStream = "Commerce";
-    } else if (/\b(llb|llm|advocate|law officer|legal advisor|judiciary)\b/i.test(fullText)) {
-      requiredStream = "Law";
-    } else if (/\b(mbbs|bds|nursing|b\.?pharm|m\.?pharm|ayush|medical officer)\b/i.test(fullText)) {
-      requiredStream = "Medical";
-    }
-  }
+  const acceptedStreams = parseJobAcceptedStreams(fullText);
+  let requiredStream = acceptedStreams.length === 1 && acceptedStreams[0] !== "Any" ? acceptedStreams[0] : null;
 
-  return { level: requiredLevel, label, stream: requiredStream };
+  return { level: requiredLevel, label, stream: requiredStream, acceptedStreams };
 };
 
 /**
@@ -282,20 +309,33 @@ export const evaluateJobEligibility = (job, userProfile) => {
   let streamPassed = true;
   let streamMessage = "";
 
+  const acceptedStreams = jobReq.acceptedStreams || [];
+
   if (
-    jobReq.stream &&
+    acceptedStreams.length > 0 &&
+    !acceptedStreams.includes("Any") &&
     userProfile.stream &&
     userProfile.stream !== "Any" &&
-    userProfile.stream !== "Other" &&
-    !userProfile.stream.toLowerCase().includes(jobReq.stream.toLowerCase())
+    userProfile.stream !== "Other"
   ) {
-    streamPassed = false;
-    streamMessage = `Requires ${jobReq.stream} specialization. Your stream: ${userProfile.stream}.`;
+    const matchesStream = acceptedStreams.some(
+      (s) =>
+        userProfile.stream.toLowerCase().includes(s.toLowerCase()) ||
+        s.toLowerCase().includes(userProfile.stream.toLowerCase()) ||
+        (userProfile.department && userProfile.department.toLowerCase().includes(s.toLowerCase()))
+    );
+
+    if (!matchesStream) {
+      streamPassed = false;
+      streamMessage = `Requires ${acceptedStreams.join(" / ")} specialization. Your stream: ${userProfile.stream}.`;
+    } else {
+      streamPassed = true;
+      streamMessage = `Stream matched (${userProfile.stream}).`;
+    }
   } else {
     streamPassed = true;
-    const deptStr = userProfile.departmentLabel || userProfile.department;
-    streamMessage = jobReq.stream
-      ? `Stream matched (${jobReq.stream}).`
+    streamMessage = acceptedStreams.length > 0 && !acceptedStreams.includes("Any") && userProfile.stream
+      ? `Stream matched (${userProfile.stream}).`
       : `Open to any discipline / stream.`;
   }
 
@@ -369,6 +409,7 @@ export const evaluateJobEligibility = (job, userProfile) => {
     streamMessage,
     requiredQualification: jobReq.label,
     requiredStream: jobReq.stream,
+    acceptedStreams: jobReq.acceptedStreams,
     remainingTimeText,
     parameters,
     ineligibleReasons,

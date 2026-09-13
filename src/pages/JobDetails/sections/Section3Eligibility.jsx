@@ -389,13 +389,13 @@ const Section3Eligibility = ({ job }) => {
                   </span>
                 </div>
 
-                {evalResult.requiredStream && (
+                {(evalResult.requiredStream || (evalResult.acceptedStreams?.length > 0 && !evalResult.acceptedStreams.includes("Any"))) && (
                   <div className="jd-el-compact-row">
                     <div className="jd-el-compact-left">
                       <span className="jd-el-compact-icon">🔬</span>
                       <span className="jd-el-compact-label">Stream:</span>
                       <span className="jd-el-compact-val">
-                        {eligibilityProfile.stream} <span className="jd-el-compact-sub">(Req: {evalResult.requiredStream})</span>
+                        {eligibilityProfile.stream} <span className="jd-el-compact-sub">({evalResult.streamPassed ? "Accepted" : `Req: ${evalResult.acceptedStreams?.join("/")}`})</span>
                       </span>
                     </div>
                     <span className={`jd-el-compact-tag ${evalResult.streamPassed ? "jd-el-compact-tag--pass" : "jd-el-compact-tag--fail"}`}>
