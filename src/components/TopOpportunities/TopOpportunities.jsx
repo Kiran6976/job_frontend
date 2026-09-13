@@ -967,23 +967,39 @@ const TopOpportunities = () => {
           <div className="to__el-bar-left">
             {eligibilityProfile ? (
               <div className="to__el-user-box">
-                <div className="to__el-user-icon">
-                  <GraduationCap size={18} />
+                <div className="to__el-user-avatar">
+                  <GraduationCap size={20} className="to__el-user-cap" />
+                  <span className="to__el-online-dot" />
                 </div>
-                <div className="to__el-user-details">
-                  <span className="to__el-user-label">Your Active Eligibility Profile:</span>
-                  <span className="to__el-user-vals">
-                    <strong>{calculateExactAge(eligibilityProfile.dob)?.formatted}</strong> • <strong>{eligibilityProfile.category}</strong> • <strong>{eligibilityProfile.qualificationLabel?.split("(")[0]}</strong> {eligibilityProfile.stream && eligibilityProfile.stream !== "Any" ? `(${eligibilityProfile.stream})` : ""}
-                  </span>
+                <div className="to__el-user-content">
+                  <div className="to__el-user-header">
+                    <span className="to__el-user-label">Eligibility Profile</span>
+                    <button
+                      type="button"
+                      className="to__el-edit-pill"
+                      onClick={() => setIsEligibilityModalOpen(true)}
+                      title="Update your age & qualification profile"
+                    >
+                      Edit Profile ✎
+                    </button>
+                  </div>
+                  <div className="to__el-chips">
+                    <span className="to__el-chip to__el-chip--age">
+                      🎂 {calculateExactAge(eligibilityProfile.dob)?.formatted}
+                    </span>
+                    <span className="to__el-chip to__el-chip--cat">
+                      🏷️ {eligibilityProfile.category}
+                    </span>
+                    <span className="to__el-chip to__el-chip--qual">
+                      🎓 {eligibilityProfile.qualificationLabel?.split("(")[0]?.split("/")[0]?.trim()}
+                    </span>
+                    {eligibilityProfile.stream && eligibilityProfile.stream !== "Any" && (
+                      <span className="to__el-chip to__el-chip--stream">
+                        🔬 {eligibilityProfile.stream}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  className="to__el-edit-pill"
-                  onClick={() => setIsEligibilityModalOpen(true)}
-                  title="Update your age & qualification profile"
-                >
-                  Edit Profile ✎
-                </button>
               </div>
             ) : (
               <button
@@ -993,9 +1009,9 @@ const TopOpportunities = () => {
               >
                 <div className="to__el-cta-icon-box">🎯</div>
                 <div className="to__el-cta-text">
-                  <span className="to__el-cta-title">Smart "Am I Eligible?" Calculator</span>
+                  <span className="to__el-cta-title">Instant Eligibility Calculator</span>
                   <span className="to__el-cta-sub">
-                    Enter your DOB & Category to check real-time age cut-offs and eligibility across all exams
+                    Set your DOB &amp; Qualification to instantly filter verified jobs you qualify for
                   </span>
                 </div>
                 <span className="to__el-cta-arrow">Check My Eligibility &rarr;</span>
@@ -1006,7 +1022,7 @@ const TopOpportunities = () => {
           <div className="to__el-bar-right">
             <button
               type="button"
-              className={`to__el-toggle-btn ${onlyEligible ? "to__el-toggle-btn--active" : ""}`}
+              className={`to__el-toggle-switch ${onlyEligible ? "to__el-toggle-switch--active" : ""}`}
               onClick={() => {
                 if (!eligibilityProfile) {
                   setIsEligibilityModalOpen(true);
@@ -1022,17 +1038,18 @@ const TopOpportunities = () => {
                   : "Click to filter only jobs you qualify for"
               }
             >
-              <span className="to__el-toggle-indicator">
-                {onlyEligible ? "✔" : ""}
-              </span>
-              <span className="to__el-toggle-title">
-                Show Only Eligible Jobs
-              </span>
-              {eligibilityProfile && (
-                <span className="to__el-toggle-badge">
-                  {eligibleCount} Match
-                </span>
-              )}
+              <div className="to__el-toggle-track">
+                <div className="to__el-toggle-knob" />
+              </div>
+              <div className="to__el-toggle-info">
+                <span className="to__el-toggle-title">Show Only Eligible</span>
+                {eligibilityProfile && (
+                  <span className="to__el-toggle-count">
+                    <span className="to__el-count-dot" />
+                    {eligibleCount} Jobs Match
+                  </span>
+                )}
+              </div>
             </button>
           </div>
         </div>
