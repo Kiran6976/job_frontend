@@ -69,6 +69,7 @@ const JobDetails = () => {
       setSaved(true);
     }
     localStorage.setItem("portal_saved_jobs", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
   };
 
   useEffect(() => {

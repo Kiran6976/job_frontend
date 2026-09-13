@@ -24,7 +24,18 @@ const timeAgo = (dateStr) => {
 const FeaturedJobs = () => {
   const navigate = useNavigate();
   const { user, openAuthModal } = useAuth();
-  const [savedJobs, setSavedJobs] = useState({});
+  const [savedJobs, setSavedJobs] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+      const map = {};
+      saved.forEach((id) => {
+        map[id] = true;
+      });
+      return map;
+    } catch {
+      return {};
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [customJobs, setCustomJobs] = useState(() => {
     try {
@@ -35,6 +46,23 @@ const FeaturedJobs = () => {
     }
   });
   const videoRef = useRef(null);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+        const map = {};
+        saved.forEach((id) => {
+          map[id] = true;
+        });
+        setSavedJobs(map);
+      } catch (e) {
+        // ignore
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const [copiedJobId, setCopiedJobId] = useState(null);
 
@@ -132,6 +160,16 @@ const FeaturedJobs = () => {
   }, []);
 
   const toggleSaveJob = (id) => {
+    const sId = String(id);
+    const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+    let updated;
+    if (savedIds.includes(sId)) {
+      updated = savedIds.filter((item) => item !== sId);
+    } else {
+      updated = [...savedIds, sId];
+    }
+    localStorage.setItem("portal_saved_jobs", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
     setSavedJobs((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

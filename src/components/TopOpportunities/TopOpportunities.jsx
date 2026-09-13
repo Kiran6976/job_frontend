@@ -247,8 +247,36 @@ const TopOpportunities = () => {
       return [];
     }
   });
-  const [savedExams, setSavedExams] = useState({});
+  const [savedExams, setSavedExams] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+      const map = {};
+      saved.forEach((id) => {
+        map[id] = true;
+      });
+      return map;
+    } catch {
+      return {};
+    }
+  });
   const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+        const map = {};
+        saved.forEach((id) => {
+          map[id] = true;
+        });
+        setSavedExams(map);
+      } catch (e) {
+        // ignore
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const [copiedJobId, setCopiedJobId] = useState(null);
 
@@ -575,6 +603,16 @@ const TopOpportunities = () => {
   })();
 
   const toggleSaveExam = (id) => {
+    const sId = String(id);
+    const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+    let updated;
+    if (savedIds.includes(sId)) {
+      updated = savedIds.filter((item) => item !== sId);
+    } else {
+      updated = [...savedIds, sId];
+    }
+    localStorage.setItem("portal_saved_jobs", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
     setSavedExams((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 

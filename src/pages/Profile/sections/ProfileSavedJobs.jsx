@@ -4,51 +4,67 @@ import "./ProfileSavedJobs.css";
 
 const ProfileSavedJobs = () => {
   const [savedJobs, setSavedJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadSaved = async () => {
+    try {
+      const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+      if (savedIds.length === 0) {
+        setSavedJobs([]);
+        setLoading(false);
+        return;
+      }
+
+      let customJobs = JSON.parse(localStorage.getItem("portal_custom_jobs") || "[]");
+
+      if (customJobs.length === 0) {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.JOB}/all`);
+          const data = await res.json();
+          if (data.success && Array.isArray(data.jobs)) {
+            customJobs = data.jobs;
+            localStorage.setItem("portal_custom_jobs", JSON.stringify(data.jobs));
+          }
+        } catch (e) {
+          // ignore error
+        }
+      }
+
+      const matched = customJobs
+        .filter((j) => savedIds.includes(String(j._id || j.id)))
+        .map((j) => ({
+          id: j._id || j.id,
+          title: j.title,
+          organization: j.organization,
+          vacancies: j.vacancies
+            ? isNaN(Number(j.vacancies))
+              ? j.vacancies
+              : `${Number(j.vacancies).toLocaleString("en-IN")} Vacancies`
+            : "Multiple Vacancies",
+          lastDate: j.applicationLastDate || "Upcoming",
+          category: j.category || "Government Exams",
+        }));
+
+      setSavedJobs(matched);
+    } catch (err) {
+      console.error("Error loading saved jobs:", err);
+      setSavedJobs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const customJobs = JSON.parse(localStorage.getItem("portal_custom_jobs") || "[]");
-    const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
-
-    const defaultSaved = [
-      {
-        id: "6aa257c3f58e7297a035c32c",
-        title: "Recruitment for Various Posts of Junior Engineer (JE) and DMS (CEN No. 04/2026)",
-        organization: "Railway Recruitment Boards (RRBs)",
-        vacancies: "3,993",
-        lastDate: "Sep 13, 2026",
-        category: "National Level",
-      },
-      {
-        id: "upsc-demo",
-        title: "UPSC Civil Services Examination (CSE - IAS/IPS)",
-        organization: "Union Public Service Commission",
-        vacancies: "1,056",
-        lastDate: "Aug 30, 2026",
-        category: "Civil Services",
-      },
-    ];
-
-    const matchedCustom = customJobs
-      .filter((j) => savedIds.includes(String(j._id || j.id)))
-      .map((j) => ({
-        id: j._id || j.id,
-        title: j.title,
-        organization: j.organization,
-        vacancies: j.vacancies || "1,000+",
-        lastDate: j.applicationLastDate || "Upcoming",
-        category: j.category || "General",
-      }));
-
-    const combined = [...defaultSaved, ...matchedCustom];
-    // Remove duplicates
-    const unique = Array.from(new Map(combined.map((item) => [item.id, item])).values());
-    setSavedJobs(unique);
+    loadSaved();
+    window.addEventListener("storage", loadSaved);
+    return () => window.removeEventListener("storage", loadSaved);
   }, []);
 
   const handleRemove = (id) => {
     const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
     const updated = savedIds.filter((item) => item !== String(id));
     localStorage.setItem("portal_saved_jobs", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
     setSavedJobs((prev) => prev.filter((item) => item.id !== id));
   };
 

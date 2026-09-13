@@ -226,8 +226,7 @@ const Profile = () => {
       try {
         // 1. Saved Jobs Count
         const savedIds = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
-        const defaultSavedCount = 2;
-        const totalSaved = Math.max(savedIds.length, savedIds.length > 0 ? savedIds.length : defaultSavedCount);
+        const totalSaved = savedIds.length;
 
         // 2. Tracked Applications Count
         const appliedJobs = JSON.parse(localStorage.getItem("portal_applied_jobs") || "[]");

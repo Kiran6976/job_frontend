@@ -10,8 +10,13 @@ const ProfileNotifications = () => {
   const [savedIds, setSavedIds] = useState([]);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
-    setSavedIds(saved);
+    const updateSaved = () => {
+      const saved = JSON.parse(localStorage.getItem("portal_saved_jobs") || "[]");
+      setSavedIds(saved);
+    };
+    updateSaved();
+    window.addEventListener("storage", updateSaved);
+    return () => window.removeEventListener("storage", updateSaved);
   }, []);
 
   const defaultNotifications = [
@@ -120,6 +125,7 @@ const ProfileNotifications = () => {
     }
     setSavedIds(updated);
     localStorage.setItem("portal_saved_jobs", JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
   };
 
   const filteredJobs = jobs.filter((j) => {
