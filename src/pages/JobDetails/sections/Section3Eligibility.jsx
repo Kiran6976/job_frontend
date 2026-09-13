@@ -1,5 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatDate } from "../jobDetailsHelpers";
+import {
+  getStoredEligibilityProfile,
+  evaluateJobEligibility,
+  calculateExactAge,
+  ELIGIBILITY_EVENT,
+} from "../../../utils/eligibilityHelper";
+import EligibilityModal from "../../../components/EligibilityModal/EligibilityModal";
+import { CheckCircle2, XCircle, Sparkles, User, Calendar, ShieldCheck, GraduationCap } from "lucide-react";
 import "./Section3Eligibility.css";
 
 const Section3Eligibility = ({ job }) => {
@@ -10,10 +18,18 @@ const Section3Eligibility = ({ job }) => {
     relaxation: true,
     otherConditions: true,
   });
-  const [eligibilityModalOpen, setEligibilityModalOpen] = useState(false);
-  const [userAgeInput, setUserAgeInput] = useState("");
-  const [userCategoryInput, setUserCategoryInput] = useState("General");
-  const [eligibilityResult, setEligibilityResult] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [eligibilityProfile, setEligibilityProfile] = useState(() => getStoredEligibilityProfile());
+
+  useEffect(() => {
+    const handleUpdate = (e) => {
+      setEligibilityProfile(e.detail !== undefined ? e.detail : getStoredEligibilityProfile());
+    };
+    window.addEventListener(ELIGIBILITY_EVENT, handleUpdate);
+    return () => window.removeEventListener(ELIGIBILITY_EVENT, handleUpdate);
+  }, []);
+
+  const evalResult = evaluateJobEligibility(job, eligibilityProfile);
 
   return (
     <section className="jd-el-section">
@@ -329,107 +345,152 @@ const Section3Eligibility = ({ job }) => {
           )}
         </div>
 
-        {/* Right Side: Interactive "Are You Eligible?" Checklist & Motivational Card */}
+        {/* Right Side: Interactive "Are You Eligible?" Evaluator Card */}
         <div className="jd-el__sidebar">
-          {/* Checklist Card */}
-          <div className="jd-el-checker-card">
-            <div className="jd-el-checker__header">
-              <div className="jd-el-checker__target-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <circle cx="12" cy="12" r="6" />
-                  <circle cx="12" cy="12" r="2" />
-                </svg>
+          {eligibilityProfile ? (
+            <div className={`jd-el-checker-card jd-el-checker-card--result jd-el-checker-card--${evalResult.isEligible ? "eligible" : "ineligible"}`}>
+              <div className="jd-el-checker__header">
+                <div className={`jd-el-checker__result-icon-box jd-el-checker__result-icon-box--${evalResult.isEligible ? "green" : "red"}`}>
+                  {evalResult.isEligible ? <CheckCircle2 size={24} /> : <XCircle size={24} />}
+                </div>
+                <div>
+                  <span className={`jd-el-checker__status-tag jd-el-checker__status-tag--${evalResult.isEligible ? "green" : "red"}`}>
+                    {evalResult.isEligible ? "ELIGIBLE TO APPLY" : "NOT ELIGIBLE"}
+                  </span>
+                  <h3 className="jd-el-checker__title">Instant Eligibility Verdict</h3>
+                </div>
               </div>
-              <div>
-                <h3 className="jd-el-checker__title">Are You Eligible?</h3>
-                <p className="jd-el-checker__desc">
-                  Quickly check if you meet the basic criteria to apply for this exam.
+
+              {/* Breakdown Rows */}
+              <div className="jd-el-checker__breakdown">
+                <div className="jd-el-breakdown-row">
+                  <span className="jd-el-breakdown-label">🎂 Your Exact Age:</span>
+                  <span className="jd-el-breakdown-val">
+                    <strong>{evalResult.userAge?.formatted}</strong>
+                  </span>
+                </div>
+
+                <div className="jd-el-breakdown-row">
+                  <span className="jd-el-breakdown-label">📅 Allowed Age Window:</span>
+                  <span className="jd-el-breakdown-val">
+                    {evalResult.minAge} – {evalResult.effectiveMaxAge} yrs ({evalResult.category} {evalResult.relaxationYears > 0 ? `+${evalResult.relaxationYears}y` : ""})
+                  </span>
+                </div>
+
+                <div className="jd-el-breakdown-row">
+                  <span className="jd-el-breakdown-label">🛡️ Age Verdict:</span>
+                  <span className={`jd-el-breakdown-val ${evalResult.agePassed ? "jd-el-text--green" : "jd-el-text--red"}`}>
+                    {evalResult.agePassed ? "✔ Within Limit" : "✖ Limit Exceeded"}
+                  </span>
+                </div>
+
+                <div className="jd-el-breakdown-row">
+                  <span className="jd-el-breakdown-label">🎓 Education Match:</span>
+                  <span className={`jd-el-breakdown-val ${evalResult.qualPassed ? "jd-el-text--green" : "jd-el-text--red"}`}>
+                    {evalResult.qualPassed ? "✔ Criteria Met" : "✖ Check Criteria"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Explanatory Message */}
+              <div className={`jd-el-verdict-box jd-el-verdict-box--${evalResult.isEligible ? "green" : "red"}`}>
+                <p className="jd-el-verdict-text">
+                  {evalResult.isEligible
+                    ? `🎉 You meet all basic age and educational criteria for this recruitment! (${evalResult.remainingTimeText})`
+                    : evalResult.ageMessage || evalResult.qualMessage}
                 </p>
               </div>
+
+              <button
+                type="button"
+                className="jd-el-checker__btn jd-el-checker__btn--secondary"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Update My Profile ✎
+              </button>
             </div>
+          ) : (
+            <div className="jd-el-checker-card">
+              <div className="jd-el-checker__header">
+                <div className="jd-el-checker__target-icon">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="jd-el-checker__title">Are You Eligible?</h3>
+                  <p className="jd-el-checker__desc">
+                    Calculate your exact age, category relaxations &amp; qualification eligibility in 1-click.
+                  </p>
+                </div>
+              </div>
 
-            {/* Interactive Checklist Items */}
-            <div className="jd-el-checker__list">
-              <label className="jd-el-checker__item">
-                <input
-                  type="checkbox"
-                  checked={eligibilityChecklist.citizenship}
-                  onChange={(e) =>
-                    setEligibilityChecklist({ ...eligibilityChecklist, citizenship: e.target.checked })
-                  }
-                />
-                <span className="jd-el-checker__custom-box">✔</span>
-                <span className="jd-el-checker__text">
-                  I am an Indian citizen (or eligible as per rules)
-                </span>
-              </label>
+              {/* Checklist Items */}
+              <div className="jd-el-checker__list">
+                <label className="jd-el-checker__item">
+                  <input
+                    type="checkbox"
+                    checked={eligibilityChecklist.citizenship}
+                    onChange={(e) =>
+                      setEligibilityChecklist({ ...eligibilityChecklist, citizenship: e.target.checked })
+                    }
+                  />
+                  <span className="jd-el-checker__custom-box">✔</span>
+                  <span className="jd-el-checker__text">
+                    I am an Indian citizen (or eligible as per rules)
+                  </span>
+                </label>
 
-              <label className="jd-el-checker__item">
-                <input
-                  type="checkbox"
-                  checked={eligibilityChecklist.qualification}
-                  onChange={(e) =>
-                    setEligibilityChecklist({ ...eligibilityChecklist, qualification: e.target.checked })
-                  }
-                />
-                <span className="jd-el-checker__custom-box">✔</span>
-                <span className="jd-el-checker__text">
-                  I meet the educational qualification
-                </span>
-              </label>
+                <label className="jd-el-checker__item">
+                  <input
+                    type="checkbox"
+                    checked={eligibilityChecklist.qualification}
+                    onChange={(e) =>
+                      setEligibilityChecklist({ ...eligibilityChecklist, qualification: e.target.checked })
+                    }
+                  />
+                  <span className="jd-el-checker__custom-box">✔</span>
+                  <span className="jd-el-checker__text">
+                    I meet the educational qualification
+                  </span>
+                </label>
 
-              <label className="jd-el-checker__item">
-                <input
-                  type="checkbox"
-                  checked={eligibilityChecklist.ageLimit}
-                  onChange={(e) =>
-                    setEligibilityChecklist({ ...eligibilityChecklist, ageLimit: e.target.checked })
-                  }
-                />
-                <span className="jd-el-checker__custom-box">✔</span>
-                <span className="jd-el-checker__text">
-                  I am within the prescribed age limit
-                </span>
-              </label>
+                <label className="jd-el-checker__item">
+                  <input
+                    type="checkbox"
+                    checked={eligibilityChecklist.ageLimit}
+                    onChange={(e) =>
+                      setEligibilityChecklist({ ...eligibilityChecklist, ageLimit: e.target.checked })
+                    }
+                  />
+                  <span className="jd-el-checker__custom-box">✔</span>
+                  <span className="jd-el-checker__text">
+                    I am within the prescribed age limit
+                  </span>
+                </label>
 
-              <label className="jd-el-checker__item">
-                <input
-                  type="checkbox"
-                  checked={eligibilityChecklist.relaxation}
-                  onChange={(e) =>
-                    setEligibilityChecklist({ ...eligibilityChecklist, relaxation: e.target.checked })
-                  }
-                />
-                <span className="jd-el-checker__custom-box">✔</span>
-                <span className="jd-el-checker__text">
-                  I understand the age relaxation rules (if applicable)
-                </span>
-              </label>
+                <label className="jd-el-checker__item">
+                  <input
+                    type="checkbox"
+                    checked={eligibilityChecklist.relaxation}
+                    onChange={(e) =>
+                      setEligibilityChecklist({ ...eligibilityChecklist, relaxation: e.target.checked })
+                    }
+                  />
+                  <span className="jd-el-checker__custom-box">✔</span>
+                  <span className="jd-el-checker__text">
+                    I understand category relaxation rules
+                  </span>
+                </label>
+              </div>
 
-              <label className="jd-el-checker__item">
-                <input
-                  type="checkbox"
-                  checked={eligibilityChecklist.otherConditions}
-                  onChange={(e) =>
-                    setEligibilityChecklist({ ...eligibilityChecklist, otherConditions: e.target.checked })
-                  }
-                />
-                <span className="jd-el-checker__custom-box">✔</span>
-                <span className="jd-el-checker__text">
-                  I meet all other eligibility conditions
-                </span>
-              </label>
+              <button
+                type="button"
+                className="jd-el-checker__btn"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Check My Eligibility &rarr;
+              </button>
             </div>
-
-            <button
-              type="button"
-              className="jd-el-checker__btn"
-              onClick={() => setEligibilityModalOpen(true)}
-            >
-              Check My Eligibility &rarr;
-            </button>
-          </div>
+          )}
 
           {/* Motivational Quote & Stacking Books Artwork */}
           <div className="jd-el-quote-card">
@@ -465,13 +526,13 @@ const Section3Eligibility = ({ job }) => {
             <strong>Important Note</strong>
             <p>
               {job.importantNote ||
-                "The eligibility criteria mentioned above is a summary. Candidates must read the official notification carefully for complete and accurate details. In case of any discrepancy, the official notification issued by UPSC shall be final."}
+                "The eligibility criteria mentioned above is a summary. Candidates must read the official notification carefully for complete and accurate details. In case of any discrepancy, the official notification issued by the organization shall be final."}
             </p>
           </div>
         </div>
 
         <a
-          href={job.notificationPdfUrl || "https://upsc.gov.in"}
+          href={job.notificationPdfUrl || "https://theworkflow.online"}
           target="_blank"
           rel="noreferrer"
           className="jd-el-bottom-note__pdf-btn"
@@ -486,119 +547,12 @@ const Section3Eligibility = ({ job }) => {
         </a>
       </div>
 
-      {/* Interactive Eligibility Checker Modal */}
-      {eligibilityModalOpen && (
-        <div className="jd-modal-backdrop" onClick={() => setEligibilityModalOpen(false)}>
-          <div className="jd-modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="jd-modal-header">
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "1.5rem" }}>🎯</span>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 800, color: "#0f172a" }}>
-                    Instant Eligibility Evaluator
-                  </h3>
-                  <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
-                    Target Exam: {job.title}
-                  </span>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="jd-modal-close-btn"
-                onClick={() => setEligibilityModalOpen(false)}
-              >
-                &times;
-              </button>
-            </div>
-
-            <div className="jd-modal-body">
-              <div style={{ marginBottom: "14px" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#334155", marginBottom: "4px" }}>
-                  Your Current Age (in years):
-                </label>
-                <input
-                  type="number"
-                  min="16"
-                  max="60"
-                  className="ajp__input"
-                  style={{ background: "#ffffff", border: "1.5px solid #cbd5e1", color: "#0f172a", width: "100%", padding: "10px 12px", borderRadius: "8px", boxSizing: "border-box" }}
-                  placeholder="e.g. 24"
-                  value={userAgeInput}
-                  onChange={(e) => setUserAgeInput(e.target.value)}
-                />
-              </div>
-
-              <div style={{ marginBottom: "14px" }}>
-                <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#334155", marginBottom: "4px" }}>
-                  Reservation Category:
-                </label>
-                <select
-                  className="ajp__select"
-                  style={{ background: "#ffffff", border: "1.5px solid #cbd5e1", color: "#0f172a", width: "100%", padding: "10px 12px", borderRadius: "8px", boxSizing: "border-box" }}
-                  value={userCategoryInput}
-                  onChange={(e) => setUserCategoryInput(e.target.value)}
-                >
-                  <option value="General">General / EWS (Max: {job.ageLimitMax || 32} yrs)</option>
-                  <option value="OBC">OBC (+3 yrs relaxation)</option>
-                  <option value="SC/ST">SC / ST (+5 yrs relaxation)</option>
-                  <option value="PwBD">PwBD (+10 yrs relaxation)</option>
-                  <option value="Ex-Servicemen">Ex-Servicemen (As per rules)</option>
-                </select>
-              </div>
-
-              <button
-                type="button"
-                className="jd-action-card__btn-primary"
-                style={{ width: "100%" }}
-                onClick={() => {
-                  const min = Number(job.ageLimitMin || 21);
-                  let max = Number(job.ageLimitMax || 32);
-                  if (userCategoryInput === "OBC") max += 3;
-                  if (userCategoryInput === "SC/ST") max += 5;
-                  if (userCategoryInput === "PwBD") max += 10;
-
-                  const age = Number(userAgeInput);
-                  if (!age) {
-                    setEligibilityResult({ ok: false, msg: "Please enter your age first." });
-                    return;
-                  }
-
-                  if (age >= min && age <= max) {
-                    setEligibilityResult({
-                      ok: true,
-                      msg: `🎉 Congratulations! You meet the prescribed age criteria (${min} to ${max} years for ${userCategoryInput}). You are eligible to apply!`,
-                    });
-                  } else {
-                    setEligibilityResult({
-                      ok: false,
-                      msg: `⚠️ As per standard notification norms, your age (${age}) is outside the permitted range of ${min} - ${max} years for ${userCategoryInput}.`,
-                    });
-                  }
-                }}
-              >
-                Verify My Eligibility Now
-              </button>
-
-              {eligibilityResult && (
-                <div
-                  style={{
-                    marginTop: "16px",
-                    padding: "12px 14px",
-                    borderRadius: "10px",
-                    fontSize: "0.85rem",
-                    fontWeight: 600,
-                    background: eligibilityResult.ok ? "#ecfdf5" : "#fef2f2",
-                    color: eligibilityResult.ok ? "#065f46" : "#991b1b",
-                    border: `1px solid ${eligibilityResult.ok ? "#a7f3d0" : "#fecaca"}`,
-                  }}
-                >
-                  {eligibilityResult.msg}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Instant Eligibility Calculator Modal */}
+      <EligibilityModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onProfileSaved={(p) => setEligibilityProfile(p)}
+      />
     </section>
   );
 };

@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase } from "lucide-react";
+import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase, Sparkles } from "lucide-react";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
 import { useAuth } from "../../context/AuthContext";
 import { isJobExpired } from "../../utils/jobHelpers";
+import {
+  getStoredEligibilityProfile,
+  evaluateJobEligibility,
+  calculateExactAge,
+  ELIGIBILITY_EVENT,
+} from "../../utils/eligibilityHelper";
+import EligibilityModal from "../EligibilityModal/EligibilityModal";
 
 
 // Comprehensive dictionary for acronyms, exam abbreviations, and synonyms
@@ -278,6 +285,18 @@ const TopOpportunities = () => {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  const [eligibilityProfile, setEligibilityProfile] = useState(() => getStoredEligibilityProfile());
+  const [isEligibilityModalOpen, setIsEligibilityModalOpen] = useState(false);
+  const [onlyEligible, setOnlyEligible] = useState(false);
+
+  useEffect(() => {
+    const handleElUpdate = (e) => {
+      setEligibilityProfile(e.detail !== undefined ? e.detail : getStoredEligibilityProfile());
+    };
+    window.addEventListener(ELIGIBILITY_EVENT, handleElUpdate);
+    return () => window.removeEventListener(ELIGIBILITY_EVENT, handleElUpdate);
+  }, []);
+
   const [copiedJobId, setCopiedJobId] = useState(null);
 
   const handleJobClick = (e, targetUrl) => {
@@ -544,6 +563,7 @@ const TopOpportunities = () => {
       btnText: "View Details \u2192",
       btnVariant: "apply",
       detailUrl: `/job/${j._id || j.id}`,
+      rawJob: j,
     };
   });
 
@@ -693,12 +713,32 @@ const TopOpportunities = () => {
     }
 
     // Default: category tab filter only when no search query
-    return allFormattedJobs.filter((job) => {
+    const baseList = allFormattedJobs.filter((job) => {
       if (activeTab === "all") return true;
       const currentTab = dynamicTabs.find((t) => t.id === activeTab);
       return matchesTab(job, activeTab, currentTab?.label);
     });
+
+    if (onlyEligible && eligibilityProfile) {
+      return baseList.filter((job) => {
+        const evaluation = evaluateJobEligibility(job.rawJob, eligibilityProfile);
+        return evaluation.isEligible === true;
+      });
+    }
+
+    return baseList;
   })();
+
+  // Total eligible count for active category tab or all
+  const eligibleCount = eligibilityProfile
+    ? allFormattedJobs.filter((job) => {
+        const matchCategory =
+          activeTab === "all" ||
+          matchesTab(job, activeTab, dynamicTabs.find((t) => t.id === activeTab)?.label);
+        if (!matchCategory) return false;
+        return evaluateJobEligibility(job.rawJob, eligibilityProfile).isEligible === true;
+      }).length
+    : 0;
 
   const toggleSaveExam = (id) => {
     const sId = String(id);
@@ -922,6 +962,81 @@ const TopOpportunities = () => {
           ))}
         </div>
 
+        {/* ────────── Instant Eligibility Filter Bar ────────── */}
+        <div className="to__el-bar">
+          <div className="to__el-bar-left">
+            {eligibilityProfile ? (
+              <div className="to__el-user-box">
+                <div className="to__el-user-icon">
+                  <GraduationCap size={18} />
+                </div>
+                <div className="to__el-user-details">
+                  <span className="to__el-user-label">Your Active Eligibility Profile:</span>
+                  <span className="to__el-user-vals">
+                    <strong>{calculateExactAge(eligibilityProfile.dob)?.formatted}</strong> • <strong>{eligibilityProfile.category}</strong> • <strong>{eligibilityProfile.qualificationLabel?.split("(")[0]}</strong> {eligibilityProfile.stream && eligibilityProfile.stream !== "Any" ? `(${eligibilityProfile.stream})` : ""}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="to__el-edit-pill"
+                  onClick={() => setIsEligibilityModalOpen(true)}
+                  title="Update your age & qualification profile"
+                >
+                  Edit Profile ✎
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="to__el-cta-btn"
+                onClick={() => setIsEligibilityModalOpen(true)}
+              >
+                <div className="to__el-cta-icon-box">🎯</div>
+                <div className="to__el-cta-text">
+                  <span className="to__el-cta-title">Smart "Am I Eligible?" Calculator</span>
+                  <span className="to__el-cta-sub">
+                    Enter your DOB & Category to check real-time age cut-offs and eligibility across all exams
+                  </span>
+                </div>
+                <span className="to__el-cta-arrow">Check My Eligibility &rarr;</span>
+              </button>
+            )}
+          </div>
+
+          <div className="to__el-bar-right">
+            <button
+              type="button"
+              className={`to__el-toggle-btn ${onlyEligible ? "to__el-toggle-btn--active" : ""}`}
+              onClick={() => {
+                if (!eligibilityProfile) {
+                  setIsEligibilityModalOpen(true);
+                } else {
+                  setOnlyEligible(!onlyEligible);
+                }
+              }}
+              title={
+                !eligibilityProfile
+                  ? "Set your DOB & Category to filter eligible jobs"
+                  : onlyEligible
+                  ? "Click to show all opportunities"
+                  : "Click to filter only jobs you qualify for"
+              }
+            >
+              <span className="to__el-toggle-indicator">
+                {onlyEligible ? "✔" : ""}
+              </span>
+              <span className="to__el-toggle-title">
+                Show Only Eligible Jobs
+              </span>
+              {eligibilityProfile && (
+                <span className="to__el-toggle-badge">
+                  {eligibleCount} Match
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+
         {/* ────────── Sub-Section 1: Trending Government Exams ────────── */}
         <div className="to__section">
           {/* Section Header */}
@@ -1113,6 +1228,43 @@ const TopOpportunities = () => {
                             <span className="to__status-dot" />
                             {exam.status}
                           </span>
+
+                          {/* Dynamic Instant Eligibility Badge */}
+                          {(() => {
+                            const el = evaluateJobEligibility(exam.rawJob, eligibilityProfile);
+                            if (!eligibilityProfile) {
+                              return (
+                                <button
+                                  type="button"
+                                  className="to__el-card-badge to__el-card-badge--neutral"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setIsEligibilityModalOpen(true);
+                                  }}
+                                  title="Click to check your eligibility for this exam"
+                                >
+                                  <span className="to__el-card-dot" />
+                                  Check Eligibility
+                                </button>
+                              );
+                            }
+                            return (
+                              <button
+                                type="button"
+                                className={`to__el-card-badge to__el-card-badge--${el.color}`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setIsEligibilityModalOpen(true);
+                                }}
+                                title={el.isEligible ? el.ageMessage : (el.ageMessage || el.qualMessage)}
+                              >
+                                <span className={`to__el-card-dot to__el-card-dot--${el.color}`} />
+                                {el.badgeText}
+                              </button>
+                            );
+                          })()}
                         </div>
                       </div>
 
@@ -1249,6 +1401,16 @@ const TopOpportunities = () => {
         </div>
 
       </div>
+
+      {/* Instant Eligibility Calculator Modal */}
+      <EligibilityModal
+        isOpen={isEligibilityModalOpen}
+        onClose={() => setIsEligibilityModalOpen(false)}
+        onProfileSaved={(profile) => {
+          setEligibilityProfile(profile);
+          if (profile) setOnlyEligible(true);
+        }}
+      />
     </section>
   );
 };
