@@ -774,15 +774,19 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 9px;
+  border-radius: 7px;
   border: 1px solid transparent;
+  line-height: 1.2;
 }
 
-.to__tag-emoji {
-  font-size: 11px;
+.to__tag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .to__tag--blue {

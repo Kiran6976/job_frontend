@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { Flame, Target } from "lucide-react";
+import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase } from "lucide-react";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
@@ -400,7 +400,60 @@ const TopOpportunities = () => {
     }
   };
 
-  // Helper to categorize tag styles with emoji and badge color theme
+  // Helper to categorize tag styles with icons and badge color themes
+  const renderTagIcon = (tag) => {
+    const t = String(tag || "").toLowerCase();
+    if (
+      t.includes("graduate") ||
+      t.includes("degree") ||
+      t.includes("bachelor") ||
+      t.includes("b.tech") ||
+      t.includes("btech") ||
+      t.includes("cgl")
+    ) {
+      return <GraduationCap size={13} strokeWidth={2.2} />;
+    }
+    if (
+      t.includes("12") ||
+      t.includes("10") ||
+      t.includes("matric") ||
+      t.includes("secondary") ||
+      t.includes("school") ||
+      t.includes("pass")
+    ) {
+      return <BookOpen size={13} strokeWidth={2.2} />;
+    }
+    if (
+      t.includes("diploma") ||
+      t.includes("engineer") ||
+      t.includes("tech") ||
+      t.includes("certificate") ||
+      t.includes("je") ||
+      t.includes("gate")
+    ) {
+      return <FileText size={13} strokeWidth={2.2} />;
+    }
+    if (
+      t.includes("india") ||
+      t.includes("delhi") ||
+      t.includes("state") ||
+      t.includes("location") ||
+      t.includes("remote")
+    ) {
+      return <MapPin size={13} strokeWidth={2.2} />;
+    }
+    if (
+      t.includes("manager") ||
+      t.includes("officer") ||
+      t.includes("clerk") ||
+      t.includes("assistant") ||
+      t.includes("cadre")
+    ) {
+      return <Briefcase size={13} strokeWidth={2.2} />;
+    }
+    return <Tag size={13} strokeWidth={2.2} />;
+  };
+
   const getTagConfig = (tag) => {
     const t = String(tag || "").toLowerCase();
     if (
@@ -411,7 +464,7 @@ const TopOpportunities = () => {
       t.includes("btech") ||
       t.includes("cgl")
     ) {
-      return { icon: "🎓", type: "blue" };
+      return { type: "blue" };
     }
     if (
       t.includes("12") ||
@@ -421,7 +474,7 @@ const TopOpportunities = () => {
       t.includes("school") ||
       t.includes("pass")
     ) {
-      return { icon: "📖", type: "green" };
+      return { type: "green" };
     }
     if (
       t.includes("diploma") ||
@@ -431,9 +484,9 @@ const TopOpportunities = () => {
       t.includes("je") ||
       t.includes("gate")
     ) {
-      return { icon: "📄", type: "purple" };
+      return { type: "purple" };
     }
-    return { icon: "🏷️", type: "slate" };
+    return { type: "slate" };
   };
 
   // Formatted real jobs from Admin Panel (Automatically excludes expired jobs)
@@ -1165,7 +1218,7 @@ const TopOpportunities = () => {
                         const conf = getTagConfig(tag);
                         return (
                           <span key={tag} className={`to__tag to__tag--${conf.type}`}>
-                            <span className="to__tag-emoji">{conf.icon}</span>
+                            <span className="to__tag-icon">{renderTagIcon(tag)}</span>
                             <span>{tag}</span>
                           </span>
                         );
