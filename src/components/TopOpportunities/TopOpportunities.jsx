@@ -1023,12 +1023,12 @@ const TopOpportunities = () => {
                   {/* Card Background Image & Gradient Overlay */}
                   <div className="to__card-bg-wrap">
                     <img
-                      src={exam.bannerUrl || "/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png"}
+                      src="/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png"
                       alt=""
                       className="to__card-bg-img"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png";
+                        e.target.src = "/card_default_bg.png";
                       }}
                     />
                     <div className="to__card-bg-overlay" />
