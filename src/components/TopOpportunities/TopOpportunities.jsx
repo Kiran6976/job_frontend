@@ -458,17 +458,17 @@ const TopOpportunities = () => {
       date2Value = "Announced soon";
     }
 
-    let vacCount = "Multiple";
-    let vacLabel = "Vacancies";
+    let vacText = "Multiple Vacancies";
     if (j.vacancies) {
       const raw = String(j.vacancies).trim();
       if (!isNaN(Number(raw))) {
-        vacCount = Number(raw).toLocaleString("en-IN");
+        vacText = `${Number(raw).toLocaleString("en-IN")} Vacancies`;
       } else {
-        const clean = raw.replace(/vacancies/gi, "").trim();
-        vacCount = clean || raw;
+        vacText = raw.toLowerCase().includes("vacanc") ? raw : `${raw} Vacancies`;
       }
     }
+
+    const allTags = Array.isArray(j.tags) && j.tags.length > 0 ? j.tags : ["Graduate"];
 
     return {
       id: j._id || j.id,
@@ -478,15 +478,12 @@ const TopOpportunities = () => {
       status: j.status || "Ongoing",
       statusType: (j.status || "ongoing").toLowerCase().replace(/\s+/g, "-"),
       category: j.category || "Government Exams",
-      vacanciesCount: vacCount,
-      vacanciesLabel: vacLabel,
+      vacanciesText: vacText,
       date1Label,
       date1Value,
       date2Label,
       date2Value,
-      tags: j.tags && j.tags.length > 0 ? j.tags.slice(0, 3) : ["Graduate"],
-      allTags: Array.isArray(j.tags) ? j.tags : [],
-      extraTagsCount: j.tags && j.tags.length > 3 ? j.tags.length - 3 : 0,
+      tags: allTags,
       emblem: j.logoUrl || "/emblem_india.png",
       bannerUrl: j.bannerUrl || "/ChatGPT Image Sep 13, 2026, 06_51_58 PM.png",
       slogan: j.slogan || "SECURING RETIREMENTS \u2022 BUILDING A BRIGHTER TOMORROW",
@@ -1116,53 +1113,53 @@ const TopOpportunities = () => {
                       <span className="to__tagline-text">{exam.slogan}</span>
                     </div>
 
-                    {/* Middle 3-Column Info Strip Box */}
-                    <div className="to__info-strip">
-                      <div className="to__info-col to__info-col--vacancies">
-                        <div className="to__info-col-icon to__info-col-icon--blue">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                    {/* Middle Info Details: One after another for total clarity */}
+                    <div className="to__info-list">
+                      <div className="to__info-item">
+                        <div className="to__info-icon-box to__info-icon-box--blue">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                             <circle cx="9" cy="7" r="4" />
                           </svg>
                         </div>
-                        <div className="to__info-col-data">
-                          <span className="to__info-col-val">{exam.vacanciesCount}</span>
-                          <span className="to__info-col-lbl">{exam.vacanciesLabel}</span>
+                        <div className="to__info-text-group">
+                          <span className="to__info-label">Vacancies:</span>
+                          <span className="to__info-val">{exam.vacanciesText}</span>
                         </div>
                       </div>
 
-                      <div className="to__info-col to__info-col--apply">
-                        <div className="to__info-col-icon to__info-col-icon--green">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                      <div className="to__info-item">
+                        <div className="to__info-icon-box to__info-icon-box--green">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
                             <line x1="8" y1="2" x2="8" y2="6" />
                             <line x1="3" y1="10" x2="21" y2="10" />
                           </svg>
                         </div>
-                        <div className="to__info-col-data">
-                          <span className="to__info-col-lbl">{exam.date1Label}:</span>
-                          <span className="to__info-col-val">{exam.date1Value}</span>
+                        <div className="to__info-text-group">
+                          <span className="to__info-label">{exam.date1Label}:</span>
+                          <span className="to__info-val">{exam.date1Value}</span>
                         </div>
                       </div>
 
-                      <div className="to__info-col to__info-col--exam">
-                        <div className="to__info-col-icon to__info-col-icon--purple">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                      <div className="to__info-item">
+                        <div className="to__info-icon-box to__info-icon-box--purple">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                             <polyline points="14 2 14 8 20 8" />
                             <line x1="16" y1="13" x2="8" y2="13" />
                             <line x1="16" y1="17" x2="8" y2="17" />
                           </svg>
                         </div>
-                        <div className="to__info-col-data">
-                          <span className="to__info-col-lbl">{exam.date2Label}:</span>
-                          <span className="to__info-col-val">{exam.date2Value}</span>
+                        <div className="to__info-text-group">
+                          <span className="to__info-label">{exam.date2Label}:</span>
+                          <span className="to__info-val">{exam.date2Value}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Tags */}
+                    {/* All Tags Opened */}
                     <div className="to__tags">
                       {exam.tags.map((tag) => {
                         const conf = getTagConfig(tag);
@@ -1173,9 +1170,6 @@ const TopOpportunities = () => {
                           </span>
                         );
                       })}
-                      {exam.extraTagsCount > 0 && (
-                        <span className="to__tag to__tag--count">+{exam.extraTagsCount}</span>
-                      )}
                     </div>
 
                     {/* Bottom Row: Slogan + View Details */}
