@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./SignUp.css";
 import { API_ENDPOINTS } from "../../config/api";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useAuth } from "../../context/AuthContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setAuthData } = useAuth();
   const from = location.state?.from || "/";
-  const [formData, setFormData] = useState({
 
+  // Step state: "form" (filling details) | "otp" (verifying OTP)
+  const [step, setStep] = useState("form");
+  const [verificationMethod, setVerificationMethod] = useState("email"); // "email" (phone SMS OTP deferred)
+
+  const [formData, setFormData] = useState({
     fullname: "",
     phoneNumber: "",
     email: "",
@@ -18,17 +24,199 @@ const SignUp = () => {
     agreed: false,
   });
 
+  // Inline Phone Verification State
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isVerifyingPhone, setIsVerifyingPhone] = useState(false);
+  const [phoneOtp, setPhoneOtp] = useState("");
+  const [phoneResendTimer, setPhoneResendTimer] = useState(0);
+  const [phoneLoading, setPhoneLoading] = useState(false);
+  const [phoneMessage, setPhoneMessage] = useState({ text: "", type: "" });
+
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const otpInputRefs = useRef([]);
+  const [resendTimer, setResendTimer] = useState(0);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
 
+  // Countdown timer for full-page OTP resend
+  useEffect(() => {
+    let interval = null;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [resendTimer]);
+
+  // Countdown timer for inline phone OTP resend
+  useEffect(() => {
+    let interval = null;
+    if (phoneResendTimer > 0) {
+      interval = setInterval(() => {
+        setPhoneResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [phoneResendTimer]);
+
+  // Focus first OTP input on transitioning to OTP step
+  useEffect(() => {
+    if (step === "otp") {
+      setTimeout(() => {
+        otpInputRefs.current[0]?.focus();
+      }, 100);
+    }
+  }, [step]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    if (name === "phoneNumber") {
+      setIsPhoneVerified(false);
+      setIsVerifyingPhone(false);
+      setPhoneOtp("");
+      setPhoneMessage({ text: "", type: "" });
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  // Inline Send Phone OTP
+  const handleSendPhoneOtpDirect = async () => {
+    const cleanPhone = formData.phoneNumber.replace(/[^\d]/g, "");
+    if (cleanPhone.length < 10) {
+      setPhoneMessage({ text: "Please enter a valid 10-digit mobile number.", type: "error" });
+      return;
+    }
+
+    setPhoneLoading(true);
+    setPhoneMessage({ text: "", type: "" });
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.USER}/send-phone-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: formData.phoneNumber }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setIsVerifyingPhone(true);
+        setPhoneResendTimer(60);
+        setPhoneMessage({
+          text: `SMS OTP sent to ${formData.phoneNumber}.`,
+          type: "success",
+        });
+      } else {
+        setPhoneMessage({
+          text: data.message || "Failed to send SMS OTP.",
+          type: "error",
+        });
+      }
+    } catch {
+      setPhoneMessage({
+        text: "Cannot reach server to send SMS OTP.",
+        type: "error",
+      });
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  // Inline Verify Phone OTP
+  const handleVerifyPhoneOtpDirect = async () => {
+    if (!phoneOtp || phoneOtp.trim().length !== 6) {
+      setPhoneMessage({ text: "Please enter the 6-digit OTP received via SMS.", type: "error" });
+      return;
+    }
+
+    setPhoneLoading(true);
+    setPhoneMessage({ text: "", type: "" });
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.USER}/verify-phone-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phoneNumber: formData.phoneNumber,
+          otp: phoneOtp.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setIsPhoneVerified(true);
+        setIsVerifyingPhone(false);
+        setPhoneMessage({
+          text: "Mobile phone verified successfully! ✓",
+          type: "success",
+        });
+      } else {
+        setPhoneMessage({
+          text: data.message || "Invalid or expired OTP.",
+          type: "error",
+        });
+      }
+    } catch {
+      setPhoneMessage({
+        text: "Error verifying OTP.",
+        type: "error",
+      });
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  // Cancel inline phone verification
+  const handleCancelPhoneOtpDirect = () => {
+    setIsVerifyingPhone(false);
+    setPhoneOtp("");
+    setPhoneMessage({ text: "", type: "" });
+  };
+
+  // OTP input handlers
+  const handleOtpChange = (index, value) => {
+    // Handle paste of full 6-digit code
+    if (value.length > 1) {
+      const pastedDigits = value.replace(/\D/g, "").slice(0, 6).split("");
+      if (pastedDigits.length > 0) {
+        const newOtp = [...otp];
+        pastedDigits.forEach((digit, i) => {
+          if (i < 6) newOtp[i] = digit;
+        });
+        setOtp(newOtp);
+        const nextFocusIndex = Math.min(pastedDigits.length, 5);
+        otpInputRefs.current[nextFocusIndex]?.focus();
+      }
+      return;
+    }
+
+    const cleanChar = value.replace(/\D/g, "");
+    const newOtp = [...otp];
+    newOtp[index] = cleanChar;
+    setOtp(newOtp);
+
+    // Auto-advance to next box if character was entered
+    if (cleanChar && index < 5) {
+      otpInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpInputRefs.current[index - 1]?.focus();
+    }
   };
 
   // Password rules validation
@@ -39,13 +227,22 @@ const SignUp = () => {
     formData.password.length > 0 &&
     formData.password === formData.confirmPassword;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Step 1: Submit Details & Request OTP (Phone SMS or Email)
+  const handleRequestOtp = async (e, preferredMethod = null) => {
+    if (e && e.preventDefault) e.preventDefault();
     setMessage({ text: "", type: "" });
 
     if (!formData.fullname || !formData.email || !formData.password) {
       setMessage({
         text: "Please fill in all required fields.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!hasMinLength) {
+      setMessage({
+        text: "Password must be at least 8 characters.",
         type: "error",
       });
       return;
@@ -67,41 +264,37 @@ const SignUp = () => {
       return;
     }
 
+    // Standard Email OTP verification (phone SMS verification deferred for later)
+    const targetMethod = "email";
+    setVerificationMethod("email");
+
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.USER}/register`, {
+      const endpoint = `${API_ENDPOINTS.USER}/send-otp`;
+      const payload = { email: formData.email, fullname: formData.fullname };
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          fullname: formData.fullname,
-          email: formData.email,
-          phoneNumber: formData.phoneNumber,
-          password: formData.password,
-          role: "jobseeker",
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
+        setStep("otp");
+        setResendTimer(60);
+        setOtp(["", "", "", "", "", ""]);
         setMessage({
-          text: "Account created successfully! You can now log in.",
+          text: `Verification code sent to ${formData.email}. Please check your inbox.`,
           type: "success",
-        });
-        setFormData({
-          fullname: "",
-          phoneNumber: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          agreed: false,
         });
       } else {
         setMessage({
-          text: data.message || "Failed to create account.",
+          text: data.message || "Failed to send verification code.",
           type: "error",
         });
       }
@@ -115,38 +308,152 @@ const SignUp = () => {
     }
   };
 
-  // Google OAuth Success Handler
-  const handleGoogleSuccess = async (credentialResponse) => {
+  // Switch method between Phone and Email on the fly (kept for later)
+  const handleSwitchVerificationMethod = async (newMethod) => {
+    if (loading) return;
+    await handleRequestOtp(null, newMethod);
+  };
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    if (resendTimer > 0 || loading) return;
+
+    setLoading(true);
     setMessage({ text: "", type: "" });
+
     try {
-      setLoading(true);
-      const res = await fetch(`${API_ENDPOINTS.USER}/google-auth`, {
+      const endpoint = `${API_ENDPOINTS.USER}/send-otp`;
+      const payload = { email: formData.email, fullname: formData.fullname };
+
+      const response = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ token: credentialResponse.credential }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-        }
-        setMessage({ text: "Signed up with Google successfully! Redirecting...", type: "success" });
-        setTimeout(() => navigate(from, { replace: true }), 1000);
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setResendTimer(60);
+        setMessage({
+          text: "A new verification code has been sent to your email.",
+          type: "success",
+        });
       } else {
-        setMessage({ text: data.message || "Google sign-up failed.", type: "error" });
+        setMessage({
+          text: data.message || "Failed to resend verification code.",
+          type: "error",
+        });
       }
     } catch (err) {
-      setMessage({ text: "Error connecting to Google authentication.", type: "error" });
+      setMessage({
+        text: "Cannot reach server to resend OTP.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleError = () => {
-    setMessage({ text: "Google Sign-In was cancelled or failed.", type: "error" });
+  // Step 2: Verify OTP & Complete Registration
+  const handleVerifyAndRegister = async (e) => {
+    e.preventDefault();
+    setMessage({ text: "", type: "" });
+
+    const otpCode = otp.join("").trim();
+    if (otpCode.length !== 6) {
+      setMessage({
+        text: "Please enter the complete 6-digit verification code.",
+        type: "error",
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.USER}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          fullname: formData.fullname,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          password: formData.password,
+          role: "jobseeker",
+          otp: otpCode,
+          verificationMethod,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage({
+          text: "Verified & account created successfully! Logging you in...",
+          type: "success",
+        });
+
+        if (data.token && data.user) {
+          setAuthData(data.user, data.token);
+        }
+
+        setTimeout(() => {
+          navigate(from, { replace: true });
+        }, 800);
+      } else {
+        setMessage({
+          text: data.message || "Verification failed. Please check the code.",
+          type: "error",
+        });
+      }
+    } catch (err) {
+      setMessage({
+        text: "Cannot reach server. Make sure the backend server is running.",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Google OAuth Handler (Popup Flow)
+  const handleGoogleSignup = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setMessage({ text: "", type: "" });
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_ENDPOINTS.USER}/google-auth`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ token: tokenResponse.access_token }),
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          if (data.token && data.user) {
+            setAuthData(data.user, data.token);
+          }
+          setMessage({ text: "Signed up with Google successfully! Redirecting...", type: "success" });
+          setTimeout(() => navigate(from, { replace: true }), 800);
+        } else {
+          setMessage({ text: data.message || "Google sign-up failed.", type: "error" });
+        }
+      } catch (err) {
+        setMessage({ text: "Error connecting to Google authentication.", type: "error" });
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => {
+      setMessage({ text: "Google Sign-In was cancelled or could not be completed.", type: "error" });
+    },
+  });
 
   return (
     <div className="su">
@@ -317,10 +624,25 @@ const SignUp = () => {
             {/* Card Header */}
             <div className="su__card-header">
               <h2 className="su__card-title">
-                Create Your <span className="su__card-title--gradient">Account</span>
+                {step === "otp" ? (
+                  <>
+                    Verify Your{" "}
+                    <span className="su__card-title--gradient">
+                      {verificationMethod === "phone" ? "Mobile Phone" : "Email"}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    Create Your <span className="su__card-title--gradient">Account</span>
+                  </>
+                )}
               </h2>
               <p className="su__card-sub">
-                Join JobPortal and take the next step towards a brighter future.
+                {step === "otp"
+                  ? verificationMethod === "phone"
+                    ? "Enter the 6-digit SMS code sent to your mobile number."
+                    : "Enter the 6-digit code sent to your email to activate your account."
+                  : "Join JobPortal and take the next step towards a brighter future."}
               </p>
             </div>
 
@@ -331,186 +653,399 @@ const SignUp = () => {
               </div>
             )}
 
-            {/* Form */}
-            <form className="su__form" onSubmit={handleSubmit}>
-              <div className="su__form-grid">
-                {/* Full Name */}
-                <div className="su__field">
-                  <label className="su__label">Full Name</label>
-                  <div className="su__input-box">
-                    <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                      <circle cx="12" cy="7" r="4" />
+            {step === "otp" ? (
+              /* ────────── STEP 2: OTP VERIFICATION ────────── */
+              <form className="su__form su__otp-wrap" onSubmit={handleVerifyAndRegister}>
+                <div className="su__otp-header-icon">
+                  {verificationMethod === "phone" ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                      <line x1="12" y1="18" x2="12.01" y2="18" />
                     </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  )}
+                </div>
+
+                <div className="su__otp-info">
+                  <p className="su__otp-desc">
+                    {verificationMethod === "phone"
+                      ? "We sent a 6-digit SMS verification code to:"
+                      : "We sent a 6-digit verification code to:"}
+                  </p>
+                  <div className="su__otp-email-badge">
+                    <span>
+                      {verificationMethod === "phone"
+                        ? formData.phoneNumber || formData.email
+                        : formData.email}
+                    </span>
+                    <button
+                      type="button"
+                      className="su__otp-edit-btn"
+                      onClick={() => {
+                        setStep("form");
+                        setMessage({ text: "", type: "" });
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
+
+                {/* 6 Digit OTP Inputs */}
+                <div className="su__otp-inputs">
+                  {otp.map((digit, index) => (
                     <input
+                      key={index}
+                      ref={(el) => (otpInputRefs.current[index] = el)}
                       type="text"
-                      name="fullname"
-                      value={formData.fullname}
-                      onChange={handleChange}
-                      placeholder="Enter your full name"
-                      required
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                      onFocus={(e) => e.target.select()}
+                      className={`su__otp-digit ${digit ? "su__otp-digit--filled" : ""}`}
+                      autoFocus={index === 0}
                     />
-                  </div>
+                  ))}
                 </div>
 
-                {/* Phone Number */}
-                <div className="su__field">
-                  <label className="su__label">Phone Number</label>
-                  <div className="su__input-box">
-                    <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      placeholder="+91 98765 43210"
-                    />
-                  </div>
+                {/* Resend OTP Row */}
+                <div className="su__otp-resend-row">
+                  {resendTimer > 0 ? (
+                    <span>Resend code in <strong>{resendTimer}s</strong></span>
+                  ) : (
+                    <>
+                      <span>Didn't receive the code?</span>
+                      <button
+                        type="button"
+                        className="su__otp-resend-btn"
+                        onClick={handleResendOtp}
+                        disabled={loading}
+                      >
+                        Resend Code
+                      </button>
+                    </>
+                  )}
                 </div>
 
-                {/* Email Address */}
-                <div className="su__field su__field--full">
-                  <label className="su__label">Email Address</label>
-                  <div className="su__input-box">
-                    <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="you@example.com"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div className="su__field">
-                  <label className="su__label">Password</label>
-                  <div className="su__input-box">
-                    <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Create a strong password"
-                      required
-                    />
+                {/* Switch Verification Method commented out for now
+                {formData.phoneNumber && formData.email && (
+                  <div style={{ marginTop: "-6px" }}>
                     <button
                       type="button"
-                      className="su__eye-btn"
-                      onClick={() => setShowPassword(!showPassword)}
+                      className="su__otp-edit-btn"
+                      style={{ fontSize: "13px" }}
+                      onClick={() =>
+                        handleSwitchVerificationMethod(
+                          verificationMethod === "phone" ? "email" : "phone"
+                        )
+                      }
+                      disabled={loading}
                     >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
+                      {verificationMethod === "phone"
+                        ? "✉️ Send code via Email instead"
+                        : "📱 Send code via Phone SMS instead"}
                     </button>
+                  </div>
+                )}
+                */}
+
+                {/* Submit Verification */}
+                <button
+                  type="submit"
+                  className="su__submit-btn"
+                  style={{ width: "100%" }}
+                  disabled={loading || otp.join("").length !== 6}
+                >
+                  {loading ? "Verifying & Creating Account..." : "Verify & Create Account \u2192"}
+                </button>
+
+                {/* Back to Form */}
+                <button
+                  type="button"
+                  className="su__otp-back-link"
+                  onClick={() => {
+                    setStep("form");
+                    setMessage({ text: "", type: "" });
+                  }}
+                >
+                  &larr; Back to registration details
+                </button>
+              </form>
+            ) : (
+              /* ────────── STEP 1: REGISTRATION FORM ────────── */
+              <form className="su__form" onSubmit={handleRequestOtp}>
+                <div className="su__form-grid">
+                  {/* Full Name */}
+                  <div className="su__field">
+                    <label className="su__label">Full Name</label>
+                    <div className="su__input-box">
+                      <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                      <input
+                        type="text"
+                        name="fullname"
+                        value={formData.fullname}
+                        onChange={handleChange}
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Phone Number with inline Verify button */}
+                  <div className="su__field">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <label className="su__label">Phone Number</label>
+                      {phoneMessage.text && (
+                        <span style={{ fontSize: "11px", color: phoneMessage.type === "success" ? "#059669" : "#dc2626", fontWeight: 600 }}>
+                          {phoneMessage.text}
+                        </span>
+                      )}
+                    </div>
+                    <div className="su__input-box">
+                      <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        placeholder="+91 98765 43210"
+                      />
+
+                      {/* Phone verification button commented out for later implementation
+                      {isPhoneVerified ? (
+                        <span className="su__verified-pill">✓ Verified</span>
+                      ) : formData.phoneNumber && formData.phoneNumber.replace(/[^\d]/g, "").length >= 10 ? (
+                        <button
+                          type="button"
+                          className="su__verify-btn"
+                          onClick={handleSendPhoneOtpDirect}
+                          disabled={phoneLoading}
+                        >
+                          {phoneLoading ? "Sending..." : isVerifyingPhone ? "Resend" : "Verify"}
+                        </button>
+                      ) : null}
+                      */}
+                    </div>
+
+                    {/* Inline Phone OTP Drawer commented out for later implementation
+                    {isVerifyingPhone && !isPhoneVerified && (
+                      <div className="su__inline-otp-box su__inline-otp-box--blue">
+                        <p className="su__inline-otp-msg">
+                          Enter the 6-digit SMS OTP sent to <strong>{formData.phoneNumber}</strong>:
+                        </p>
+                        <div className="su__inline-otp-row">
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            placeholder="••••••"
+                            className="su__inline-otp-input"
+                            value={phoneOtp}
+                            onChange={(e) => setPhoneOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            className="su__inline-otp-submit"
+                            onClick={handleVerifyPhoneOtpDirect}
+                            disabled={phoneLoading || phoneOtp.length !== 6}
+                          >
+                            {phoneLoading ? "Verifying..." : "Verify OTP"}
+                          </button>
+                        </div>
+                        <div className="su__inline-otp-footer">
+                          {phoneResendTimer > 0 ? (
+                            <span>Resend in {phoneResendTimer}s</span>
+                          ) : (
+                            <button
+                              type="button"
+                              className="su__inline-otp-resend"
+                              onClick={handleSendPhoneOtpDirect}
+                              disabled={phoneLoading}
+                            >
+                              Resend SMS OTP
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="su__inline-otp-cancel"
+                            onClick={handleCancelPhoneOtpDirect}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    */}
+                  </div>
+
+                  {/* Email Address */}
+                  <div className="su__field su__field--full">
+                    <label className="su__label">Email Address</label>
+                    <div className="su__input-box">
+                      <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="you@example.com"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Password */}
+                  <div className="su__field">
+                    <label className="su__label">Password</label>
+                    <div className="su__input-box">
+                      <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Create a strong password"
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="su__eye-btn"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div className="su__field">
+                    <label className="su__label">Confirm Password</label>
+                    <div className="su__input-box">
+                      <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="Confirm your password"
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="su__eye-btn"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Confirm Password */}
-                <div className="su__field">
-                  <label className="su__label">Confirm Password</label>
-                  <div className="su__input-box">
-                    <svg className="su__input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      placeholder="Confirm your password"
-                      required
+                {/* Password Checklist */}
+                <div className="su__checklist">
+                  <div className={`su__check-item ${hasMinLength ? "su__check-item--valid" : ""}`}>
+                    <span className="su__check-dot">{hasMinLength ? "✓" : "○"}</span>
+                    <span>At least 8 characters</span>
+                  </div>
+                  <div className={`su__check-item ${hasSpecial ? "su__check-item--valid" : ""}`}>
+                    <span className="su__check-dot">{hasSpecial ? "✓" : "○"}</span>
+                    <span>Contains a special character</span>
+                  </div>
+                  <div className={`su__check-item ${hasNumber ? "su__check-item--valid" : ""}`}>
+                    <span className="su__check-dot">{hasNumber ? "✓" : "○"}</span>
+                    <span>Contains a number</span>
+                  </div>
+                  <div className={`su__check-item ${passwordsMatch ? "su__check-item--valid" : ""}`}>
+                    <span className="su__check-dot">{passwordsMatch ? "✓" : "○"}</span>
+                    <span>Both passwords must match</span>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="su__submit-btn"
+                  disabled={loading}
+                >
+                  {loading ? "Sending Verification Code..." : "Create Account \u2192"}
+                </button>
+
+                {/* Divider */}
+                <div className="su__divider">
+                  <span>OR SIGN UP WITH</span>
+                </div>
+
+                {/* Google Sign-up Button */}
+                <button
+                  type="button"
+                  className="su__google-btn"
+                  onClick={() => handleGoogleSignup()}
+                  disabled={loading}
+                >
+                  <svg className="su__google-icon" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     />
-                    <button
-                      type="button"
-                      className="su__eye-btn"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    />
+                  </svg>
+                  <span>Continue with Google</span>
+                </button>
 
-              {/* Password Checklist */}
-              <div className="su__checklist">
-                <div className={`su__check-item ${hasMinLength ? "su__check-item--valid" : ""}`}>
-                  <span className="su__check-dot">{hasMinLength ? "✓" : "○"}</span>
-                  <span>At least 8 characters</span>
-                </div>
-                <div className={`su__check-item ${hasSpecial ? "su__check-item--valid" : ""}`}>
-                  <span className="su__check-dot">{hasSpecial ? "✓" : "○"}</span>
-                  <span>Contains a special character</span>
-                </div>
-                <div className={`su__check-item ${hasNumber ? "su__check-item--valid" : ""}`}>
-                  <span className="su__check-dot">{hasNumber ? "✓" : "○"}</span>
-                  <span>Contains a number</span>
-                </div>
-                <div className={`su__check-item ${passwordsMatch ? "su__check-item--valid" : ""}`}>
-                  <span className="su__check-dot">{passwordsMatch ? "✓" : "○"}</span>
-                  <span>Both passwords must match</span>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="su__submit-btn"
-                disabled={loading}
-              >
-                {loading ? "Creating Account..." : "Create Account \u2192"}
-              </button>
-
-              {/* Divider */}
-              <div className="su__divider">
-                <span>OR SIGN UP WITH</span>
-              </div>
-
-              {/* Social Buttons */}
-              <div className="su__social-row" style={{ display: "flex", justifyContent: "center" }}>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleError}
-                  theme="outline"
-                  size="large"
-                  text="continue_with"
-                  shape="pill"
-                  width="100%"
-                />
-              </div>
-
-
-              {/* Agreement Checkbox */}
-              <label className="su__agreement">
-                <input
-                  type="checkbox"
-                  name="agreed"
-                  checked={formData.agreed}
-                  onChange={handleChange}
-                  required
-                />
-                <span>
-                  I agree to the <a href="#">Terms of Service</a> and{" "}
-                  <a href="#">Privacy Policy</a>
-                </span>
-              </label>
-            </form>
+                {/* Agreement Checkbox */}
+                <label className="su__agreement">
+                  <input
+                    type="checkbox"
+                    name="agreed"
+                    checked={formData.agreed}
+                    onChange={handleChange}
+                    required
+                  />
+                  <span>
+                    I agree to the <a href="#">Terms of Service</a> and{" "}
+                    <a href="#">Privacy Policy</a>
+                  </span>
+                </label>
+              </form>
+            )}
           </div>
         </div>
       </main>

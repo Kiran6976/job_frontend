@@ -550,6 +550,171 @@
   height: 16px;
 }
 
+/* Inline Phone Verify Button */
+.su__verify-btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.su__verify-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.su__verify-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.su__verified-pill {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Inline OTP Drawer */
+.su__inline-otp-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  animation: suSlideDown 0.2s ease;
+}
+
+.su__inline-otp-box--blue {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.su__inline-otp-msg {
+  font-size: 12px;
+  color: #1e40af;
+  margin: 0;
+  font-weight: 500;
+}
+
+.su__inline-otp-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.su__inline-otp-input {
+  flex: 1;
+  height: 36px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #0f172a;
+  outline: none;
+  text-align: center;
+}
+
+.su__inline-otp-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.su__inline-otp-submit {
+  height: 36px;
+  padding: 0 14px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.su__inline-otp-submit:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.su__inline-otp-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.su__inline-otp-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.su__inline-otp-resend {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 11.5px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.su__inline-otp-resend:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.su__inline-otp-resend:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.su__inline-otp-cancel {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 11.5px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.su__inline-otp-cancel:hover {
+  color: #ef4444;
+}
+
+@keyframes suSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Password Checklist */
 .su__checklist {
   display: grid;
@@ -624,7 +789,44 @@
   padding: 0 12px;
 }
 
-/* Social Row */
+/* Google Button */
+.su__google-btn {
+  width: 100%;
+  height: 44px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.su__google-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.su__google-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.su__google-icon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+/* Social Row (if other providers are used) */
 .su__social-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -688,6 +890,167 @@
   text-decoration: underline;
 }
 
+/* ────────── OTP Verification Step ────────── */
+.su__otp-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 0;
+  gap: 20px;
+}
+
+.su__otp-header-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  margin-bottom: 4px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+}
+
+.su__otp-header-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.su__otp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 380px;
+}
+
+.su__otp-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.su__otp-desc {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.su__otp-email-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: 4px;
+}
+
+.su__otp-edit-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.su__otp-edit-btn:hover {
+  color: #1d4ed8;
+}
+
+.su__otp-inputs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.su__otp-digit {
+  width: 48px;
+  height: 54px;
+  border: 1.8px solid #cbd5e1;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.su__otp-digit:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  transform: translateY(-2px);
+}
+
+.su__otp-digit--filled {
+  border-color: #3b82f6;
+  background: #f8fafc;
+}
+
+.su__otp-resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.su__otp-resend-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.su__otp-resend-btn:hover:not(:disabled) {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.su__otp-resend-btn:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.su__otp-back-link {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.18s ease;
+  margin-top: 4px;
+}
+
+.su__otp-back-link:hover {
+  color: #0f172a;
+}
+
 /* ────────── Responsive ────────── */
 @media (max-width: 1100px) {
   .su__main {
@@ -728,4 +1091,15 @@
   .su__social-row {
     grid-template-columns: 1fr;
   }
+
+  .su__otp-digit {
+    width: 40px;
+    height: 48px;
+    font-size: 19px;
+  }
+
+  .su__otp-inputs {
+    gap: 6px;
+  }
 }
+

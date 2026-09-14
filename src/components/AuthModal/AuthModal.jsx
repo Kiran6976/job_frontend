@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { Eye, EyeOff, ArrowRight, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { API_ENDPOINTS } from "../../config/api";
@@ -11,6 +11,12 @@ const AuthModal = () => {
   const navigate = useNavigate();
 
   const isLoginTab = authModal.tab !== "signup";
+
+  const [signupStep, setSignupStep] = useState("form"); // "form" | "otp"
+  const [modalVerificationMethod, setModalVerificationMethod] = useState("phone"); // "phone" | "email"
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const otpInputRefs = React.useRef([]);
+  const [resendTimer, setResendTimer] = useState(0);
 
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -31,10 +37,12 @@ const AuthModal = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
 
-  // Reset errors and lock body scroll when modal opens
+  // Reset errors, step and lock body scroll when modal opens or tab changes
   useEffect(() => {
     if (authModal.isOpen) {
       setMessage({ text: "", type: "" });
+      setSignupStep("form");
+      setOtp(["", "", "", "", "", ""]);
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -43,6 +51,28 @@ const AuthModal = () => {
       document.body.style.overflow = "";
     };
   }, [authModal.isOpen, authModal.tab]);
+
+  // Resend OTP countdown
+  useEffect(() => {
+    let interval = null;
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [resendTimer]);
+
+  // Focus OTP box when entering OTP step
+  useEffect(() => {
+    if (signupStep === "otp") {
+      setTimeout(() => {
+        otpInputRefs.current[0]?.focus();
+      }, 100);
+    }
+  }, [signupStep]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -68,6 +98,37 @@ const AuthModal = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (value.length > 1) {
+      const pastedDigits = value.replace(/\D/g, "").slice(0, 6).split("");
+      if (pastedDigits.length > 0) {
+        const newOtp = [...otp];
+        pastedDigits.forEach((digit, i) => {
+          if (i < 6) newOtp[i] = digit;
+        });
+        setOtp(newOtp);
+        const nextIndex = Math.min(pastedDigits.length, 5);
+        otpInputRefs.current[nextIndex]?.focus();
+      }
+      return;
+    }
+
+    const cleanChar = value.replace(/\D/g, "");
+    const newOtp = [...otp];
+    newOtp[index] = cleanChar;
+    setOtp(newOtp);
+
+    if (cleanChar && index < 5) {
+      otpInputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpInputRefs.current[index - 1]?.focus();
+    }
   };
 
   const handleSuccessRedirect = (user, token) => {
@@ -124,9 +185,9 @@ const AuthModal = () => {
     }
   };
 
-  // Submit Sign Up
-  const handleSignupSubmit = async (e) => {
-    e.preventDefault();
+  // Step 1: Submit Sign Up Form to Send OTP (Phone SMS or Email)
+  const handleSignupRequestOtp = async (e, preferredMethod = null) => {
+    if (e && e.preventDefault) e.preventDefault();
     setMessage({ text: "", type: "" });
 
     if (!signupForm.fullname || !signupForm.email || !signupForm.password) {
@@ -144,54 +205,40 @@ const AuthModal = () => {
       return;
     }
 
+    const targetMethod = preferredMethod || (signupForm.phoneNumber && signupForm.phoneNumber.trim().length >= 10 ? "phone" : "email");
+    setModalVerificationMethod(targetMethod);
+
     setLoading(true);
     try {
-      const response = await fetch(`${API_ENDPOINTS.USER}/register`, {
+      let endpoint = `${API_ENDPOINTS.USER}/send-phone-otp`;
+      let payload = { phoneNumber: signupForm.phoneNumber };
+
+      if (targetMethod === "email") {
+        endpoint = `${API_ENDPOINTS.USER}/send-otp`;
+        payload = { email: signupForm.email, fullname: signupForm.fullname };
+      }
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullname: signupForm.fullname,
-          email: signupForm.email,
-          phoneNumber: signupForm.phoneNumber,
-          password: signupForm.password,
-          role: "jobseeker",
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
+        setSignupStep("otp");
+        setResendTimer(60);
+        setOtp(["", "", "", "", "", ""]);
         setMessage({
-          text: "Account created successfully! Logging you in...",
+          text: targetMethod === "phone"
+            ? `SMS code sent to ${signupForm.phoneNumber}.`
+            : `Verification code sent to ${signupForm.email}.`,
           type: "success",
         });
-        // Auto-login registered user
-        try {
-          const loginRes = await fetch(`${API_ENDPOINTS.USER}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              email: signupForm.email,
-              password: signupForm.password,
-            }),
-          });
-          const loginData = await loginRes.json();
-          if (loginRes.ok && loginData.success) {
-            setTimeout(() => {
-              handleSuccessRedirect(loginData.user, loginData.token);
-            }, 600);
-            return;
-          }
-        } catch {}
-
-        setTimeout(() => {
-          setAuthModal((prev) => ({ ...prev, tab: "login" }));
-          setMessage({ text: "Please sign in with your new credentials.", type: "success" });
-        }, 1000);
       } else {
         setMessage({
-          text: data.message || "Registration failed. Please try again.",
+          text: data.message || "Failed to send verification code.",
           type: "error",
         });
       }
@@ -205,39 +252,142 @@ const AuthModal = () => {
     }
   };
 
-  // Google OAuth Handler
-  const handleGoogleSuccess = async (credentialResponse) => {
+  // Modal Resend OTP
+  const handleModalResendOtp = async () => {
+    if (resendTimer > 0 || loading) return;
+
+    setLoading(true);
     setMessage({ text: "", type: "" });
+
     try {
-      setLoading(true);
-      const res = await fetch(`${API_ENDPOINTS.USER}/google-auth`, {
+      let endpoint = `${API_ENDPOINTS.USER}/send-phone-otp`;
+      let payload = { phoneNumber: signupForm.phoneNumber };
+
+      if (modalVerificationMethod === "email") {
+        endpoint = `${API_ENDPOINTS.USER}/send-otp`;
+        payload = { email: signupForm.email, fullname: signupForm.fullname };
+      }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setResendTimer(60);
+        setMessage({
+          text: modalVerificationMethod === "phone"
+            ? "New SMS verification code sent."
+            : "A new verification code has been sent.",
+          type: "success",
+        });
+      } else {
+        setMessage({
+          text: data.message || "Failed to resend code.",
+          type: "error",
+        });
+      }
+    } catch {
+      setMessage({
+        text: "Cannot reach server to resend code.",
+        type: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 2: Verify OTP & Register
+  const handleSignupVerifyAndRegister = async (e) => {
+    e.preventDefault();
+    setMessage({ text: "", type: "" });
+
+    const otpCode = otp.join("").trim();
+    if (otpCode.length !== 6) {
+      setMessage({ text: "Please enter the complete 6-digit code.", type: "error" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_ENDPOINTS.USER}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ token: credentialResponse.credential }),
+        body: JSON.stringify({
+          fullname: signupForm.fullname,
+          email: signupForm.email,
+          phoneNumber: signupForm.phoneNumber,
+          password: signupForm.password,
+          role: "jobseeker",
+          otp: otpCode,
+          verificationMethod: modalVerificationMethod,
+        }),
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         setMessage({
-          text: `Welcome, ${data.user?.fullname || "User"}!`,
+          text: "Account verified & created successfully!",
           type: "success",
         });
         setTimeout(() => {
           handleSuccessRedirect(data.user, data.token);
         }, 600);
       } else {
-        setMessage({ text: data.message || "Google authentication failed.", type: "error" });
+        setMessage({
+          text: data.message || "Verification failed. Please check the code.",
+          type: "error",
+        });
       }
     } catch {
-      setMessage({ text: "Error connecting to Google authentication.", type: "error" });
+      setMessage({
+        text: "Cannot connect to server. Please try again later.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleError = () => {
-    setMessage({ text: "Google sign-in was cancelled.", type: "error" });
-  };
+  // Google OAuth Handler (Popup Flow)
+  const handleModalGoogleAuth = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setMessage({ text: "", type: "" });
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_ENDPOINTS.USER}/google-auth`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ token: tokenResponse.access_token }),
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          setMessage({
+            text: `Welcome, ${data.user?.fullname || "User"}!`,
+            type: "success",
+          });
+          setTimeout(() => {
+            handleSuccessRedirect(data.user, data.token);
+          }, 600);
+        } else {
+          setMessage({ text: data.message || "Google authentication failed.", type: "error" });
+        }
+      } catch {
+        setMessage({ text: "Error connecting to Google authentication.", type: "error" });
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: () => {
+      setMessage({ text: "Google sign-in was cancelled.", type: "error" });
+    },
+  });
 
   return (
     <div className="auth-modal__backdrop" onClick={closeAuthModal}>
@@ -303,15 +453,32 @@ const AuthModal = () => {
 
         {/* Google OAuth Button */}
         <div className="auth-modal__google-wrap">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            theme="outline"
-            size="large"
-            text={isLoginTab ? "continue_with" : "signup_with"}
-            shape="pill"
-            width="100%"
-          />
+          <button
+            type="button"
+            className="auth-modal__google-btn"
+            onClick={() => handleModalGoogleAuth()}
+            disabled={loading}
+          >
+            <svg className="auth-modal__google-icon" viewBox="0 0 24 24">
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              />
+            </svg>
+            <span>{isLoginTab ? "Continue with Google" : "Sign up with Google"}</span>
+          </button>
         </div>
 
         <div className="auth-modal__divider">
@@ -372,9 +539,129 @@ const AuthModal = () => {
               )}
             </button>
           </form>
+        ) : signupStep === "otp" ? (
+          /* ────────── SIGNUP OTP VERIFICATION ────────── */
+          <form className="auth-modal__form auth-modal__otp-wrap" onSubmit={handleSignupVerifyAndRegister}>
+            <div className="auth-modal__otp-icon">
+              {modalVerificationMethod === "phone" ? (
+                <EyeOff size={24} style={{ display: "none" }} />
+              ) : null}
+              <ArrowRight size={24} />
+            </div>
+
+            <div className="auth-modal__otp-info">
+              <p className="auth-modal__otp-desc">
+                {modalVerificationMethod === "phone"
+                  ? "We sent a 6-digit SMS verification code to:"
+                  : "We sent a 6-digit verification code to:"}
+              </p>
+              <div className="auth-modal__otp-badge">
+                <span>
+                  {modalVerificationMethod === "phone"
+                    ? signupForm.phoneNumber || signupForm.email
+                    : signupForm.email}
+                </span>
+                <button
+                  type="button"
+                  className="auth-modal__otp-edit"
+                  onClick={() => {
+                    setSignupStep("form");
+                    setMessage({ text: "", type: "" });
+                  }}
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+
+            {/* 6 Digit OTP Inputs */}
+            <div className="auth-modal__otp-inputs">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(el) => (otpInputRefs.current[index] = el)}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  onFocus={(e) => e.target.select()}
+                  className={`auth-modal__otp-digit ${digit ? "auth-modal__otp-digit--filled" : ""}`}
+                  autoFocus={index === 0}
+                />
+              ))}
+            </div>
+
+            {/* Resend OTP */}
+            <div className="auth-modal__otp-resend">
+              {resendTimer > 0 ? (
+                <span>Resend code in <strong>{resendTimer}s</strong></span>
+              ) : (
+                <>
+                  <span>Didn't get code?</span>
+                  <button
+                    type="button"
+                    className="auth-modal__otp-resend-btn"
+                    onClick={handleModalResendOtp}
+                    disabled={loading}
+                  >
+                    Resend Code
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Switch Verification Method if both phone and email exist */}
+            {signupForm.phoneNumber && signupForm.email && (
+              <div style={{ marginTop: "-4px" }}>
+                <button
+                  type="button"
+                  className="auth-modal__otp-edit"
+                  style={{ fontSize: "12px" }}
+                  onClick={() =>
+                    handleSignupRequestOtp(
+                      null,
+                      modalVerificationMethod === "phone" ? "email" : "phone"
+                    )
+                  }
+                  disabled={loading}
+                >
+                  {modalVerificationMethod === "phone"
+                    ? "✉️ Send code via Email instead"
+                    : "📱 Send code via Phone SMS instead"}
+                </button>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="auth-modal__submit-btn"
+              disabled={loading || otp.join("").length !== 6}
+            >
+              {loading ? (
+                "Verifying..."
+              ) : (
+                <span className="auth-modal__btn-content">
+                  Verify & Create Account <ArrowRight size={17} />
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              className="auth-modal__otp-back"
+              onClick={() => {
+                setSignupStep("form");
+                setMessage({ text: "", type: "" });
+              }}
+            >
+              &larr; Back to registration details
+            </button>
+          </form>
         ) : (
           /* ────────── SIGNUP FORM ────────── */
-          <form className="auth-modal__form" onSubmit={handleSignupSubmit}>
+          <form className="auth-modal__form" onSubmit={handleSignupRequestOtp}>
             <div className="auth-modal__field">
               <label className="auth-modal__label">Full Name</label>
               <input
@@ -466,10 +753,10 @@ const AuthModal = () => {
               disabled={loading}
             >
               {loading ? (
-                "Creating Account..."
+                "Sending Verification Code..."
               ) : (
                 <span className="auth-modal__btn-content">
-                  Create Free Account <ArrowRight size={17} />
+                  Continue & Verify Email <ArrowRight size={17} />
                 </span>
               )}
             </button>

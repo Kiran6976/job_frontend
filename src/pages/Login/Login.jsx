@@ -2,14 +2,15 @@ import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./Login.css";
 import { API_ENDPOINTS } from "../../config/api";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setAuthData } = useAuth();
   const from = location.state?.from || "/";
   const [formData, setFormData] = useState({
-
     email: "",
     password: "",
   });
@@ -27,7 +28,10 @@ const Login = () => {
     setMessage({ text: "", type: "" });
 
     if (!formData.email || !formData.password) {
-      setMessage({ text: "Please enter both email and password.", type: "error" });
+      setMessage({
+        text: "Please enter your email and password.",
+        type: "error",
+      });
       return;
     }
 
@@ -36,27 +40,31 @@ const Login = () => {
     try {
       const response = await fetch(`${API_ENDPOINTS.USER}/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "include",
         body: JSON.stringify(formData),
       });
-
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         setMessage({
-          text: data.message || "Logged in successfully!",
+          text: "Login successful! Redirecting...",
           type: "success",
         });
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
+
+        if (data.token && data.user) {
+          setAuthData(data.user, data.token);
         }
-        setTimeout(() => navigate(from, { replace: true }), 800);
+
+        setTimeout(() => {
+          navigate(from, { replace: true });
+        }, 800);
       } else {
         setMessage({
-          text: data.message || "Invalid credentials. Please try again.",
+          text: data.message || "Invalid email or password.",
           type: "error",
         });
       }
@@ -70,41 +78,41 @@ const Login = () => {
     }
   };
 
-  // Google OAuth Success Handler
-  const handleGoogleSuccess = async (credentialResponse) => {
-    setMessage({ text: "", type: "" });
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_ENDPOINTS.USER}/google-auth`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ token: credentialResponse.credential }),
-      });
-      const data = await res.json();
-      if (res.ok && data.success) {
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
+  // Google OAuth Handler (Popup Flow)
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setMessage({ text: "", type: "" });
+      try {
+        setLoading(true);
+        const res = await fetch(`${API_ENDPOINTS.USER}/google-auth`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ token: tokenResponse.access_token }),
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          if (data.token && data.user) {
+            setAuthData(data.user, data.token);
+          }
+          setMessage({ text: "Logged in with Google successfully! Redirecting...", type: "success" });
+          setTimeout(() => navigate(from, { replace: true }), 800);
+        } else {
+          setMessage({ text: data.message || "Google login failed.", type: "error" });
         }
-        setMessage({ text: "Logged in with Google successfully! Redirecting...", type: "success" });
-        setTimeout(() => navigate(from, { replace: true }), 800);
-      } else {
-        setMessage({ text: data.message || "Google login failed.", type: "error" });
+      } catch (err) {
+        setMessage({ text: "Error connecting to Google authentication.", type: "error" });
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setMessage({ text: "Error connecting to Google authentication.", type: "error" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleError = () => {
-    setMessage({
-      text: "Google sign-in was closed or could not be completed.",
-      type: "error",
-    });
-  };
+    },
+    onError: () => {
+      setMessage({
+        text: "Google sign-in was closed or could not be completed.",
+        type: "error",
+      });
+    },
+  });
 
 
   return (
@@ -302,18 +310,33 @@ const Login = () => {
                 <span>OR CONTINUE WITH</span>
               </div>
 
-              {/* Social Buttons */}
-              <div className="login-page__social-row" style={{ display: "flex", justifyContent: "center" }}>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleError}
-                  theme="outline"
-                  size="large"
-                  text="continue_with"
-                  shape="pill"
-                  width="100%"
-                />
-              </div>
+              {/* Google Login Button */}
+              <button
+                type="button"
+                className="login-page__google-btn"
+                onClick={() => handleGoogleLogin()}
+                disabled={loading}
+              >
+                <svg className="login-page__google-icon" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                  />
+                </svg>
+                <span>Continue with Google</span>
+              </button>
 
 
               {/* Security Badge */}
