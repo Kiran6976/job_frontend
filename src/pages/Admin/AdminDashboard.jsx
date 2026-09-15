@@ -14,6 +14,9 @@ const AdminDashboard = () => {
     totalJobs: 0,
   });
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      return true;
+    }
     return localStorage.getItem("admin_sidebar_collapsed") === "true";
   });
 
@@ -23,6 +26,13 @@ const AdminDashboard = () => {
       localStorage.setItem("admin_sidebar_collapsed", String(next));
       return next;
     });
+  };
+
+  const handleNavClick = (tab) => {
+    setActiveTab(tab);
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      setIsSidebarCollapsed(true);
+    }
   };
 
   useEffect(() => {
@@ -150,7 +160,7 @@ const AdminDashboard = () => {
           {!isSidebarCollapsed && <div className="ad-nav__section">CORE</div>}
           <button
             className={`ad-nav__item ${activeTab === "overview" ? "ad-nav__item--active" : ""}`}
-            onClick={() => setActiveTab("overview")}
+            onClick={() => handleNavClick("overview")}
             title="Dashboard Overview"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -165,7 +175,7 @@ const AdminDashboard = () => {
           {!isSidebarCollapsed && <div className="ad-nav__section">MANAGEMENT</div>}
           <button
             className={`ad-nav__item ${activeTab === "jobs" ? "ad-nav__item--active" : ""}`}
-            onClick={() => setActiveTab("jobs")}
+            onClick={() => handleNavClick("jobs")}
             title="Job Postings"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -177,7 +187,7 @@ const AdminDashboard = () => {
 
           <button
             className={`ad-nav__item ${activeTab === "candidates" ? "ad-nav__item--active" : ""}`}
-            onClick={() => setActiveTab("candidates")}
+            onClick={() => handleNavClick("candidates")}
             title="Candidates & Users"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -191,7 +201,7 @@ const AdminDashboard = () => {
 
           <button
             className={`ad-nav__item ${activeTab === "companies" ? "ad-nav__item--active" : ""}`}
-            onClick={() => setActiveTab("companies")}
+            onClick={() => handleNavClick("companies")}
             title="Companies & Recruiters"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -205,7 +215,7 @@ const AdminDashboard = () => {
           {!isSidebarCollapsed && <div className="ad-nav__section">SYSTEM</div>}
           <button
             className={`ad-nav__item ${activeTab === "settings" ? "ad-nav__item--active" : ""}`}
-            onClick={() => setActiveTab("settings")}
+            onClick={() => handleNavClick("settings")}
             title="Console Settings"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

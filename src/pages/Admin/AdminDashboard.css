@@ -611,6 +611,9 @@
 @media (max-width: 768px) {
   .ad-layout {
     position: relative;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
   .ad-sidebar {
@@ -618,37 +621,101 @@
     top: 0;
     left: 0;
     bottom: 0;
+    width: 270px;
+    max-width: 85vw;
     height: 100vh;
-    z-index: 100;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6);
+    transform: translateX(0);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .ad-sidebar--collapsed {
-    width: 0;
+    transform: translateX(-100%);
+    width: 270px;
     border-right: none;
-    overflow: hidden;
+    box-shadow: none;
   }
 
   .ad-sidebar-backdrop {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(11, 15, 25, 0.65);
+    background: rgba(11, 15, 25, 0.75);
     backdrop-filter: blur(4px);
-    z-index: 90;
+    z-index: 150;
   }
 
   .ad-main {
     width: 100%;
-    margin-left: 0;
+    max-width: 100vw;
+    min-width: 0;
+    overflow-x: hidden;
   }
 
   .ad-topbar {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .ad-topbar__left {
+    gap: 0.5rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .ad-topbar__title {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ad-topbar__right {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .ad-view-site-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .ad-view-site-btn span {
+    display: none;
+  }
+
+  .ad-user-pill {
+    padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+    gap: 0.4rem;
+  }
+
+  .ad-user-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .ad-user-email {
+    display: none;
+  }
+
+  .ad-user-name {
+    font-size: 0.75rem;
+    max-width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ad-content {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
   }
 
   .ad-stats-grid {
@@ -658,5 +725,10 @@
   .ad-welcome-banner {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1.25rem 1rem;
+  }
+
+  .ad-welcome-text h1 {
+    font-size: 1.3rem;
   }
 }
