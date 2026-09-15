@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Landmark, Building2, Layers } from "lucide-react";
 import "./Section4Vacancy.css";
 
 const Section4Vacancy = ({ job }) => {
@@ -923,8 +924,21 @@ const Section4Vacancy = ({ job }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="jd-modal-header">
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "1.4rem" }}>🏛️</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div style={{
+                  width: "38px",
+                  height: "38px",
+                  borderRadius: "10px",
+                  background: "rgba(37, 99, 235, 0.12)",
+                  border: "1px solid rgba(37, 99, 235, 0.25)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#2563eb",
+                  flexShrink: 0
+                }}>
+                  <Landmark size={20} />
+                </div>
                 <div>
                   <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: 800, color: "#0f172a" }}>
                     Complete Service-wise Vacancy Breakdown

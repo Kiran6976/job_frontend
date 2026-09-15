@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Building2 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import ProfileSidebar from "./sections/ProfileSidebar";
@@ -286,7 +287,9 @@ const Profile = () => {
       <div className="profile-page">
         <Navbar />
         <div className="profile-page__loading">
-          <div className="profile-page__spinner">🏛️</div>
+          <div className="profile-page__spinner">
+            <Building2 size={32} color="#2563eb" />
+          </div>
           <h2>Loading Profile...</h2>
         </div>
         <Footer />

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Building2 } from "lucide-react";
 import { formatDate, isDatePresent, parseJobDate } from "../jobDetailsHelpers";
 import "./Section1Hero.css";
 
@@ -47,7 +48,9 @@ const Section1Hero = ({ job, timeLeft, saved, onToggleSave, vacanciesCount }) =>
                 }}
               />
             ) : (
-              <div className="jd-hero__emblem-ph">🏛️</div>
+              <div className="jd-hero__emblem-ph">
+                <Building2 size={24} color="#64748b" />
+              </div>
             )}
           </div>
 

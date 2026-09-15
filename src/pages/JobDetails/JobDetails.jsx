@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Building2 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { formatDate, parseJobDate } from "./jobDetailsHelpers";
@@ -228,7 +229,16 @@ const JobDetails = () => {
       <div className="jd">
         <Navbar />
         <div className="jd__container" style={{ textAlign: "center", padding: "100px 0" }}>
-          <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>🏛️</div>
+          <div style={{
+            display: "inline-flex",
+            padding: "16px",
+            background: "rgba(37, 99, 235, 0.1)",
+            borderRadius: "50%",
+            color: "#2563eb",
+            marginBottom: "1rem"
+          }}>
+            <Building2 size={36} />
+          </div>
           <h2>Loading Opportunity Details...</h2>
         </div>
         <Footer />

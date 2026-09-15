@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase, Sparkles, Calendar, Compass, Pencil } from "lucide-react";
+import { Flame, Target, GraduationCap, BookOpen, FileText, Tag, MapPin, Briefcase, Sparkles, Calendar, Compass, Pencil, Landmark, Building2 } from "lucide-react";
 import "./TopOpportunities.css";
 import { OPPORTUNITY_TABS } from "./opportunitiesData";
 import { API_ENDPOINTS } from "../../config/api";
@@ -1245,7 +1245,7 @@ const TopOpportunities = () => {
 
                         <div className="to__badge-group">
                           <span className="to__badge-pill to__badge-pill--scope">
-                            <span className="to__badge-icon-mini">🏛️</span>
+                            <Landmark size={12} className="to__badge-icon-mini" style={{ display: "inline-block", verticalAlign: "middle" }} />
                             {exam.scope}
                           </span>
                           <span className={`to__badge-pill to__badge-pill--${exam.statusType}`}>
