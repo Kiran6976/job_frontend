@@ -124,6 +124,36 @@
   gap: 0.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 0.75rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.4) rgba(15, 23, 42, 0.6);
+  -webkit-overflow-scrolling: touch;
+}
+
+.ajp__tabs::-webkit-scrollbar {
+  height: 5px;
+}
+
+.ajp__tabs::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 9999px;
+  margin: 0 4px;
+}
+
+.ajp__tabs::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+.ajp__tabs::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.75);
+}
+
+.ajp__tabs::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .ajp__tab-btn {
@@ -1309,15 +1339,27 @@
     box-sizing: border-box;
     gap: 0.6rem;
     scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.4) rgba(15, 23, 42, 0.6);
   }
 
   .ajp__tabs::-webkit-scrollbar {
-    height: 4px;
+    height: 5px;
+  }
+
+  .ajp__tabs::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 9999px;
   }
 
   .ajp__tabs::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
+    background: rgba(59, 130, 246, 0.4);
+    border-radius: 9999px;
+  }
+
+  .ajp__tabs::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
   .ajp__tab-btn {
