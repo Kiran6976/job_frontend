@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Building2 } from "lucide-react";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import { API_ENDPOINTS } from "../../config/api";
 import { formatDate, parseJobDate } from "./jobDetailsHelpers";
 import Section1Hero from "./sections/Section1Hero";
 import Section2Timeline from "./sections/Section2Timeline";
@@ -146,7 +147,7 @@ const JobDetails = () => {
     const fetchJobDetails = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8000/api/v1/job/detail/${id}`);
+        const res = await fetch(`${API_ENDPOINTS.JOB}/detail/${id}`);
         const data = await res.json();
         if (res.ok && data.success && data.job) {
           setJob(data.job);
@@ -166,58 +167,7 @@ const JobDetails = () => {
       if (found) {
         setJob(found);
       } else {
-        setJob({
-          _id: id || "upsc-demo",
-          title: "UPSC Civil Services (IAS)",
-          organization: "Union Public Service Commission",
-          category: "Government Exams",
-          level: "National Level",
-          status: "Apply Soon",
-          vacancies: "1056",
-          location: "All India",
-          selectionStages: "Prelims • Mains • Interview",
-          applicationStartDate: new Date(Date.now() - 5 * 86400000).toISOString().slice(0, 10),
-          applicationLastDate: new Date(Date.now() + 15 * 86400000 + 8 * 3600000 + 21 * 60000 + 34000).toISOString().slice(0, 10),
-          notificationDate: new Date(Date.now() - 10 * 86400000).toISOString().slice(0, 10),
-          examDate: new Date(Date.now() + 75 * 86400000).toISOString().slice(0, 10),
-          resultDate: "Tentative",
-          slogan: "Serve Lead Bring Change",
-          subSlogan: "A Stronger India Needs You",
-          bannerUrl: "/UPSC.png",
-          logoUrl: "/emblem_india.png",
-          aboutOrg:
-            "Join the prestigious Civil Services and be a part of nation building. Serve the country and create a meaningful impact through policy making, governance and public welfare.",
-          applyUrl: "https://upsconline.nic.in",
-          notificationPdfUrl: "https://upsc.gov.in",
-          tags: ["Graduate", "All India", "IAS", "IPS", "IFS"],
-          educationalQualification: "A Bachelor's Degree from a recognized University or equivalent.",
-          ageLimitMin: "21",
-          ageLimitMax: "32",
-          ageLimitAsOn: "01 Aug 2025",
-          nationality: "Must be a citizen of India. Tibetan refugees and certain other categories are also eligible as per rules.",
-          ageRelaxation: {
-            scSt: "5 years",
-            obc: "3 years",
-            pwbd: "10 years",
-            exServicemen: "As per rules",
-          },
-          numberAttempts: "General: 6 attempts • OBC: 9 attempts • SC/ST: No limit • (PwBD candidates get additional attempts as per rules)",
-          serviceVacancies: [
-            { name: "Indian Administrative Service (IAS)", ur: 73, obc: 42, sc: 28, st: 17, total: 160 },
-            { name: "Indian Police Service (IPS)", ur: 60, obc: 38, sc: 27, st: 15, total: 140 },
-            { name: "Indian Foreign Service (IFS)", ur: 34, obc: 22, sc: 16, st: 8, total: 80 },
-            { name: "Indian Revenue Service (IRS)", ur: 55, obc: 36, sc: 24, st: 15, total: 130 },
-            { name: "Indian Audit & Accounts Service (IA&AS)", ur: 28, obc: 18, sc: 12, st: 7, total: 65 },
-          ],
-          otherRequirements: [
-            "Must be of good moral character",
-            "Meet physical and medical standards (as applicable)",
-            "No criminal record",
-            "Should not be debarred from any government examination",
-          ],
-          importantNote:
-            "The eligibility criteria mentioned above is a summary. Candidates must read the official notification carefully for complete and accurate details. In case of any discrepancy, the official notification issued by UPSC shall be final.",
-        });
+        setJob(null);
       }
     };
 
